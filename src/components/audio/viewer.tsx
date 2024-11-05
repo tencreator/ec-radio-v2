@@ -1,11 +1,9 @@
 "use client"
 import { useEffect, useState } from "react";
-import { Pause, Play } from "lucide-react"
-
 import { APIResponse as Info } from "@/app/api/route";
 import { Mount } from "@/utils/apis/azuracast";
 import Player from './player'
-import RequestModal from "../home/RequestModal";
+import RequestModal from "./RequestModal";
 
 function truncate(str: string, n: number): string {
     return str.length > n ? str.substring(0, n - 1) + "..." : str

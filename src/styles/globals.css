@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@plugin daisyui;
+
+.text-spotify {
+    color: #1DB954;
+}
+
+
+.volume {
+    -webkit-appearance: none;
+    width: 100%;
+    background: rgb(138, 138, 138);
+    height: 10px;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: white;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.volume::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: white;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.volume::-moz-range-progress {
+    /* Have the background as a light gray */
+    background: #f3f3f3;
+    height: 10px;
+    border-radius: 5px;
+}

@@ -1,28 +1,5 @@
+"use client"
 import { useEffect, useRef } from 'react'
-
-function changeVolume(key: string, volume: number, setVolume: (volume: number) => void): void {
-    if (key === 'ArrowUp') {
-        setVolume(Math.min(100, volume + 5))
-    } else if (key === 'ArrowDown') {
-        setVolume(Math.max(0, volume - 5))
-    }
-}
-
-async function reloadAudio(audioRef: React.MutableRefObject<HTMLAudioElement | null>, playing: boolean): Promise<void> {
-    if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current.load()
-
-        audioRef.current.oncanplay = () => {
-            if (!audioRef.current) return
-            if (playing) {
-                audioRef.current.play()
-            } else {
-                audioRef.current.pause()
-            }
-        }
-    }
-}
 
 function AudioPlayer({audio, playing, volume, setPlaying, setVolume}: {
     audio: {
@@ -36,6 +13,30 @@ function AudioPlayer({audio, playing, volume, setPlaying, setVolume}: {
     setVolume: (volume: number) => void
 }): JSX.Element {
     const audioRef = useRef<HTMLAudioElement>(null)
+
+    function changeVolume(key: string, volume: number, setVolume: (volume: number) => void): void {
+        if (key === 'ArrowUp') {
+            setVolume(Math.min(100, volume + 5))
+        } else if (key === 'ArrowDown') {
+            setVolume(Math.max(0, volume - 5))
+        }
+    }
+    
+    async function reloadAudio(audioRef: React.MutableRefObject<HTMLAudioElement | null>, playing: boolean): Promise<void> {
+        if (audioRef.current) {
+            audioRef.current.pause()
+            audioRef.current.load()
+    
+            audioRef.current.oncanplay = () => {
+                if (!audioRef.current) return
+                if (playing) {
+                    audioRef.current.play()
+                } else {
+                    audioRef.current.pause()
+                }
+            }
+        }
+    }
 
     useEffect(() => {
         if (!audioRef.current) return

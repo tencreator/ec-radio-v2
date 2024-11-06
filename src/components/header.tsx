@@ -1,6 +1,3 @@
-"use client"
-import { useEffect, useState } from "react";
-
 export default function Header(): JSX.Element {
     return (
         <header>

@@ -25,7 +25,7 @@ export default function Header(): JSX.Element {
                             <li><a>Item 3</a></li>
                         </ul>
                     </div>
-                    <a className="btn btn-ghost text-xl" href="/">Emerald Coast Radio</a>
+                    <a className="btn btn-ghost text-xl" href="/"><h1>Emerald Coast Radio</h1></a>
                 </div>
                 <div className="navbar-end hidden lg:flex">
                     <ul className="menu menu-horizontal px-1">

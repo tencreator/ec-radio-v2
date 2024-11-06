@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Head } from "next/document";
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import '@/styles/globals.css'
 import '@/styles/fa.css'
@@ -21,6 +22,8 @@ export default function RootLayout({
       <link rel="icon" href={'https://cdn.emeraldcoastrp.com/elogo64x64.png'} />
       <link rel="apple-touch-icon" href={'https://cdn.emeraldcoastrp.com/elogo64x64.png'} />
       <body>
+        <Analytics />
+        <SpeedInsights />
         <Header />
         {children}
         <Viewer />

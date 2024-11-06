@@ -110,7 +110,7 @@ export default function Viewer(): JSX.Element {
                         )}
                     </div>
                     <div className="mx-auto">
-                        <div className="song-card flex flex-row">
+                        <div className="song-card flex flex-row justify-center items-center">
                             <div className="card-img flex justify-center items-center">
                                 <img
                                     src={info?.song.art || 'https://radio.emeraldcoastrp.com/static/uploads/browser_icon/48.1728930901.png'}

@@ -91,8 +91,8 @@ export default function Viewer(): JSX.Element {
     
     return (
         <>
-            <section className="w-full flex justify-center fixed bottom-0 mb-2">
-                <div className="flex flex-col md:flex-row bg-base-200 rounded-md border-solid border-base-300 border-2 items-center w-11/12 md:w-9/12 lg:w-8/12 xl:w-6/12 overflow-hidden py-1">
+            <section className="w-full flex justify-center fixed bottom-0 mb-2 z-50">
+                <div className="flex flex-col md:flex-row items-center w-11/12 md:w-9/12 lg:w-8/12 xl:w-6/12 overflow-hidden py-1 rounded-md border-solid border-2 bg-zinc-700 border-zinc-500">
                     <div className="mx-auto flex flex-row">
                         <button onClick={()=>{
                             setPlaying(!playing)

@@ -33,6 +33,7 @@ export default function Header(): JSX.Element {
                     <ul className="menu menu-horizontal px-1">
                         <li><Link href="/">Home</Link></li>
                         <li><Link href="/timetable">Timetable</Link></li>
+                        <li><Link href='/staff'>Staff</Link></li>
                     </ul>
                 </div>
             </div>

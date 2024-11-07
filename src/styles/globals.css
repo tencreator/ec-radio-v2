@@ -7,6 +7,21 @@
     color: #1DB954;
 }
 
+.bg-discord {
+    background-color: #5865F2;
+}
+
+.border-discord {
+    border-color: #5865F2;
+}
+
+button.bg-discord:hover {
+    background-color: #4053D6;
+}
+
+button.border-discord:hover {
+    border-color: #4053D6;
+}
 
 .volume {
     -webkit-appearance: none;

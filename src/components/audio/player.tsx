@@ -34,22 +34,6 @@ function AudioPlayer({audio, playing, volume, setPlaying}: {
         if (!audioRef.current) return
 
         reloadAudio(audioRef, playing)
-
-        addEventListener('keypress', (e)=> {
-            if (e.code === 'Space') {
-                e.preventDefault()
-                setPlaying(!playing)
-            }
-        })
-
-        return () => {
-            removeEventListener('keypress', (e) => {
-                if (e.code === 'Space') {
-                    e.preventDefault()
-                    setPlaying(!playing)
-                }
-            })
-        }
     }, [playing])
 
     useEffect(() => {

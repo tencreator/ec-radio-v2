@@ -5,7 +5,6 @@ import { PrismaClient } from '@prisma/client'
 
 import { Permissions } from "./permissions"
 import DiscordAPI from "./apis/discord"
-import test from "node:test"
 
 declare module 'next-auth' {
     interface Session {
@@ -41,6 +40,9 @@ async function getRolePerms(roles: string[]): Promise<string[]> {
                 roleid: {
                     in: roles
                 }
+            },
+            select: {
+                permissions: true
             }
         })
     
@@ -88,5 +90,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             session.user.nickname = token.nickname as string
             return session
         }
-    }
+    },
+    pages: {
+        signIn: '/auth',
+        signOut: '/auth',
+    },
 })

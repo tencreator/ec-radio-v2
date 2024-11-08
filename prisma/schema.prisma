@@ -3,24 +3,31 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-model Permissions {
+model permissions {
   id          Int      @id @default(autoincrement())
   roleid      String
   permissions String
+
+  @@map("permissions")
 }
 
-model Policies {
+model policies {
   id          Int      @id @default(autoincrement())
+  name        String
   text        String
+
+  @@map("Policies")
 }
 
-model Timetable {
+model timetable {
   id          Int      @id @default(autoincrement())
   date        DateTime
   time        DateTime
   userid      String
+
+  @@map("Timetable")
 }

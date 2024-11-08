@@ -23,6 +23,7 @@ function TimetableDay({ day }: { day: string }) {
     const [currentDay, setCurrentDay] = useState(false)
 
     useEffect(() => {
+        setCurrentDay(new Date().getDay() === dayList.indexOf(day))
         const timeout = setTimeout(() => {
             setCurrentDay(new Date().getDay() === dayList.indexOf(day))
         }, 1000)

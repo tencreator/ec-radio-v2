@@ -1,20 +1,21 @@
 import { hasPermission, type PagePermissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
+import { redirect } from "next/navigation";
 
 import Sidebar from "@/components/staff/sidebar"
-import Login from "@/components/auth/login"
 
 interface StaffLayoutProps {
     children: React.ReactNode;
     perm: PagePermissions;
-    redirect?: string;
 }
 
-const StaffLayout = async ({ children, perm, redirect }: StaffLayoutProps) => {
+const StaffLayout = async ({ children, perm }: StaffLayoutProps) => {
     const session = await auth()
 
-    if (!session) return <Login redirect={redirect} />
-    if (!hasPermission(session, perm)) return <div>Unauthorized</div>
+    if (!session) {
+        redirect('/auth')
+    }
+    if (!await hasPermission(session, perm)) return <div>Unauthorized</div>
 
     return (
         <section className="flex flex-row">

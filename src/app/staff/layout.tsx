@@ -8,7 +8,7 @@ export default async function StaffLayout({ children, perm, redirect } : { child
     const session = await auth()
 
     if (!session) return <Login redirect={redirect} />
-    // if (!hasPermission(session, perm)) return <div>Unauthorized</div>
+    if (!hasPermission(session, perm)) return <div>Unauthorized</div>
 
     return (
         <section className="flex flex-row">

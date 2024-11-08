@@ -20,8 +20,17 @@ export default function Timetable() {
 
 function TimetableDay({ day }: { day: string }) {
     const [loading, setLoading] = useState(true)
+    const [currentDay, setCurrentDay] = useState(false)
 
-    const currentDay = new Date().getDay() == dayList.indexOf(day)
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setCurrentDay(new Date().getDay() === dayList.indexOf(day))
+        }, 1000)
+
+        return () => {
+            clearTimeout(timeout)
+        }
+    }, [currentDay])
 
     const events: { [time: number]: string | string[] } = {
         0: "Pixel Buddy",
@@ -96,9 +105,10 @@ function TimetableEvent({ time, day, title, img }: { time: string, title: string
     }
 
     useEffect(() => {
+        setIsLive(isCurrent())
         const timeout = setTimeout(() => {
             setIsLive(isCurrent())
-        }, 60 * 1000)
+        }, 1000)
 
 
         return () => {

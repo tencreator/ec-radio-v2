@@ -43,3 +43,8 @@ next-env.d.ts
 yarn.lock
 package-lock.json
 bun.lockb
+
+# Prisma
+/prisma/dev.db
+/prisma/dev.db-journal
+/prisma/migrations

@@ -1,7 +1,7 @@
 import Log from '@log'
 
 interface DiscordUserData {
-    nickname: string
+    nickname: string | false
     roles: string[]
 }
 
@@ -16,7 +16,6 @@ class Discord {
     public async getUserData(userId: string, guildId: string): Promise<DiscordUserData> {
         try {
             const url = `https://discord.com/api/v9/guilds/${guildId}/members/${userId}`
-            console.log(url)
 
             const response = await fetch(url, {
                 headers: {
@@ -33,13 +32,13 @@ class Discord {
 
             return {
                 roles: data.roles,
-                nickname: data.nick || data.user.username,
+                nickname: data.nick || false,
             }
         } catch (e: any) {
             this.log.error(["Failed to fetch user roles", e])
             return {
                 roles: [],
-                nickname: ""
+                nickname: false
             }
         }
     }

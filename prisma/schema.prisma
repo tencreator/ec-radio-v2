@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Permissions {
+  id          Int      @id @default(autoincrement())
+  roleid      String
+  permissions String
+}
+
+model Policies {
+  id          Int      @id @default(autoincrement())
+  text        String
+}
+
+model Timetable {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  time        DateTime
+  userid      String
+}

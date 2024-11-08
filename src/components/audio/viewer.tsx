@@ -46,30 +46,34 @@ export default function Viewer(): JSX.Element {
     const [playing, setPlaying] = useState(false)
     const [volume, setVolume] = useState(100)
 
-    useEffect(() => {
-        setInterval(() => {
-            fetch("/api")
-                .then(response => response.json())
-                .then(data => {
-                    setInfo(data)
-                    const mounts: Mount[] = []
+    async function fetchData() {
+        const response = await fetch("/api")
+        const data = await response.json()
+        setInfo(data)
+        const mounts: Mount[] = []
 
-                    if (data.mounts) {
-                        for (const mount in data.mounts) {
-                            mounts.push({
-                                url: data.mounts[mount].url,
-                                bitrate: data.mounts[mount].bitrate,
-                                format: data.mounts[mount].format
-                            })
-                        }
-
-                        if (data.hls) {
-                            mounts.push({url: data.hls, bitrate: 0, format: 'application/x-mpegURL'})
-                        }
-
-                        setMounts(mounts)
-                    }
+        if (data.mounts) {
+            for (const mount in data.mounts) {
+                mounts.push({
+                    url: data.mounts[mount].url,
+                    bitrate: data.mounts[mount].bitrate,
+                    format: data.mounts[mount].format
                 })
+            }
+
+            if (data.hls) {
+                mounts.push({url: data.hls, bitrate: 0, format: 'application/x-mpegURL'})
+            }
+
+            setMounts(mounts)
+        }
+    }
+
+    useEffect(() => {
+        fetchData()
+
+        setInterval(() => {
+            fetchData()
         }, 2500)
     }, [])
 

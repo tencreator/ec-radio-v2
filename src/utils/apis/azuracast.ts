@@ -1,3 +1,5 @@
+import { Song } from "../types"
+
 interface NowPlaying {
     title: string
     artist: string
@@ -17,6 +19,23 @@ interface Mount {
     url: string
     bitrate: number
     format: string
+}
+
+interface StationStats {
+    listeners: number
+    is_live: boolean
+    streamer: {
+        name: string
+        art: string
+    }
+    current_song: {
+        title: string
+        artist: string
+    }
+    next_song?: {
+        title: string
+        artist: string
+    }
 }
 
 class Azuracast {
@@ -110,6 +129,52 @@ class Azuracast {
             return mounts
         } catch {
             return {}
+        }
+    }
+
+    public static async getStationStats(): Promise<StationStats> {
+        try {
+            const response = await fetch(`${process.env.AZURACAST_URL}/api/nowplaying/${process.env.AZURACAST_STATION_ID}`)
+            const data = await response.json()
+            
+            let current_song = {
+                title: data.now_playing.song.title,
+                artist: data.now_playing.song.artist,
+            }
+
+            let next_song = undefined
+
+            if (data.playing_next?.song?.title && data.playing_next?.song?.artist) {
+                next_song = {
+                    title: data.playing_next.song.title,
+                    artist: data.playing_next.song.artist,
+                }
+            }
+
+            return {
+                listeners: data.listeners.unique,
+                is_live: data.live.is_live,
+                streamer: {
+                    name: data.live.streamer_name,
+                    art: data.live.art,
+                },
+                current_song: current_song,
+                next_song: next_song,
+            }
+        } catch {
+            return {
+                listeners: 0,
+                is_live: false,
+                streamer: {
+                    name: "Unknown",
+                    art: "",
+                },
+                current_song: {
+                    title: "Unknown",
+                    artist: "Unknown",
+                },
+                next_song: undefined,
+            }
         }
     }
 }

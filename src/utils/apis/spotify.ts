@@ -7,6 +7,12 @@ interface searchResponse {
     url: string | false
 }
 
+interface searchExtensiveResponse extends searchResponse {
+    album: string
+    explicit: boolean
+    duration: number
+}
+
 class Spotify {
     private accessToken: string | false = false
     private clientId: string
@@ -89,6 +95,53 @@ class Spotify {
             }
 
             this.cache.set(`${title} - ${artist}`, res, 60)
+
+            return res
+        } catch (e) {
+            console.log('Failed to search', e)
+            return false
+        }
+    }
+
+    public async searchExtensive(title: string, artist: string): Promise<searchExtensiveResponse | false> {
+        if (this.cache.has(`${title} - ${artist} - extensive`)) {
+            return this.cache.get(`${title} - ${artist} - extensive`)
+        }
+
+        if (!this.accessToken) {
+            await this.getAccessToken()
+        }
+
+        if (!this.accessToken) {
+            return false
+        }
+
+        try {
+            const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(`${title} - ${artist}`)}&type=track&limit=1`, {
+                headers: {
+                    'Authorization': `Bearer ${this.accessToken}`
+                }
+            })
+
+            const data = await response.json()
+
+            if (data.tracks.items.length === 0) {
+                return false
+            }
+
+            const track = data.tracks.items[0]
+
+            let res: searchExtensiveResponse = {
+                title: track.name,
+                artist: track.artists[0].name,
+                art: track.album.images[0].url,
+                url: track.external_urls.spotify,
+                album: track.album.name,
+                explicit: track.explicit,
+                duration: track.duration_ms / 1000
+            }
+
+            this.cache.set(`${title} - ${artist} - extensive`, res, 60)
 
             return res
         } catch (e) {

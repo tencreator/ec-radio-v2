@@ -20,7 +20,7 @@ export default function Stats() {
         fetchStats()
         const timeout = setTimeout(()=>{
             fetchStats()
-        }, 1000)
+        }, 2500)
 
         return () => {
             clearTimeout(timeout)

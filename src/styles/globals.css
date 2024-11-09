@@ -3,9 +3,29 @@
 @tailwind utilities;
 @plugin daisyui;
 
+/* Spotify */
+
 .text-spotify {
     color: #1DB954;
 }
+
+.bg-spotify {
+    background-color: #1DB954;
+}
+
+.border-spotify {
+    border-color: #1DB954;
+}
+
+button.bg-spotify:hover, a.bg-spotify:hover {
+    background-color: #1AA34A;
+}
+
+button.border-spotify:hover, a.border-spotify:hover {
+    border-color: #1AA34A;
+}
+
+/* Discord */
 
 .bg-discord {
     background-color: #5865F2;
@@ -15,13 +35,15 @@
     border-color: #5865F2;
 }
 
-button.bg-discord:hover {
+button.bg-discord:hover, a.bg-discord:hover {
     background-color: #4053D6;
 }
 
-button.border-discord:hover {
+button.border-discord:hover, a.border-discord:hover {
     border-color: #4053D6;
 }
+
+/* Danger */
 
 .bg-danger {
     background-color: #FF0000;
@@ -31,11 +53,11 @@ button.border-discord:hover {
     border-color: #FF0000;
 }
 
-button.bg-danger:hover {
+button.bg-danger:hover, a.bg-danger:hover {
     background-color: #CC0000;
 }
 
-button.border-danger:hover {
+button.border-danger:hover, a.border-danger:hover {
     border-color: #CC0000;
 }
 

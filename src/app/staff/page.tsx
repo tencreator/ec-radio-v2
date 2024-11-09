@@ -1,17 +1,13 @@
-import { auth } from "@/utils/auth"
-
 import { Permissions } from "@/utils/permissions"
 import Layout from "./layout"
+import Stats from "@/components/staff/stats/stats"
 
 export default async function Page() {
-    const session = await auth()
-
     return (
-        <div className="mx-auto mt-4 lg:w-10/12">
-            <h1 className="text-3xl font-bold">Staff Home</h1>
-            <p>Welcome to the staff home page.</p>
+        <div className="mx-auto mt-4 lg:w-11/12">
+            <Stats />
         </div>
     )
 }
 
-Page.getLayout = (page: any) => <Layout perm={Permissions.VIEW_STAFF}>{page}</Layout>
+Page.getLayout = (page: any) => <Layout perm={Permissions.VIEW_STATS}>{page}</Layout>

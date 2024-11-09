@@ -32,6 +32,15 @@ export default function Stats() {
 
             <div className="card bg-base-200 shadow-xl grow">
                 <div className="card-body">
+                    <h2 className="card-title">Listeners</h2>
+                    <div className="flex flex-row items-center">
+                        <p>{loading ? 'Loading...' : data?.listeners}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="card bg-base-200 shadow-xl grow">
+                <div className="card-body">
                     <h2 className="card-title">Current DJ</h2>
                     <div className="flex flex-row items-center">
                         <img src={loading ? '/img/loading.gif' : data?.streamer.art} width={24} className="mr-2 rounded-full" alt="DJ Art" />

@@ -6,7 +6,7 @@ const dayList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday
 
 export default function Timetable() {
     return (
-        <main className="mt-4 mx-auto lg:w-10/12 text-lg flex flex-col gap-4 justify-center grow">
+        <main className="mt-4 md:mx-auto lg:w-10/12 text-lg flex flex-col gap-4 justify-center grow">
             <TimetableDay day="Monday" />
             <TimetableDay day="Tuesday" />
             <TimetableDay day="Wednesday" />

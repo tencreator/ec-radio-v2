@@ -18,7 +18,7 @@ export default function Stats() {
 
     useEffect(() => {
         fetchStats()
-        setTimeout(()=> fetchStats(), 1000)
+        setTimeout(()=>{fetchStats()}, 1000)
     }, [])
 
     return (

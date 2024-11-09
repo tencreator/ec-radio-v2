@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model permissions {
+  id          Int      @id @default(autoincrement())
+  roleid      String
+  permissions String
+
+  @@map("permissions")
+}
+
+model policies {
+  id          Int      @id @default(autoincrement())
+  name        String
+  text        String
+
+  @@map("Policies")
+}
+
+model timetable {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  time        DateTime
+  userid      String
+
+  @@map("Timetable")
+}

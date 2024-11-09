@@ -7,6 +7,37 @@
     color: #1DB954;
 }
 
+.bg-discord {
+    background-color: #5865F2;
+}
+
+.border-discord {
+    border-color: #5865F2;
+}
+
+button.bg-discord:hover {
+    background-color: #4053D6;
+}
+
+button.border-discord:hover {
+    border-color: #4053D6;
+}
+
+.bg-danger {
+    background-color: #FF0000;
+}
+
+.border-danger {
+    border-color: #FF0000;
+}
+
+button.bg-danger:hover {
+    background-color: #CC0000;
+}
+
+button.border-danger:hover {
+    border-color: #CC0000;
+}
 
 .volume {
     -webkit-appearance: none;

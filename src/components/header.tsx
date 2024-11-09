@@ -1,6 +1,12 @@
 import Link from 'next/link'
+import { auth } from '@/utils/auth'
+import { hasPermission, Permissions } from '@/utils/permissions'
 
-export default function Header(): JSX.Element {
+export default async function Header(): Promise<JSX.Element> {
+    const session = await auth()
+
+    const hasStaffPerms = session ? await hasPermission(session, Permissions.VIEW_STAFF) : false
+
     return (
         <header>
             <div className="navbar bg-base-200 border-b-2 border-solid border-base-300">
@@ -22,9 +28,11 @@ export default function Header(): JSX.Element {
                         </div>
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                            className="menu menu-sm dropdown-content bg-base-200 rounded-box z-50 mt-3 w-52 p-2 shadow border border-solid border-base-300">
                             <li><Link href="/">Home</Link></li>
                             <li><Link href="/timetable">Timetable</Link></li>
+                            {hasStaffPerms && <li><Link href="/staff">Staff</Link></li>}
+                            <li><Link href='/auth'>{session ? 'Logout' : 'Login'}</Link></li>
                         </ul>
                     </div>
                     <Link className="btn btn-ghost text-xl" href="/"><h1>Emerald Coast Radio</h1></Link>
@@ -33,6 +41,8 @@ export default function Header(): JSX.Element {
                     <ul className="menu menu-horizontal px-1">
                         <li><Link href="/">Home</Link></li>
                         <li><Link href="/timetable">Timetable</Link></li>
+                        {hasStaffPerms && <li><Link href="/staff">Staff</Link></li>}
+                        <li><Link href='/auth'>{session ? 'Logout' : 'Login'}</Link></li>
                     </ul>
                 </div>
             </div>

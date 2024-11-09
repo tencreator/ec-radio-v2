@@ -7,7 +7,9 @@ export default async function Page() {
     const session = await auth()
 
     return (
-        <div>
+        <div className="mx-auto mt-4 lg:w-10/12">
+            <h1 className="text-3xl font-bold">Staff Home</h1>
+            <p>Welcome to the staff home page.</p>
         </div>
     )
 }

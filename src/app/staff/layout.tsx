@@ -12,18 +12,16 @@ interface StaffLayoutProps {
 const StaffLayout = async ({ children, perm }: StaffLayoutProps) => {
     const session = await auth()
 
-    if (!session) {
-        redirect('/auth')
-    }
+    if (!session) redirect('/auth')
     if (!await hasPermission(session, perm)) return <div>Unauthorized</div>
 
     return (
-        <section className="flex flex-row">
+        <main className="flex flex-row min-h-full grow">
             <Sidebar perms={session?.user.perms || []} />
-            <main>
+            <section className="grow">
                 {children}
-            </main>
-        </section>
+            </section>
+        </main>
     )
 }
 

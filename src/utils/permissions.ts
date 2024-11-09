@@ -31,6 +31,8 @@ async function hasPermission(session: any, permission: PagePermissions): Promise
 }
 
 function hasPermissionSync(session: any, permission: PagePermissions): boolean {
+    console.log(session.user.perms)
+    
     if (!session?.user?.perms) return false
 
     for (const perm of session.user.perms) {

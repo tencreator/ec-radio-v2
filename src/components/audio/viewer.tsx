@@ -104,7 +104,7 @@ export default function Viewer(): JSX.Element {
                             <i className={(playing ? 'fa-pause' : 'fa-play' )+' fa-solid'}></i>
                         </button>
                         <RequestModal />
-                        <a href="https://discord.gg/ecrp" className="btn btn-ghost">
+                        <a href="https://discord.gg/ecrp" className="btn btn-ghost" target="_blank">
                             <i className="fa-brands fa-discord"></i>
                         </a>
                         {info?.song.spotify && (

@@ -18,7 +18,9 @@ export default function Stats() {
 
     useEffect(() => {
         fetchStats()
-        setTimeout(()=> fetchStats(), 1000)
+        setInterval(()=>{
+            fetchStats()
+        }, 2500)
     }, [])
 
     return (
@@ -27,6 +29,15 @@ export default function Stats() {
                 <div className="card-body">
                     <h2 className="card-title">Staff page</h2>
                     <p>Welcome to the staff page, here you can view the statistics of the radio and info about the currently playing song and what AutoDJ has planned next!</p>
+                </div>
+            </div>
+
+            <div className="card bg-base-200 shadow-xl grow">
+                <div className="card-body">
+                    <h2 className="card-title">Listeners</h2>
+                    <div className="flex flex-row items-center">
+                        <p>{loading ? 'Loading...' : data?.listeners}</p>
+                    </div>
                 </div>
             </div>
 

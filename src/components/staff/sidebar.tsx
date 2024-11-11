@@ -45,7 +45,7 @@ export default function Sidebar({perms}: {perms: string[]}) {
 
     return (
         <div className='min-h-full'>
-            <button ref={sidebarToggleRef} className='btn bg-slate-800 border border-solid border-gray-500 fixed top-20 right-5 text-2xl z-50 md:hidden' onClick={()=>setShow(!show)}>
+            <button ref={sidebarToggleRef} className='btn bg-slate-800 border border-solid border-gray-500 fixed top-20 right-5 text-2xl z-50 lg:hidden' onClick={()=>setShow(!show)}>
                 <i className='fas fa-bars'></i>
             </button>
 

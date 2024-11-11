@@ -1,27 +1,21 @@
 "use client"
 import { useState, useEffect } from "react"
-import Link from "next/link"
+import ReactMarkdown from 'react-markdown'
+import { notFound } from "next/navigation"
+import { GetStaticProps } from "next"
 
-export default function ViewPolicies({id}: {id: number}) {
-    const [loading, setLoading] = useState(true)
-    const [policies, setPolicies] = useState<{id: number, name: string, text: string} | null>(null)
-
-    useEffect(() => {
-        fetch("/api/staff/policies/" + id)
-            .then(res => res.json())
-            .then(data => {
-                setPolicies(data)
-                setLoading(false)
-            })
-    }, [])
-
-    if (loading) {
-        return <p>Loading...</p>
+export default function ViewPolicy({policy}: {policy: {id: number, name: string, text: string}}) {
+    if (!policy) {
+        return notFound()
     }
 
     return (
-        <div className="mx-auto mt-4 lg:w-11/12">
-            {JSON.stringify(policies)}
+        <div className="mt-4 lg:w-11/12">
+            {policy && (
+                <div className="markdown">
+                    <ReactMarkdown>{policy.text}</ReactMarkdown>
+                </div>
+            )}
         </div>
     )
 }

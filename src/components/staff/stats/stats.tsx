@@ -85,7 +85,6 @@ function SongCard({ song, title, skip = false, perms = [], isLive }: { song: Son
                 <h2 className="card-title">{title}</h2>
                 <div>
                     <p>{song.title || 'Song title'} - {song.artist || 'Song Artits'}</p>
-                    <p>{song.album || 'Album'}</p>
                     <p>{song.explicit ? "Explicit" : "Not explicit"}</p>
                     <p>{song.duration && formatTime(song.duration)}</p>
                 </div>

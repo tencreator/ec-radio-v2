@@ -97,3 +97,97 @@ button.border-danger:hover, a.border-danger:hover {
     height: 10px;
     border-radius: 5px;
 }
+
+/* markdown formatting */
+.markdown h1 {
+    font-size: 2.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.markdown h2 {
+    font-size: 1.875rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.markdown h3 {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.markdown h4 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.markdown h5 {
+    font-size: 1.125rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.markdown h6 {
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.markdown p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.markdown ul {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    list-style: disc;
+}
+
+.markdown ol {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    list-style: decimal;
+}
+
+.markdown blockquote {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.markdown pre {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.markdown table {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.markdown img {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.markdown a {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.markdown hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.markdown blockquote {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.markdown code {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}

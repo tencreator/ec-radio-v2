@@ -2,8 +2,9 @@
 
 import { APIResponse } from "@/app/api/stats/route"
 import { useEffect, useState } from "react"
+import { Permissions, hasPermissionSync } from "@/utils/permissions"
 
-export default function Stats() {
+export default function Stats({ perms }: { perms: string[] }) {
     const [data, setData] = useState<APIResponse | null>(null)
     const [loading, setLoading] = useState(true)
 
@@ -51,8 +52,10 @@ export default function Stats() {
                 </div>
             </div>
 
-            <SongCard song={loading ? {} : data?.current_song} title="Current Song" />
-            <SongCard song={loading ? {} : data?.next_song || {}} title="Next Song" />
+            <SongCard song={loading ? {} : data?.current_song} title="Current Song" skip={true} perms={perms} isLive={data?.is_live || false} />
+            { !data?.is_live && (
+                <SongCard song={loading ? {} : data?.next_song || {}} title="Next Song" isLive={data?.is_live || false} />
+            )}
         </div>
     )
 }
@@ -66,7 +69,7 @@ interface Song {
     duration?: number
 }
 
-function SongCard({ song, title }: { song: Song | undefined, title: string }) {
+function SongCard({ song, title, skip = false, perms = [], isLive }: { song: Song | undefined, title: string, skip?: boolean, perms?: string[], isLive: boolean }) {
     if (!song) return (
         <div className="card bg-base-200 shadow-xl grow">
             <div className="card-body">
@@ -82,7 +85,6 @@ function SongCard({ song, title }: { song: Song | undefined, title: string }) {
                 <h2 className="card-title">{title}</h2>
                 <div>
                     <p>{song.title || 'Song title'} - {song.artist || 'Song Artits'}</p>
-                    <p>{song.album || 'Album'}</p>
                     <p>{song.explicit ? "Explicit" : "Not explicit"}</p>
                     <p>{song.duration && formatTime(song.duration)}</p>
                 </div>
@@ -92,6 +94,15 @@ function SongCard({ song, title }: { song: Song | undefined, title: string }) {
                             <i className="fa-brands fa-spotify"></i>
                             <p>Spotify</p>
                         </a>
+                    )}
+
+                    {skip && hasPermissionSync({ user: { perms } }, Permissions.CONTROLS_BACKEND_SKIP) && !isLive && (
+                        <button className="btn bg-red-500 border border-solid border-red-500 flex items-center" onClick={()=>{
+                            fetch('/api/staff/controls/skip', { method: 'GET' })
+                        }}>
+                            <i className="fa-solid fa-forward"></i>
+                            <p>Skip</p>
+                        </button>
                     )}
                 </div>
             </div>

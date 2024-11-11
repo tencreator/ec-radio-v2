@@ -144,7 +144,7 @@ class Azuracast {
 
             let next_song = undefined
 
-            if (data.playing_next?.song?.title && data.playing_next?.song?.artist) {
+            if (data.playing_next?.song?.title && data.playing_next?.song?.artist && !data.live.is_live) {
                 next_song = {
                     title: data.playing_next.song.title,
                     artist: data.playing_next.song.artist,
@@ -175,6 +175,20 @@ class Azuracast {
                 },
                 next_song: undefined,
             }
+        }
+    }
+
+    public static async skipSong(): Promise<boolean> {
+        try {
+            const response = await fetch(`${process.env.AZURACAST_URL}/api/station/${process.env.AZURACAST_STATION_ID}/backend/skip`, {
+                method: "POST",
+                headers: {
+                    "X-API-Key": process.env.AZURACAST_API_KEY as string,
+                }
+            })
+            return response.ok
+        } catch {
+            return false
         }
     }
 }

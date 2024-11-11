@@ -11,6 +11,12 @@ enum Permissions {
 
     VIEW_STATS = "VIEW.STATS",
 
+    CONTROLS_BACKEND_START = "CONTROLS.BACKEND.START",
+    CONTROLS_BACKEND_STOP = "CONTROLS.BACKEND.STOP",
+    CONTROLS_BACKEND_RESTART = "CONTROLS.BACKEND.RESTART",
+    CONTROLS_BACKEND_SKIP = "CONTROLS.BACKEND.SKIP",
+    CONTROLS_BACKEND_DISCONNECT = "CONTROLS.BACKEND.DISCONNECT",
+
     VIEW_PERMISSIONS = "VIEW.PERMISSIONS",
     EDIT_PERMISSIONS = "EDIT.PERMISSIONS",
     CREATE_PERMISSIONS = "CREATE.PERMISSIONS",
@@ -31,8 +37,6 @@ async function hasPermission(session: any, permission: PagePermissions): Promise
 }
 
 function hasPermissionSync(session: any, permission: PagePermissions): boolean {
-    console.log(session.user.perms)
-    
     if (!session?.user?.perms) return false
 
     for (const perm of session.user.perms) {

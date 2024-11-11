@@ -45,7 +45,7 @@ export default function Sidebar({perms}: {perms: string[]}) {
 
     return (
         <div className='min-h-full'>
-            <button ref={sidebarToggleRef} className='btn bg-slate-800 border border-solid border-gray-500 fixed top-20 right-5 text-2xl z-50 md:hidden' onClick={()=>setShow(!show)}>
+            <button ref={sidebarToggleRef} className='btn bg-slate-800 border border-solid border-gray-500 fixed top-20 right-5 text-2xl z-50 lg:hidden' onClick={()=>setShow(!show)}>
                 <i className='fas fa-bars'></i>
             </button>
 
@@ -54,6 +54,7 @@ export default function Sidebar({perms}: {perms: string[]}) {
                     <ul className="menu">
                         <SidebarCatagory session={session} title='Staff' perm={Permissions.VIEW_STAFF}>
                             <SidebarLink session={session} href='/staff' title='Home' perm={Permissions.VIEW_STATS} />
+                            <SidebarLink session={session} href='/staff/policies' title='Policies' perm={Permissions.VIEW_POLICIES} />
                         </SidebarCatagory>
                     </ul>
                 )}

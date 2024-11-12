@@ -40,6 +40,8 @@ function updateMediaSession(info: Info | null, playing: boolean, setPlaying: (pl
 }
 
 export default function Viewer(): JSX.Element {
+    const [show, setShow] = useState<boolean>(true)
+
     const [info, setInfo] = useState<Info | null>(null)
     const [Mounts, setMounts] = useState<Mount[] | null>(null)
 
@@ -83,6 +85,11 @@ export default function Viewer(): JSX.Element {
             console.log('Setting volume to', vol)
             setVolume(parseInt(vol))
         }
+
+        const show = localStorage.getItem('show-player')
+        if (show) {
+            setShow(show === 'true')
+        }
     }, [])
 
     useEffect(()=>{
@@ -92,59 +99,77 @@ export default function Viewer(): JSX.Element {
     useEffect(()=>{
         localStorage.setItem('volume', volume.toString())
     }, [volume])
-    
+
+    useEffect(()=>{
+        localStorage.setItem('show-player', show.toString())
+    }, [show])
+
+    if (show === undefined) return <></>
+
     return (
         <>
-            <section className="w-full flex justify-center fixed bottom-0 mb-2 z-50">
-                <div className="flex flex-col md:flex-row items-center w-11/12 md:w-9/12 lg:w-8/12 xl:w-6/12 overflow-hidden py-1 rounded-md border-solid border-2 bg-zinc-700 border-zinc-500">
-                    <div className="mx-auto flex flex-row">
-                        <button onClick={()=>{
-                            setPlaying(!playing)
-                        }} className="btn btn-ghost flex justify-center items-center">
-                            <i className={(playing ? 'fa-pause' : 'fa-play' )+' fa-solid'}></i>
-                        </button>
-                        <RequestModal />
-                        <a href="https://discord.gg/ecrp" className="btn btn-ghost" target="_blank">
-                            <i className="fa-brands fa-discord"></i>
-                        </a>
-                        {info?.song.spotify && (
-                            <a className="btn btn-ghost" href={info?.song.spotify} target="_blank">
-                                <i className="fa-brands fa-spotify"></i>
+            <section className={"w-full flex fixed bottom-0 mb-2 z-50 transition-all " + (show ? 'justify-center' : 'justify-end pr-4')}>
+                {show ? (
+                    <div className="flex flex-col md:flex-row items-center w-11/12 md:w-9/12 lg:w-8/12 xl:w-6/12 overflow-hidden py-1 rounded-md border-solid border-2 bg-zinc-700 border-zinc-500">
+                        <div className="mx-auto flex flex-row">
+                            <button onClick={()=>{
+                                setPlaying(!playing)
+                            }} className="btn btn-ghost flex justify-center items-center">
+                                <i className={(playing ? 'fa-pause' : 'fa-play' )+' fa-solid'}></i>
+                            </button>
+                            <RequestModal />
+                            <a href="https://discord.gg/ecrp" className="btn btn-ghost" target="_blank">
+                                <i className="fa-brands fa-discord"></i>
                             </a>
-                        )}
-                    </div>
-                    <div className="mx-auto">
-                        <div className="song-card flex flex-row justify-center items-center">
-                            <div className="card-img flex justify-center items-center">
-                                <img
-                                    src={info?.song.art || 'https://radio.emeraldcoastrp.com/static/uploads/browser_icon/48.1728930901.png'}
-                                    alt="Song art"
-                                    width={46}
-                                    height={46}
-                                />
-                            </div>
+                            {info?.song.spotify && (
+                                <a className="btn btn-ghost" href={info?.song.spotify} target="_blank">
+                                    <i className="fa-brands fa-spotify"></i>
+                                </a>
+                            )}
 
-                            <div className="ml-2">
-                                <h2 className="text-">{truncate(info?.song.title || 'Loading...', 30)} - {truncate(info?.song.artist || 'Loading...', 20)}</h2>
-                                <div className="flex flex-row">
+                            <button className="btn btn-ghost flex items-center justify-center" onClick={()=>setShow(!show)}>
+                                <i className={(show ? 'fa-chevron-right' : 'fa-chevron-left')+' fa-solid'}></i>
+                            </button>
+                        </div>
+                        <div className="mx-auto">
+                            <div className="song-card flex flex-row justify-center items-center">
+                                <div className="card-img flex justify-center items-center">
                                     <img
-                                        src={info?.streamer.art || 'https://radio.emeraldcoastrp.com/static/uploads/browser_icon/16.1728930901.png'}
-                                        className="rounded-full mr-1"
-                                        alt="Streamer Art"
-                                        height={16}
-                                        width={24}
+                                        src={info?.song.art || 'https://radio.emeraldcoastrp.com/static/uploads/browser_icon/48.1728930901.png'}
+                                        alt="Song art"
+                                        width={46}
+                                        height={46}
                                     />
-                                    <span>{info?.streamer.name || 'Loading...'}</span>
+                                </div>
+
+                                <div className="ml-2">
+                                    <h2 className="text-">{truncate(info?.song.title || 'Loading...', 30)} - {truncate(info?.song.artist || 'Loading...', 20)}</h2>
+                                    <div className="flex flex-row">
+                                        <img
+                                            src={info?.streamer.art || 'https://radio.emeraldcoastrp.com/static/uploads/browser_icon/16.1728930901.png'}
+                                            className="rounded-full mr-1"
+                                            alt="Streamer Art"
+                                            height={16}
+                                            width={24}
+                                        />
+                                        <span>{info?.streamer.name || 'Loading...'}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div className="mx-auto items-center hidden lg:flex">
+                            <input type="range" value={volume} onChange={(event)=>{
+                                setVolume(parseInt(event.target.value))
+                            }} className="slider volume" />
+                        </div>
                     </div>
-                    <div className="mx-auto items-center hidden lg:flex">
-                        <input type="range" value={volume} onChange={(event)=>{
-                            setVolume(parseInt(event.target.value))
-                        }} className="slider volume" />
+                ) : (
+                    <div className="flex flex-col md:flex-row items-center overflow-hidden p-1 rounded-md border-solid border-2 bg-zinc-700 border-zinc-500">
+                        <button className="btn btn-ghost flex items-center justify-center" onClick={()=>setShow(!show)}>
+                            <i className={(show ? 'fa-chevron-right' : 'fa-chevron-left')+' fa-solid'}></i>
+                        </button>
                     </div>
-                </div>
+                )}
             </section>
 
             <Player audio={Mounts || []} playing={playing} setPlaying={setPlaying} volume={volume} setVolume={setVolume} />

@@ -20,7 +20,7 @@ export default function ViewPolicies() {
     }
 
     return (
-        <div className="mx-auto mt-4 lg:w-11/12">
+        <div className="mt-4 lg:w-11/12">
             <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {policies && policies.map((policy, i) => (
                     <li key={i}>

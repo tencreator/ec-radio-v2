@@ -1,7 +1,6 @@
 import ViewPolicies from "@/components/staff/policies/viewPolicies"
 import Layout from "../layout"
 import { Permissions } from "@/utils/permissions"
-import { PrismaClient } from "@prisma/client"
 
 export default function Page() {
     return (

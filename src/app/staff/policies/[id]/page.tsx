@@ -6,7 +6,6 @@ import { headers, cookies } from "next/headers"
 
 export default async function Page(context: any) {
     const params = await context.params
-    console.log(params)
     if (!params.id) {
         return notFound()
     }

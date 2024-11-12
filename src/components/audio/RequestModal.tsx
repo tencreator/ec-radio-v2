@@ -52,7 +52,7 @@ export default function RequestModal(): JSX.Element {
                             <form className="flex flex-col w-full" method="dialog">
                                 <div className="flex space-between flex-col">
                                     <label htmlFor="requestType">Request Type</label>
-                                    <select name="requestType" id="requestType" className="select bg-base-200" onChange={(e)=>{
+                                    <select name="requestType" id="requestType" className="select bg-base-200" content="telephone=no,date=no,email=no,address=no" onChange={(e)=>{
                                         setRequestType(e.target.value)
                                     }}>
                                         <option value="song">Song Request</option>
@@ -63,14 +63,14 @@ export default function RequestModal(): JSX.Element {
 
                                 <div className="flex space-between flex-col">
                                     <label htmlFor="name">Name</label>
-                                    <input type="text" name="name" id="name" value={name} className="input bg-base-200" onChange={(e)=>{
+                                    <input type="text" name="name" id="name" value={name} className="input bg-base-200" content="telephone=no,date=no,email=no,address=no" onChange={(e)=>{
                                         setName(e.target.value)
                                     }} />
                                 </div>
 
                                 <div className="flex space-between flex-col">
                                     <label htmlFor="message">Message</label>
-                                    <textarea name="message" id="message" value={message} className="input bg-base-200" onChange={(e)=>{
+                                    <textarea name="message" id="message" value={message} className="input bg-base-200" content="telephone=no,date=no,email=no,address=no" onChange={(e)=>{
                                         setMessage(e.target.value)
                                     }} />
                                 </div>

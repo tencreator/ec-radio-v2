@@ -9,12 +9,15 @@ export default function Stats({ perms }: { perms: string[] }) {
     const [loading, setLoading] = useState(true)
 
     async function fetchStats() {
-        fetch('/api/stats')
-            .then(res => res.json())
-            .then(data => {
-                setData(data)
-                setLoading(false)
-            })
+        const res = await fetch('/api/stats', { method: 'GET' })
+
+        if (res.status === 200) {
+            const json = await res.json()
+            setData(json)
+            setLoading(false)
+        } else {
+            console.error('Failed to fetch stats:', res)
+        }
     }
 
     useEffect(() => {

@@ -5,6 +5,8 @@ import { Mount } from "@/utils/apis/azuracast";
 import Player from './player'
 import RequestModal from "./RequestModal";
 
+import Image from "next/image";
+
 function truncate(str: string, n: number): string {
     return str.length > n ? str.substring(0, n - 1) + "..." : str
 }
@@ -134,8 +136,8 @@ export default function Viewer(): JSX.Element {
                         <div className="mx-auto">
                             <div className="song-card flex flex-row justify-center items-center">
                                 <div className="card-img flex justify-center items-center">
-                                    <img
-                                        src={info?.song.art || 'https://radio.emeraldcoastrp.com/static/uploads/browser_icon/48.1728930901.png'}
+                                    <Image
+                                        src={info?.song.art || 'https://radio.emeraldcoastrp.com/static/uploads/browser_icon/96.1728930901.png'}
                                         alt="Song art"
                                         width={46}
                                         height={46}
@@ -145,8 +147,8 @@ export default function Viewer(): JSX.Element {
                                 <div className="ml-2">
                                     <h2 className="text-">{truncate(info?.song.title || 'Loading...', 30)} - {truncate(info?.song.artist || 'Loading...', 20)}</h2>
                                     <div className="flex flex-row">
-                                        <img
-                                            src={info?.streamer.art || 'https://radio.emeraldcoastrp.com/static/uploads/browser_icon/16.1728930901.png'}
+                                        <Image
+                                            src={info?.streamer.art || 'https://radio.emeraldcoastrp.com/static/uploads/browser_icon/48.1728930901.png'}
                                             className="rounded-full mr-1"
                                             alt="Streamer Art"
                                             height={16}

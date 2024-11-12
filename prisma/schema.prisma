@@ -10,7 +10,7 @@ datasource db {
 model permissions {
   id          Int      @id @default(autoincrement())
   roleid      String
-  permissions String
+  permissions String  @db.Text
 
   @@map("permissions")
 }

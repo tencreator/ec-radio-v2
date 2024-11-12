@@ -1,6 +1,7 @@
 import { Permissions } from "@/utils/permissions"
 import Layout from "./layout"
 import Stats from "@/components/staff/stats/stats"
+import { Suspense } from "react"
 import { auth } from "@/utils/auth"
 
 export default async function Page() {
@@ -8,7 +9,9 @@ export default async function Page() {
 
     return (
         <div className="mx-auto mt-4 w-10/12 lg:w-11/12">
-            <Stats perms={session?.user.perms || []} />
+            <Suspense fallback={<div>Loading...</div>}>
+                <Stats perms={session?.user.perms || []} />
+            </Suspense>
         </div>
     )
 }

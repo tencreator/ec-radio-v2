@@ -46,6 +46,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+    const requestsOpen = fetch('/api/requests/status')
+        .then(res => res.json())
+        .then(data => data.acceptingRequests)
+        .catch(() => false)
+
+    if (!requestsOpen) {
+        return new NextResponse("Requests are closed", { status: 403 })
+    }
+
     try {
         let body, reqType, name, message
         try {

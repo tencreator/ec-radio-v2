@@ -3,17 +3,19 @@ import { PrismaClient } from "@prisma/client"
 import { hasPermissionSync, Permissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
 
+/// <reference types="./next-env.d.ts" />
+
 const prisma = new PrismaClient()
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        const user = await auth()
+        const session = await auth()
 
-        if (!user) {
+        if (!session) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
-        if (!hasPermissionSync(user, Permissions.ACCEPT_REQUESTS)) {
+        if (!hasPermissionSync(session, Permissions.ACCEPT_REQUESTS)) {
             return new NextResponse("Forbidden", { status: 403 })
         }
 
@@ -56,12 +58,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
             data: {
                 pending: false,
-                accepted: action === 'accept'
+                accepted: action === 'accept',
+                processedBy: session.user.providerId
             }
         })
 
-        return new NextResponse("OK", { status: 200 })
-    } catch (e) {
-        return new NextResponse("Internal Server Error", { status: 500 })
+        return new NextResponse(JSON.stringify({ok: true, message: "Successfully Managed Request"}), { status: 200 })
+    } catch (e: any) {
+        return new NextResponse(JSON.stringify({message: "Internal Server Error", error: JSON.stringify(e), ok: false}), { status: 500 })
     }
 }

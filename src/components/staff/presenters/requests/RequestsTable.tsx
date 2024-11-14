@@ -74,7 +74,7 @@ export default function RequestsTable({ filter }: Props): JSX.Element {
                         </tr>
                     )): (
                         <tr className='hover'>
-                            <td colSpan={4} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-12'>No requests</td>
+                            <td colSpan={4} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-12'>No requests found.</td>
                         </tr>
                     )}
                 </tbody>

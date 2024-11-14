@@ -13,9 +13,32 @@ export default function RequestModal(): JSX.Element {
     const [isOpen, setOpen] = useState(false)
     const [acceptingRequests, setAcceptingRequests] = useState(false)
 
-    const [requestType, setRequestType] = useState('song')
-    const [name, setName] = useState('')
-    const [message, setMessage] = useState('')
+    const [forumData, setForumData] = useState({
+        reqType: 'song',
+        name: '',
+        message: ''
+    })
+
+    function updateForumData(key: string, value: string) {
+        setForumData(prev => ({
+            ...prev,
+            [key]: value
+        }))
+    }
+
+    async function submitRequest() {
+        fetch('/api/requests', {
+            method: 'POST',
+            body: JSON.stringify(forumData)
+        })
+    
+        setOpen(false)
+        setForumData({
+            reqType: 'song',
+            name: '',
+            message: ''
+        })
+    }
 
     useEffect(()=>{
         if (!modal.current) return
@@ -53,7 +76,7 @@ export default function RequestModal(): JSX.Element {
                                 <div className="flex space-between flex-col">
                                     <label htmlFor="requestType">Request Type</label>
                                     <select name="requestType" id="requestType" className="select bg-base-200" content="telephone=no,date=no,email=no,address=no" onChange={(e)=>{
-                                        setRequestType(e.target.value)
+                                        updateForumData('reqType', e.target.value)
                                     }}>
                                         <option value="song">Song Request</option>
                                         <option value="shoutout">Shoutout Request</option>
@@ -63,26 +86,50 @@ export default function RequestModal(): JSX.Element {
 
                                 <div className="flex space-between flex-col">
                                     <label htmlFor="name">Name</label>
-                                    <input type="text" name="name" id="name" value={name} className="input bg-base-200" content="telephone=no,date=no,email=no,address=no" onChange={(e)=>{
-                                        setName(e.target.value)
-                                    }} />
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        id="name"
+                                        value={forumData.name}
+                                        className="input bg-base-200"
+                                        content="telephone=no,date=no,email=no,address=no"
+                                        onChange={(e) => {
+                                            updateForumData('name', e.target.value)
+                                        }}
+                                    />
                                 </div>
 
                                 <div className="flex space-between flex-col">
                                     <label htmlFor="message">Message</label>
-                                    <textarea name="message" id="message" value={message} className="input bg-base-200" content="telephone=no,date=no,email=no,address=no" onChange={(e)=>{
-                                        setMessage(e.target.value)
-                                    }} />
+                                    <textarea
+                                        name="message"
+                                        id="message"
+                                        value={forumData.message}
+                                        className="input bg-base-200"
+                                        content="telephone=no,date=no,email=no,address=no"
+                                        onChange={(e) => {
+                                            updateForumData('message', e.target.value)
+                                        }}
+                                    />
+                                </div>
+
+                                <div className="ml-auto flex flex-row mt-4 gap-4">
+                                    <button className="btn btn-secondary" onClick={submitRequest}>Submit</button>
+
+                                    <button className="btn btn-primary w-fit" onClick={()=>{
+                                        setOpen(false)
+                                    }}>Close</button>
                                 </div>
                             </form>
                         ) : (
-                            <p>Requests are currently closed</p>
+                            <div className="flex flex-col">
+                                <p className="mr-auto">Requests are currently closed</p>
+                                <button className="btn btn-primary ml-auto mt-4 w-fit" onClick={()=>{
+                                    setOpen(false)
+                                }}>Close</button>
+                            </div>
                         )}
                     </div>
-
-                    <button className="btn btn-primary ml-auto mt-4 w-fit" onClick={()=>{
-                        setOpen(false)
-                    }}>Close</button>
                 </div>
             </dialog>
         </div>

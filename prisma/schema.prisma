@@ -52,6 +52,7 @@ model requests {
 
   pending     Boolean  @default(true)
   accepted    Boolean  @default(false)
+  processedBy String   @default("")
   ip          String
   @@map("Requests")
 }

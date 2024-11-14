@@ -10,15 +10,15 @@ datasource db {
 model permissions {
   id          Int      @id @default(autoincrement())
   roleid      String
-  permissions String  @db.Text
+  permissions String   @db.Text
 
-  @@map("permissions")
+  @@map("Permissions")
 }
 
 model policies {
   id          Int      @id @default(autoincrement())
   name        String
-  text        String
+  text        String   @db.Text  
 
   @@map("Policies")
 }
@@ -40,4 +40,35 @@ model djaccounts {
   password    String
 
   @@map("DJAccounts")
+}
+
+model requests {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+
+  type        String
+  name        String
+  message     String   @db.Text
+
+  pending     Boolean  @default(true)
+  accepted    Boolean  @default(false)
+  ip          String
+  @@map("Requests")
+}
+
+model bannedReqIps {
+  id          Int      @id @default(autoincrement())
+  ip          String
+  banned      Boolean
+  bannedBy    String
+  banReason   String   @db.Text
+
+  @@map("BannedReqIps")
+}
+
+model siteSettings {
+  id          Int      @id @default(autoincrement())
+  reqOpen     Boolean  @default(true)
+
+  @@map("SiteSettings")
 }

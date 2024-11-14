@@ -21,7 +21,7 @@ export default function RootLayout({
     <html data-theme="dracula" lang="en">
       <link rel="icon" href={'https://cdn.emeraldcoastrp.com/elogo64x64.png'} />
       <link rel="apple-touch-icon" href={'https://cdn.emeraldcoastrp.com/elogo64x64.png'} />
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen max-w-screen flex flex-col">
         <Analytics />
         <SpeedInsights />
         <Viewer />

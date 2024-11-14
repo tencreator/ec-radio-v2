@@ -27,7 +27,7 @@ export default function ToggleRequestsButton() {
 
 
     return (
-        <button onClick={toggleRequests} className="btn btn-primary">
+        <button onClick={toggleRequests} className="btn btn-primary w-fit">
             {acceptingRequests ? 'Disable' : 'Enable'}
         </button>
     )

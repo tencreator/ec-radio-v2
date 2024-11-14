@@ -39,9 +39,24 @@ export default async function Page() {
                     <h1 className="text-3xl font-semibold">Requests</h1>
                     <p className="text-sm text-gray-500">View and manage presenter requests</p>
                 </div>
-                <div>
-                    <h2>Toggle requests</h2>
+                <div className="mt-4 flex flex-col gap-4">
+                    <h2 className="text-2xl font-semibold">Toggle requests</h2>
                     <ToggleRequestsButton />
+                </div>
+                <div className="mt-4 flex flex-col gap-4">
+                    <h2 className="text-2xl font-semibold">Requests</h2>
+                    <div>
+                        <h3 className="text-xl font-medium">Song Requests</h3>
+                        INSERT TABLE HERE
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-medium">Shoutout Requests</h3>
+                        INSERT TABLE HERE
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-medium">Joke Requests</h3>
+                        INSERT TABLE HERE
+                    </div>
                 </div>
             </Suspense>
         </div>

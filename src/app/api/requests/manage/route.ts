@@ -62,7 +62,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         return new NextResponse("OK", { status: 200 })
     } catch (e) {
-        throw new Error(e)
         return new NextResponse("Internal Server Error", { status: 500 })
     }
 }

@@ -61,7 +61,7 @@ export default function RequestsTable({ filter }: Props): JSX.Element {
                 </thead>
                 <tbody className='[&_tr:last-child]:border-0 border-base-300'>
                     {requests && requests.length !== 0 ? requests.map((request: request, i: number) => (
-                        <tr className='border-b transition-colors hover:bg-base-200 data-[state=selected]:bg-muted border-base-300' key={i}>
+                        <tr className='border-b transition-colors hover:bg-base-200 data-[state=selected]:bg-muted border-base-300 h-12' key={i}>
                             <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.name}</td>
                             <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{formatDate(request.date)}</td>
                             <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.message}</td>
@@ -74,7 +74,7 @@ export default function RequestsTable({ filter }: Props): JSX.Element {
                         </tr>
                     )): (
                         <tr className='hover'>
-                            <td colSpan={4} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-24'>No requests</td>
+                            <td colSpan={4} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-12'>No requests</td>
                         </tr>
                     )}
                 </tbody>

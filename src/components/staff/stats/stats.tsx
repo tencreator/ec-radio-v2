@@ -73,6 +73,14 @@ interface Song {
 }
 
 function SongCard({ song, title, skip = false, perms = [], isLive }: { song: Song | undefined, title: string, skip?: boolean, perms?: string[], isLive: boolean }) {
+    const [skipDisabled, setSkipDisabled] = useState(false)
+
+    async function skipSong() {
+        setSkipDisabled(true)
+        const res = await fetch('/api/staff/controls/skip', { method: 'GET' })
+        setSkipDisabled(false)
+    }
+
     if (!song) return (
         <div className="card bg-base-200 shadow-xl grow">
             <div className="card-body">
@@ -100,9 +108,7 @@ function SongCard({ song, title, skip = false, perms = [], isLive }: { song: Son
                     )}
 
                     {skip && hasPermissionSync({ user: { perms } }, Permissions.CONTROLS_BACKEND_SKIP) && !isLive && (
-                        <button className="btn bg-red-500 border border-solid border-red-500 flex items-center" onClick={()=>{
-                            fetch('/api/staff/controls/skip', { method: 'GET' })
-                        }}>
+                        <button className="btn bg-red-500 border border-solid border-red-500 flex items-center" disabled={skipDisabled} onClick={skipSong}>
                             <i className="fa-solid fa-forward"></i>
                             <p>Skip</p>
                         </button>
@@ -114,31 +120,15 @@ function SongCard({ song, title, skip = false, perms = [], isLive }: { song: Son
 }
 
 function formatTime(seconds: number) {
-    let suffix = ''
-    let str = ''
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const secs = Math.floor(seconds % 60)
 
-    let hours = Math.floor(seconds / 3600)
-    let minutes = Math.floor(seconds % 3600 / 60)
-    let sec = Math.floor(seconds % 3600 % 60)
+    let time = ''
 
-    if (hours > 0) {
-        str += hours + ':'
-        if (suffix == '') suffix = 'Hours'
-    }
-    
-    if (minutes > 0) {
-        str += minutes + ':'
-        if (suffix == '') suffix = 'Minutes'
-    }
+    if (hours > 0) time += `${hours}:`.padStart(2, '0')
+    time += `${minutes}:`.padStart(3, '0')
+    time += `${secs}`.padStart(2, '0')
 
-    if (sec > 0) {
-        str += sec
-        if (suffix == '') suffix = 'Seconds'
-    }
-    
-    if (str.length === 2) str = '0:0' + str
-    if (str.length === 3) str = '0:' + str
-    if (str.length === 4) str = '0' + str
-
-    return str + ' ' + suffix
+    return time
 }

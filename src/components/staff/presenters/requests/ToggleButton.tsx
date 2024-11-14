@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 
 export default function ToggleRequestsButton() {
+    const [disabled, setDisabled] = useState(false)
     const [acceptingRequests, setAcceptingRequests] = useState(false)
 
     async function getRequestStatus() {
@@ -13,12 +14,14 @@ export default function ToggleRequestsButton() {
     }
 
     async function toggleRequests() {
+        setDisabled(true)
         const res = await fetch('/api/requests/status', {
             method: 'POST',
         })
         const data = await res.json()
 
         setAcceptingRequests(data.acceptingRequests)
+        setDisabled(false)
     }
 
     useEffect(() => {
@@ -27,7 +30,7 @@ export default function ToggleRequestsButton() {
 
 
     return (
-        <button onClick={toggleRequests} className="btn btn-primary w-fit">
+        <button onClick={toggleRequests} disabled={disabled} className="btn btn-primary w-fit">
             {acceptingRequests ? 'Disable' : 'Enable'}
         </button>
     )

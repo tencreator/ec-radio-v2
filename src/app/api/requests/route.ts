@@ -18,6 +18,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         let getAll = ((req.nextUrl.searchParams.get("all") === "true" ? true : false) && hasPermissionSync(user, Permissions.MANAGE_REQUESTS)) ? true : false
         const filter = req.nextUrl.searchParams.get("filter")
+        const limit = Number(req.nextUrl.searchParams.get("limit")) || 10
+        const start = Number(req.nextUrl.searchParams.get("start")) || 0
 
         const requests = await prisma.requests.findMany({
             where: {
@@ -34,6 +36,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 accepted: true,
                 ip: getAll ? true : false,
             },
+            take: limit,
+            skip: start,
             orderBy: {
                 date: "asc",
             },

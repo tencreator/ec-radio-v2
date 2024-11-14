@@ -17,10 +17,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         }
 
         let getAll = ((req.nextUrl.searchParams.get("all") === "true" ? true : false) && hasPermissionSync(user, Permissions.MANAGE_REQUESTS)) ? true : false
+        const filter = req.nextUrl.searchParams.get("filter")
 
         const requests = await prisma.requests.findMany({
             where: {
                 pending: getAll ? undefined : true,
+                type: filter ? filter : undefined,
             },
             select: {
                 id: true,
@@ -33,31 +35,35 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 ip: getAll ? true : false,
             },
             orderBy: {
-                date: "desc",
+                date: "asc",
             },
         })
 
         return new NextResponse(JSON.stringify({ requests: requests }), { status: 200, headers: { 'Content-Type': 'application/json' } })
-    } catch {
-        return new NextResponse(null, { status: 500 })
+    } catch (e: any) {
+        return new NextResponse(JSON.stringify({error: e}), { status: 500 })
     }
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        let body
+        let body, reqType, name, message
         try {
-            body = await req.formData()
+            body = await req.json()
+            reqType = body.reqType
+            name = body.name
+            message = body.message
         } catch (e) {
-            console.error("Invalid JSON:", e)
-            return new NextResponse("Invalid JSON", { status: 400 })
+            try {
+                body = await req.formData()
+                reqType = body.get("type")
+                name = body.get("name")
+                message = body.get("message")
+            } catch (e) {
+                return new NextResponse("Invalid request", { status: 400 })
+            }
         }
 
-        const reqType = body.get("reqType") as string
-        const name = body.get("name") as string
-        const message = body.get("message") as string
-
-        console.log(reqType, name, message)
         const date = new Date()
 
         if (!reqType || !name || !message) {

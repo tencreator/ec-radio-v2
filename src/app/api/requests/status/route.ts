@@ -36,7 +36,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         })
 
-        prisma.siteSettings.update({
+        await prisma.siteSettings.update({
             where: {
                 id: 1
             },

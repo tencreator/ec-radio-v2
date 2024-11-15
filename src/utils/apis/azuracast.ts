@@ -1,4 +1,5 @@
 import { Song } from "../types"
+import discord from "./discord"
 
 interface NowPlaying {
     title: string
@@ -38,11 +39,35 @@ interface StationStats {
     }
 }
 
-class Azuracast {
-    private baseURl: string = process.env.AZURACAST_URL as string
-    private apikey: string = process.env.AZURACAST_API_KEY as string
-    private stationID: number = parseInt(process.env.AZURACAST_STATION_ID as string)
+interface djAccount {
+    id: number
+    streamer_username: string
+    streamer_password: string
+    display_name: string
+    comments: string | null
+    is_active: boolean
+    enforce_schedule: boolean
+    reactivate_at: string | null
+    schedule_items: string[]
+}
 
+interface djCreation {
+    id?: number
+    streamer_username?: string
+    streamer_password?: string
+    display_name?: string
+    comments?: string | null
+    is_active?: boolean
+    enforce_schedule?: boolean
+    reactivate_at?: string | null
+    schedule_items?: string[]
+
+    success: boolean
+}
+
+const Discord = new discord(process.env.DISCORD_BOT_TOKEN as string)
+
+class Azuracast {
     public static async getNowPlaying(): Promise<NowPlaying> {
         try {
             const response = await fetch(`${process.env.AZURACAST_URL}/api/nowplaying/${process.env.AZURACAST_STATION_ID}`)
@@ -67,9 +92,15 @@ class Azuracast {
             const data = await response.json()
 
             if (data.live.is_live) {
+                const discordUser = await Discord.getUserData(data.live.streamer_name)
+                if (!discordUser) return {
+                    name: "Unknown",
+                    art: "",
+                }
+
                 return {
-                    name: data.live.streamer_name,
-                    art: data.live.art,
+                    name: discordUser.displayName,
+                    art: discordUser.avatar,
                 }
             } else {
                 return {
@@ -191,6 +222,111 @@ class Azuracast {
             return false
         }
     }
+
+    public static async hasDjAccount(id: string): Promise<boolean> {
+        try {
+            const response = await fetch(`${process.env.AZURACAST_URL}/api/station/${process.env.AZURACAST_STATION_ID}/streamers`, {
+                headers: {
+                    "X-API-Key": process.env.AZURACAST_API_KEY as string,
+                }
+            })
+
+            const data = await response.json()
+
+            const filtered = data.filter((d: {display_name: string})=>{
+                return d.display_name === id
+            })
+
+            if (filtered.length > 0) {
+                return true
+            } 
+            
+            return false
+        } catch {
+            return false
+        }
+    }
+
+    public static async getDjAccount(id: string): Promise<djAccount | false> {
+        try {
+            const response = await fetch(`${process.env.AZURACAST_URL}/api/station/${process.env.AZURACAST_STATION_ID}/streamers`, {
+                headers: {
+                    "X-API-Key": process.env.AZURACAST_API_KEY as string,
+                }
+            })
+
+            const data = await response.json()
+
+            const filtered = data.filter((d: {display_name: string})=>{
+                return d.display_name == id
+            })
+
+            return filtered[0]
+        } catch {
+            return false
+        }
+    }
+
+    public static async createDjAccount(id: string, name: string): Promise<djCreation> {
+        try {
+            const password = generatePassword(16)
+            const usernameSuffix = generateStr(7)
+
+            const response = await fetch(`${process.env.AZURACAST_URL}/api/station/${process.env.AZURACAST_STATION_ID}/streamers`, {
+                method: "POST",
+                headers: {
+                    "X-API-Key": process.env.AZURACAST_API_KEY as string,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: 0,
+                    streamer_username: name + '-' + usernameSuffix, 
+                    streamer_password: password,
+                    display_name: id,
+                    is_active: true,
+                    enforce_schedule: false,
+                    reactivate_at: null,
+                    schedule_items: [],
+                    comments: null,
+                })
+            })
+
+            const data = await response.json()
+
+            if (response.ok) {
+                return {
+                    ...data,
+                    streamer_password: password,
+                    success: true,
+                }
+            } else {
+                return {
+                    success: false,
+                }
+            }
+
+        } catch {
+            return {
+                success: false,
+            }
+        }
+    }
+
+    public static async deleteDjAccount(id: number): Promise<boolean> {
+        try {
+            const response = await fetch(`${process.env.AZURACAST_URL}/api/station/${process.env.AZURACAST_STATION_ID}/streamer/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "X-API-Key": process.env.AZURACAST_API_KEY as string,
+                }
+            })
+
+            return response.ok
+        } catch (e) {
+            console.log(e)
+            return false
+        }
+    }
 }
 
 function convertFileToHtmlType(fileExt: string): string {
@@ -214,6 +350,34 @@ function convertFileToHtmlType(fileExt: string): string {
         default:
             return "audio/mpeg"
     }
+}
+
+const validChars = {
+    num: "0123456789",
+    lower: "abcdefghijklmnopqrstuvwxyz",
+    upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+}
+
+function generatePassword(len: number): string {
+    let password = ""
+    const chosenChars = validChars.num + validChars.lower + validChars.upper
+
+    for (let i = 0; i < len; i++) {
+        password += chosenChars.charAt(Math.floor(Math.random() * chosenChars.length))
+    }
+
+    return password
+}
+
+function generateStr(len: number): string {
+    const charset = validChars.lower + validChars.upper
+    let str = ""
+
+    for (let i = 0; i < len; i++) {
+        str += charset.charAt(Math.floor(Math.random() * charset.length))
+    }
+
+    return str
 }
 
 export default Azuracast

@@ -1,8 +1,13 @@
 import Log from '@log'
 
-interface DiscordUserData {
+interface DiscordGuildUserData {
     nickname: string | false
     roles: string[]
+}
+
+interface DiscordUserData {
+    displayName: string
+    avatar: string
 }
 
 class Discord {
@@ -13,7 +18,7 @@ class Discord {
         this.token = token
     }
 
-    public async getUserData(userId: string, guildId: string): Promise<DiscordUserData> {
+    public async getUserGuildData(userId: string, guildId: string): Promise<DiscordGuildUserData> {
         try {
             const url = `https://discord.com/api/v9/guilds/${guildId}/members/${userId}`
 
@@ -40,6 +45,34 @@ class Discord {
                 roles: [],
                 nickname: false
             }
+        }
+    }
+
+    public async getUserData(userId: string): Promise<DiscordUserData | false> {
+        try {
+            const url = `https://discord.com/api/v9/users/${userId}`
+
+            const response = await fetch(url, {
+                headers: {
+                    Authorization: `Bot ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.message)
+            }
+
+            const avatar = data.avatar ? `https://cdn.discordapp.com/avatars/${userId}/${data.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${Number(userId) % 5}.png`
+
+            return {
+                displayName: data.username,
+                avatar: avatar
+            }
+        } catch {
+            return false
         }
     }
 }

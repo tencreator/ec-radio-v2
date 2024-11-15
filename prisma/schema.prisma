@@ -73,3 +73,10 @@ model siteSettings {
 
   @@map("SiteSettings")
 }
+
+model resources {
+  id          Int      @id @default(autoincrement())
+  name        String
+  tags        String  @db.Text
+  url         String  @db.Text
+}

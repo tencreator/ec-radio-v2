@@ -67,7 +67,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     callbacks: {
         jwt: async ({token, user}: {token: any, user: any}) => {
             if (user) {
-                const userData = await discord.getUserData(user.providerid as string, process.env.GUILD_ID as string)
+                const userData = await discord.getUserGuildData(user.providerid as string, process.env.GUILD_ID as string)
 
                 token.providerId = user.providerid
                 token.displayName = user.global_name

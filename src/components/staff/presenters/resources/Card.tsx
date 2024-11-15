@@ -18,13 +18,17 @@ export default function Card({resource}: {resource: resource}) {
         }
     }, [playing])
 
+    useEffect(()=>{
+        audioRef.current?.load()
+    }, [resource])
+
     return (
         <div className="card bg-base-200 border border-solid border-base-300 p-6">
             <div className="card-body p-6">
                 <div className="card-title">
-                    <h3>{resource.name}</h3>
+                    <h3 className="capitalize">{resource.name}</h3>
                     <div className="grow"></div>
-                    {resource.tags.map((tag) => <span key={tag} className="badge badge-accent">{tag}</span>)}
+                    {resource.tags.map((tag) => <span key={tag} className="badge badge-accent capitalize">{tag}</span>)}
                 </div>
             </div>
             <div className="card-actions justify-end flex flex-row gap-4">

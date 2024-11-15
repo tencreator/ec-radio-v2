@@ -117,7 +117,6 @@ function SidebarLink({ href, title, perm, session }: { href: string, title: stri
 
     useEffect(()=>{
         const perms = hasPermissionSync(session, perm)
-        console.log(title, perm, perms)
         setAllowed(perms)
     }, [session])
 

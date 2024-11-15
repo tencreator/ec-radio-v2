@@ -23,11 +23,13 @@ export default function ViewDetails() {
                 <div className='flex flex-col align-start'>
                     
                     <p className="text-lg font-semibold">Connection Details:</p>
-                    <CreateDetailText title="Username" text={details.name} />
-                    <CreateDetailText title="Password" text={details.password} hidden={true} />
-                    <CreateDetailText title="Host" text="radio.emeraldcoastrp.com" /> 
-                    <CreateDetailText title="Port" text="8005" />
-                    <CreateDetailText title="Mount" text="/" />                   
+                    <div className='grid grid-cols-3 w-fit'>
+                        <CreateDetailText title="Username" text={details.name} />
+                        <CreateDetailText title="Password" text={details.password} hidden={true} />
+                        <CreateDetailText title="Host" text="radio.emeraldcoastrp.com" /> 
+                        <CreateDetailText title="Port" text="8005" />
+                        <CreateDetailText title="Mount" text="/" />                   
+                    </div>
                     
                     <DeleteButton setDetails={setDetails} />
                 </div>
@@ -47,8 +49,8 @@ function CreateDetailText({title, text, hidden = false}: {title: string, text: s
     }
     
     return (
-        <div>
-            <p><span className="font-semibold capitalize">{title}:</span> {hidden ? '********' : text} <button onClick={copyText}><i className='fa-solid fa-clipboard'></i></button></p>
-        </div>
+        <>
+            <span className="font-semibold capitalize">{title}:</span> <span>{hidden ? '********' : text}</span> <button className='w-fit ml-4' onClick={copyText}><i className='fa-solid fa-clipboard'></i></button>
+        </>
     )
 }

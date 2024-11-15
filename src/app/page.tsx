@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <main className="mt-4 mx-auto lg:w-10/12 text-lg">
       <p>Emerald Coast Radio is a radio meant for use within Emerald Coast RP 3.0.</p>
-      <p>It is designed and structed to run similarly to any other internet radio station but it tightly interacts with the lore of the server and game.</p>
+      <p>It is designed and structured to run similarly to any other internet radio station but it tightly interacts with the lore of the server and game.</p>
       <p>So who will be presenting on this station?</p>
       <p>We have a few people lined up for your enjoyment, they are listed below.</p>
       <ul className="list-disc ml-4">

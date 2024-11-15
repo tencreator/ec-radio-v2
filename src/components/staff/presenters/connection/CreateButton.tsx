@@ -17,6 +17,6 @@ export default function CreateButton({ getDetails, setDetails }: props){
     } 
 
     return (
-        <button className="btn btn-primary" onClick={generateConnectionDetails}>Generate Connection Details</button>
+        <button className="btn btn-primary w-fit mt-4" onClick={generateConnectionDetails}>Generate Connection Details</button>
     )
 }

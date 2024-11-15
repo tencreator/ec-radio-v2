@@ -168,6 +168,11 @@ class Azuracast {
             const response = await fetch(`${process.env.AZURACAST_URL}/api/nowplaying/${process.env.AZURACAST_STATION_ID}`)
             const data = await response.json()
             
+            let streamer = {
+                name: process.env.AUTODJ_NAME as string,
+                art: process.env.AUTODJ_IMG as string,
+            }
+
             let current_song = {
                 title: data.now_playing.song.title,
                 artist: data.now_playing.song.artist,
@@ -182,13 +187,20 @@ class Azuracast {
                 }
             }
 
+            if (data.live.is_live) {
+                const discordUser = await Discord.getUserData(data.live.streamer_name)
+                if (discordUser) {
+                    streamer = {
+                        name: discordUser.displayName,
+                        art: discordUser.avatar,
+                    }
+                }
+            }
+
             return {
                 listeners: data.listeners.unique,
                 is_live: data.live.is_live,
-                streamer: {
-                    name: data.live.streamer_name,
-                    art: data.live.art,
-                },
+                streamer: streamer,
                 current_song: current_song,
                 next_song: next_song,
             }

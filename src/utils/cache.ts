@@ -18,5 +18,5 @@ class Caching {
     }
 }
 
-export default Caching;
+export default Caching
 export { Caching }

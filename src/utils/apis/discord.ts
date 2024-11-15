@@ -1,4 +1,5 @@
 import Log from '@log'
+import Caching from '../cache'
 
 interface DiscordGuildUserData {
     nickname: string | false
@@ -13,6 +14,7 @@ interface DiscordUserData {
 class Discord {
     private token: string
     private log = new Log("Discord")
+    private cache = new Caching()
 
     constructor(token: string) {
         this.token = token
@@ -49,6 +51,10 @@ class Discord {
     }
 
     public async getUserData(userId: string): Promise<DiscordUserData | false> {
+        if (this.cache.has(userId)) {
+            return this.cache.get(userId)
+        }
+
         try {
             const url = `https://discord.com/api/v9/users/${userId}`
 
@@ -66,6 +72,11 @@ class Discord {
             }
 
             const avatar = data.avatar ? `https://cdn.discordapp.com/avatars/${userId}/${data.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${Number(userId) % 5}.png`
+
+            this.cache.set(userId, {
+                displayName: data.username,
+                avatar: avatar
+            }, 300)
 
             return {
                 displayName: data.username,

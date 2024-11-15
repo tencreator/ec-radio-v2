@@ -15,6 +15,6 @@ export default function DeleteButton({ setDetails }: props) {
     }
 
     return (
-        <button className="btn btn-primary" onClick={deleteConnectionDetails}>Delete Connection Details</button>
+        <button className="btn btn-primary w-fit mt-4" onClick={deleteConnectionDetails}>Delete Connection Details</button>
     )
 }

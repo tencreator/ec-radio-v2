@@ -42,4 +42,4 @@ async function fetchConnectionDetails() {
     }
 }
 
-Page.getLayout = (page: any) => <Layout perm={Permissions.VIEW_REQUESTS}>{page}</Layout>
+Page.getLayout = (page: any) => <Layout perm={Permissions.SELF_CONNECTION}>{page}</Layout>

@@ -94,7 +94,7 @@ class Spotify {
                 url: track.external_urls.spotify
             }
 
-            this.cache.set(`${title} - ${artist}`, res, 60)
+            this.cache.set(`${title} - ${artist}`, res, 300)
 
             return res
         } catch (e) {
@@ -141,7 +141,7 @@ class Spotify {
                 duration: track.duration_ms / 1000
             }
 
-            this.cache.set(`${title} - ${artist} - extensive`, res, 60)
+            this.cache.set(`${title} - ${artist} - extensive`, res, 300)
 
             return res
         } catch (e) {

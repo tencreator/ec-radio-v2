@@ -13,7 +13,7 @@ export default function RequestBtn({ action, requestId, filter, updateRequests }
     const [disabled, setDisabled] = useState<boolean>(false)
 
     async function handleRequest(action: string, id: string): Promise<void> {
-        await fetch(`/api/requests/manage`, {
+        const res = await fetch(`/api/requests/manage`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -23,12 +23,20 @@ export default function RequestBtn({ action, requestId, filter, updateRequests }
                 action: action
             })
         })
+
+        const data = await res.json()
+
+        if (!data.ok) {
+            console.error('Failed to update request')
+            console.log(data.error)
+        }
     }
 
     async function handleClick(e: any) {
         setDisabled(true)
         await handleRequest(action, requestId)
         await updateRequests(filter)
+        setDisabled(false)
     }
 
     return (

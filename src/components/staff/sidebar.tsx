@@ -58,6 +58,7 @@ export default function Sidebar({perms}: {perms: string[]}) {
                         </SidebarCatagory>
                         <SidebarCatagory session={session} title='Presenters' perm={Permissions.VIEW_REQUESTS}>
                             <SidebarLink session={session} href='/staff/presenter/requests' title='Requests' perm={Permissions.VIEW_REQUESTS} />
+                            <SidebarLink session={session} href='/staff/presenter/connection' title='Connection' perm={Permissions.SELF_CONNECTION} />
                         </SidebarCatagory>
                     </ul>
                 )}
@@ -115,7 +116,7 @@ function SidebarLink({ href, title, perm, session }: { href: string, title: stri
 
     useEffect(()=>{
         const perms = hasPermissionSync(session, perm)
-        console.log(perms)
+        console.log(title, perm, perms)
         setAllowed(perms)
     }, [session])
 

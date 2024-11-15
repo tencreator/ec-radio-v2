@@ -10,7 +10,6 @@ export default function ToggleRequestsButton() {
         const res = await fetch('/api/requests/status')
         const data = await res.json()
         setAcceptingRequests(data.acceptingRequests)
-        console.log(data)
     }
 
     async function toggleRequests() {

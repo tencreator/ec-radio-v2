@@ -98,7 +98,7 @@ class Spotify {
 
             return res
         } catch (e) {
-            console.log('Failed to search', e)
+            console.log('Failed to search\n', e)
             return false
         }
     }

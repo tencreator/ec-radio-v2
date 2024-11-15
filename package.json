@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "update:prisma": "npx prisma migrate dev --name init && npx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "5.22.0",

@@ -3,8 +3,9 @@ import { useEffect, useState, useRef } from "react";
 
 async function checkRequestStatus(): Promise<boolean> {
     const response = await fetch('/api/requests/status')
-    const data = await response.json()
+    if (!response.ok) return false
 
+    const data = await response.json()
     return data.acceptingRequests
 }
 

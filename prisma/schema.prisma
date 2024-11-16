@@ -52,7 +52,8 @@ model requests {
 
   pending     Boolean  @default(true)
   accepted    Boolean  @default(false)
-  processedBy String   @default("")
+  processedBy String?  
+  processedAt DateTime?
   ip          String
   @@map("Requests")
 }
@@ -62,7 +63,7 @@ model bannedReqIps {
   ip          String
   banned      Boolean
   bannedBy    String
-  banReason   String   @db.Text
+  bannedAt    DateTime?
 
   @@map("BannedReqIps")
 }

@@ -59,7 +59,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             data: {
                 pending: false,
                 accepted: action === 'accept',
-                processedBy: session.user.providerId
+                processedBy: session.user.providerId,
+                processedAt: new Date()
             }
         })
 

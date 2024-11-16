@@ -17,6 +17,9 @@ export default function ToggleRequestsButton() {
         const res = await fetch('/api/requests/status', {
             method: 'POST',
         })
+
+        if (!res.ok) return
+
         const data = await res.json()
 
         setAcceptingRequests(data.acceptingRequests)

@@ -24,11 +24,8 @@ export default function RequestBtn({ action, requestId, filter, updateRequests }
             })
         })
 
-        const data = await res.json()
-
-        if (!data.ok) {
+        if (!res.ok) {
             console.error('Failed to update request')
-            console.log(data.error)
         }
     }
 

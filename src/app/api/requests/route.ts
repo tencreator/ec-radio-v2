@@ -35,6 +35,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 pending: true,
                 accepted: true,
                 ip: getAll ? true : false,
+                processedBy: getAll ? true : false,
+                processedAt: getAll ? true : false,
             },
             take: limit,
             skip: start,

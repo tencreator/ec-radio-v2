@@ -16,6 +16,14 @@ class Caching {
     public has(key: string): boolean {
         return this.cache.has(key)
     }
+
+    public delete(key: string): void {
+        this.cache.delete(key)
+    }
+
+    public clear(): void {
+        this.cache.clear()
+    }
 }
 
 export default Caching

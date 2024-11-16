@@ -25,6 +25,9 @@ export default function RequestsTable({ filter }: Props): JSX.Element {
                     'Content-Type': 'application/json'
                 }
             })
+
+            if (!res.ok) return
+
             const data = await res.json()
     
             setRequests(data.requests)
@@ -39,14 +42,8 @@ export default function RequestsTable({ filter }: Props): JSX.Element {
 
         setInterval(async ()=>{
             await getRequests(filter)
-        }, 15 * 1000)
+        }, 30 * 1000)
     }, [])
-
-    if (loading){
-        return (
-            <p>Loading...</p>
-        )
-    }
 
     return (
         <div className="relative w-full overflow-auto border-2 rounded-md border-separate border-base-300 mt-4 bg-base-200">
@@ -60,7 +57,7 @@ export default function RequestsTable({ filter }: Props): JSX.Element {
                     </tr>
                 </thead>
                 <tbody className='[&_tr:last-child]:border-0 border-base-300'>
-                    {requests && requests.length !== 0 ? requests.map((request: request, i: number) => (
+                    {!loading && requests && requests.length !== 0 ? requests.map((request: request, i: number) => (
                         <tr className='border-b transition-colors hover:bg-base-200 data-[state=selected]:bg-muted border-base-300 h-12' key={i}>
                             <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.name}</td>
                             <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{formatDate(request.date)}</td>

@@ -61,6 +61,10 @@ export default function Sidebar({perms}: {perms: string[]}) {
                             <SidebarLink session={session} href='/staff/presenter/connection' title='Connection' perm={Permissions.SELF_CONNECTION} />
                             <SidebarLink session={session} href='/staff/presenter/resources' title='Resources' perm={Permissions.VIEW_RESOURCES} />
                         </SidebarCatagory>
+                        <SidebarCatagory session={session} title='Mentors' perm={Permissions.VIEW_REQUESTS}>
+                            <SidebarLink session={session} href='/staff/mentor/requests' title='Request Logs' perm={Permissions.MANAGE_REQUESTS} />
+                            {/* <SidebarLink session={session} href='/staff/mentor/timetable' title='Booking logs' perm={Permissions.VIEW_CONNECTIONS} /> */}
+                        </SidebarCatagory>
                     </ul>
                 )}
             </div>
@@ -69,7 +73,7 @@ export default function Sidebar({perms}: {perms: string[]}) {
 }
 
 function SidebarCatagory({ title, perm, children, session }: { title: string, perm: PagePermissions, children: React.ReactNode, session: any }) {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(true)
     const [allowed, setAllowed] = useState(false)
     const sidebarRef = useRef<HTMLUListElement>(null)
 

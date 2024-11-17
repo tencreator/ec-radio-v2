@@ -75,8 +75,8 @@ export default async function Table({filter}: {filter: string}) {
     const bannedIPs: bannedIP[] = await getBannedIPs()
 
     return (
-        <div className="relative max-w-full overflow-auto border-2 rounded-md border-separate border-base-300 mt-4 bg-base-200">
-            <table className="w-full caption-bottom text-sm border-collapse border-base-300 table-fixed">
+        <div className="relative max-w-full overflow-x-auto border-2 rounded-md border-separate border-base-300 mt-4 bg-base-200">
+            <table className="min-w-[640px] w-full caption-bottom text-sm border-collapse border-base-300 table-fixed">
                 <thead className='[&_tr]:border-b border-collapse border-base-300'>
                     <tr className='border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
                         <th className={thClasses}>Name</th>

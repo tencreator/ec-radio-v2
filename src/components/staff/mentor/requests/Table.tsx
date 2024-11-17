@@ -50,6 +50,8 @@ export default async function Table({filter}: {filter: string}) {
 
             const data = await res.json()
 
+            loading = false
+
             return data.requests
         } catch (e){
             console.error(e)
@@ -70,60 +72,72 @@ export default async function Table({filter}: {filter: string}) {
 
             const data = await res.json()
 
+            loading = false
+
             return data.banned
         } catch (e){
             console.error(e)
         }
     }
 
+    let loading = true
     const requests: request[] = await getRequests(filter)
     const bannedIPs: bannedIP[] = await getBannedIPs()
 
     return (
-        <div className="relative max-w-screen overflow-x-auto border-2 rounded-md border-separate border-base-300 mt-4 bg-red-500">
-            <table className="caption-bottom text-sm border-collapse border-base-300 table-fixed">
-                <thead className='[&_tr]:border-b border-collapse border-base-300'>
-                    <tr className='border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
-                        <th className={thClasses}>Name</th>
-                        <th className={thClasses}>Date</th>
-                        <th className={thClasses}>Message</th>
-                        <th className={thClasses}>Status</th>
-                        <th className={thClasses}>IP</th>
-                        <th className={thClasses}>Processed By</th>
-                        <th className={thClasses}>Processed At</th>
-                        {hasPermissionSync(session, Permissions.BAN_IP) && <th className={thClasses}>Ban IP</th>}
-                    </tr>
-                </thead>
-                <tbody className='[&_tr:last-child]:border-0 border-base-300'>
-                    {requests && requests.length !== 0 ? requests.map((request: request, i: number) => (
-                        <tr className='border-b transition-colors hover:bg-base-200 data-[state=selected]:bg-muted border-base-300 h-12' key={i}>
-                            <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.name}</td>
-                            <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{formatDate(request.date)}</td>
-                            <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.message}</td>
-                            <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.pending ? 'Pending' : (request.accepted ? 'Accepted' : 'Denied')}</td>
-                            <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.ip}</td>
-                            <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>
-                                <div className="flex flex-row items-center">
-                                    <Image src={request.user.avatar} alt={request.user.displayName} width={24} height={24} className="rounded-full mr-4" />
-                                    <p>
-                                        {request.processedBy ? (request.user.displayName ? request.user.displayName : request.processedBy) : 'N/A'}
-                                    </p>
-                                </div>
-                            </td>
-                            <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.processedAt ? formatDate(request.processedAt) : 'N/A'}</td>
-                            {hasPermissionSync(session, Permissions.BAN_IP) && (
+        <div className="border-2 border-base-300 rounded-md mt-4 bg-base-200 w-screen md:w-full">
+            <div className="relative w-full overflow-auto">
+                <table className={"w-full table-auto caption-bottom text-sm border-collapse border-base-300" + (loading ? 'hidden' : '')}>
+                    <thead className='[&_tr]:border-b border-collapse border-base-300'>
+                        <tr className='border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
+                            <th className={thClasses}>Name</th>
+                            <th className={thClasses}>Date</th>
+                            <th className={thClasses}>Message</th>
+                            <th className={thClasses}>Status</th>
+                            <th className={thClasses}>IP</th>
+                            <th className={thClasses}>Processed By</th>
+                            <th className={thClasses}>Processed At</th>
+                            {hasPermissionSync(session, Permissions.BAN_IP) && <th className={thClasses}>Ban IP</th>}
+                        </tr>
+                    </thead>
+                    <tbody className='[&_tr:last-child]:border-0 border-base-300'>
+                        {requests && requests.length !== 0 ? requests.map((request: request, i: number) => (
+                            <tr className='border-b transition-colors hover:bg-base-200 data-[state=selected]:bg-muted border-base-300 h-12' key={i}>
+                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.name}</td>
+                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{formatDate(request.date)}</td>
+                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.message}</td>
+                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.pending ? 'Pending' : (request.accepted ? 'Accepted' : 'Denied')}</td>
+                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.ip}</td>
                                 <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>
-                                    {bannedIPs && bannedIPs.find(ip => ip.ip === request.ip) ? <UnBanButton ip={request.ip} url={url} /> : <BanButton ip={request.ip} url={url} />}
+                                    <div className="flex flex-row items-center">
+                                        {
+                                            (request.user && request.user.avatar && request.user.displayName) ? (
+                                                <>
+                                                    <Image src={request.user.avatar} alt={request.user.displayName} width={24} height={24} className="rounded-full mr-4" />
+                                                    <p>
+                                                        {request.processedBy ? (request.user.displayName ? request.user.displayName : request.processedBy) : 'N/A'}
+                                                    </p>
+                                                </>
+                                            ) :
+                                            request.processedBy ? request.processedBy : 'N/A'
+                                        }
+                                    </div>
                                 </td>
-                            )}
-                        </tr>
-                    )): (
-                        <tr className='hover'>
-                            <td colSpan={hasPermissionSync(session, Permissions.BAN_IP) ? 9 : 8} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-12'>No requests found.</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.processedAt ? formatDate(request.processedAt) : 'N/A'}</td>
+                                {hasPermissionSync(session, Permissions.BAN_IP) && (
+                                    <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>
+                                        {bannedIPs && bannedIPs.find(ip => ip.ip === request.ip) ? <UnBanButton ip={request.ip} url={url} /> : <BanButton ip={request.ip} url={url} />}
+                                    </td>
+                                )}
+                            </tr>
+                        )): (
+                            <tr className='hover'>
+                                <td colSpan={hasPermissionSync(session, Permissions.BAN_IP) ? 9 : 8} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-12'>No requests found.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }

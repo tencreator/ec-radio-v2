@@ -13,7 +13,7 @@ export default function Page() {
                     <p className="text-sm text-gray-500">Check all logs below and who has processed them!</p>
                 </div>
 
-                <div className="mt-4 flex flex-col overflow-x-scroll md:overflow-auto">
+                <div className="mt-4 mx-auto flex flex-col gap-4">
                     <div>
                         <h3 className="text-xl font-medium">Song Requests</h3>
                         <Table filter="song" />

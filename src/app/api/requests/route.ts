@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 import { hasPermissionSync, Permissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
+import Discord from "@/utils/apis/discord"
 
 const prisma = new PrismaClient()
+const discord = new Discord(process.env.DISCORD_BOT_TOKEN as string)
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const user = await auth()
@@ -21,7 +23,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const limit = Number(req.nextUrl.searchParams.get("limit")) || 10
         const start = Number(req.nextUrl.searchParams.get("start")) || 0
 
-        const requests = await prisma.requests.findMany({
+        const dbRes = await prisma.requests.findMany({
             where: {
                 pending: getAll ? undefined : true,
                 type: filter ? filter : undefined,
@@ -45,7 +47,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             },
         })
 
-        return new NextResponse(JSON.stringify({ requests: requests }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+        const requests = await Promise.all(dbRes.map(async (r) => {
+            let ret: any = {
+                ...r,
+            }
+
+            if (getAll) {
+                const userId = r.processedBy
+                if (userId) {
+                    const user = await discord.getUserData(userId)
+                    ret.user = user
+                }
+            }
+
+            return ret
+        }))
+
+        return new NextResponse(JSON.stringify({ requests: await requests }), { status: 200, headers: { 'Content-Type': 'application/json' } })
     } catch (e: any) {
         return new NextResponse(JSON.stringify({error: e}), { status: 500 })
     }

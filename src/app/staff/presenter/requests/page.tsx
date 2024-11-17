@@ -3,7 +3,7 @@ import Layout from "@/app/staff/layout"
 import { Suspense } from "react"
 import { cookies, headers } from "next/headers"
 import ToggleRequestsButton from "@/components/staff/presenters/requests/ToggleButton"
-import RequestsTable from "@/components/staff/presenters/requests/RequestsTable"
+import Table from "@/components/staff/presenters/requests/RequestsTable"
 
 export default async function Page() {
     const headerList = await headers()
@@ -26,7 +26,7 @@ export default async function Page() {
     }
 
     return (
-        <div className="mx-auto mt-4 w-10/12 lg:w-11/12">
+        <div className="mt-4 px-8">
             <Suspense fallback={<div>Loading...</div>}>
                 <div>
                     <h1 className="text-3xl font-semibold">Requests</h1>
@@ -36,19 +36,19 @@ export default async function Page() {
                     <h2 className="text-2xl font-semibold">Toggle requests</h2>
                     <ToggleRequestsButton />
                 </div>
-                <div className="mt-4 flex flex-col gap-4 w-10/12 lg:w-11/12 overflow-x-scroll md:overflow-auto">
+                <div className="mt-4 mx-auto flex flex-col gap-4">
                     <h2 className="text-2xl font-semibold">Requests</h2>
                     <div>
                         <h3 className="text-xl font-medium">Song Requests</h3>
-                        <RequestsTable filter="song" />
+                        <Table filter="song" />
                     </div>
                     <div>
                         <h3 className="text-xl font-medium">Shoutout Requests</h3>
-                        <RequestsTable filter="shoutout" />
+                        <Table filter="shoutout" />
                     </div>
                     <div>
                         <h3 className="text-xl font-medium">Joke Requests</h3>
-                        <RequestsTable filter="joke" />
+                        <Table filter="joke" />
                     </div>
                 </div>
             </Suspense>

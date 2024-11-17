@@ -1,8 +1,6 @@
 import { Permissions } from "@/utils/permissions"
 import Layout from "@/app/staff/layout"
 import { Suspense } from "react"
-import Table from "@/components/staff/mentor/requests/Table"
-
 
 export default function Page() {
     return (

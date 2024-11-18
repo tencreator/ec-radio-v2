@@ -3,9 +3,12 @@ import { PrismaClient } from "@prisma/client"
 import { hasPermissionSync, Permissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
 import Discord from "@/utils/apis/discord"
+import Caching from "@/utils/cache"
 
 const prisma = new PrismaClient()
 const discord = new Discord(process.env.DISCORD_BOT_TOKEN as string)
+const cache = new Caching()
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const user = await auth()
@@ -22,6 +25,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const filter = req.nextUrl.searchParams.get("filter")
         const limit = Number(req.nextUrl.searchParams.get("limit")) || 10
         const start = Number(req.nextUrl.searchParams.get("start")) || 0
+
+        if (cache.has(`requests-${getAll}-${filter}-${limit}-${start}`)) {
+            return new NextResponse(cache.get(`requests-${getAll}-${filter}-${limit}-${start}`))
+        }
 
         const dbRes = await prisma.requests.findMany({
             where: {
@@ -62,6 +69,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
             return ret
         }))
+
+        cache.set(`requests-${getAll}-${filter}-${limit}-${start}`, JSON.stringify(requests), 300)
 
         return new NextResponse(JSON.stringify({ requests: await requests }), { status: 200, headers: { 'Content-Type': 'application/json' } })
     } catch (e: any) {
@@ -144,6 +153,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         })
 
+        cache.clear()
+
         return new NextResponse("Success", { status: 200 })
     } catch (e) {
         console.error(e)
@@ -207,6 +218,8 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
                 processedAt: new Date()
             }
         })
+
+        cache.clear()
 
         return new NextResponse(JSON.stringify({ok: true, message: "Successfully Managed Request"}), { status: 200 })
     } catch (e: any) {

@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/utils/auth";
 import { Permissions, hasPermissionSync } from "@/utils/permissions";
 import { PrismaClient } from "@prisma/client";
+import Discord from "@/utils/apis/discord";
+import Caching from "@/utils/cache";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
+const discord = new Discord(process.env.DISCORD_BOT_TOKEN as string)
+const cache = new Caching()
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -13,6 +17,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const date = await getFormattedDate(req.nextUrl.searchParams.get('date') as string)
         if (!date) return new NextResponse("Invalid date", { status: 400 })
+        
+        if (cache.has(`timetable-${date}`)) {
+            return new NextResponse(cache.get(`timetable-${date}`), { headers: { "content-type": "application/json" } })
+        }
 
         const timetable = await prisma.timetable.findMany({
             where: {
@@ -20,7 +28,37 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             },
         })
 
-        return new NextResponse(JSON.stringify({bookings: timetable}), { headers: { "content-type": "application/json" } })
+        const timetableWithUsers = await Promise.all(timetable.map(async (booking) => {
+            const user = await discord.getUserData(booking.userid)
+
+            if (user) {
+                return {
+                    id: booking.id,
+                    date: booking.date,
+                    time: booking.time,
+                    user: {
+                        id: booking.userid,
+                        name: user.displayName,
+                        avatar: user.avatar,
+                    },
+                }
+            } else {
+                return {
+                    id: booking.id,
+                    date: booking.date,
+                    time: booking.time,
+                    user: {
+                        id: booking.userid,
+                        name: "Unknown",
+                        avatar: "",
+                    },
+                }
+            }
+        }))
+
+        cache.set(`timetable-${date}`, JSON.stringify({bookings: timetableWithUsers}), 60)
+
+        return new NextResponse(JSON.stringify({bookings: timetableWithUsers}), { headers: { "content-type": "application/json" } })
     } catch {
         return new NextResponse("Internal Server Error", { status: 500 })
     }
@@ -54,6 +92,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 action: "create",
             },
         })
+
+        cache.delete(`timetable-${date}`)
 
         return new NextResponse(JSON.stringify({booking: booking}), { headers: { "content-type": "application/json" } })
     } catch {
@@ -89,6 +129,8 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
             },
         })
 
+        cache.delete(`timetable-${date}`)
+
         await prisma.timetablelogs.create({
             data: {
                 date: date,
@@ -97,6 +139,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
                 action: "delete",
             },
         })
+
 
         return new NextResponse("Success", { status: 200 })
     } catch {

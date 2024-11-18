@@ -2,7 +2,7 @@ import { Permissions } from "@/utils/permissions"
 import Layout from "@/app/staff/layout"
 import { Suspense } from "react"
 
-import ViewDetails from "@/components/staff/presenters/connection/ViewDetails"
+import { headers, cookies } from "next/headers"
 
 export default async function Page() {
     return (
@@ -13,10 +13,12 @@ export default async function Page() {
                     <p className="text-sm text-gray-500">Get your connection details below!</p>
                 </div>
 
-                <ViewDetails />
+
             </Suspense>
         </div>
     )
 }
+
+
 
 Page.getLayout = (page: any) => <Layout perm={Permissions.SELF_CONNECTION}>{page}</Layout>

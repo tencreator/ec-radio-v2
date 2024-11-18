@@ -1,3 +1,4 @@
+import { getFormattedTime } from "@/utils/functions"
 import { useEffect, useState } from "react"
 
 interface Props {
@@ -72,7 +73,7 @@ export default function Cell({date, time, booked, currentDay, user, me, fetchDat
         <div className={"card bg-base-300 shadow-md border-solid border-2 " + (isLive ? 'border-red-600 shadow-red-600' : 'border-base-100')}>
             <div className="card-body">
                 <div className="card-title flex flex-row">
-                    <h2>{time}</h2>
+                    <h2>{getFormattedTime(time)}</h2>
                     {isLive && (
                         <div className="ml-auto card-actions justify-end">
                             <h2 className="badge badge-outline badge-error">Now</h2>

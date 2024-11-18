@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/utils/auth";
 import { Permissions, hasPermissionSync } from "@/utils/permissions";
+import { getFormattedDate, getFormattedTime } from "@/utils/functions";
 import { PrismaClient } from "@prisma/client";
 import Discord from "@/utils/apis/discord";
 import Caching from "@/utils/cache";
@@ -73,7 +74,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const date = await getFormattedDate(req.nextUrl.searchParams.get('date') as string)
         if (!date) return new NextResponse("Invalid date", { status: 400 })
 
-        const time = await getFormattedTime(req.nextUrl.searchParams.get('time') as string)
+        const time = await getFormattedTime(`${req.nextUrl.searchParams.get('time') as string}`)
+        console.log(time)
         if (!time) return new NextResponse("Invalid time", { status: 400 })
 
         const booking = await prisma.timetable.create({
@@ -123,9 +125,11 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
 
         if (!booking) return new NextResponse("Booking not found", { status: 404 })
 
-        await prisma.timetable.delete({
+        await prisma.timetable.deleteMany({
             where: {
-                id: booking.id,
+                date: date,
+                time: time,
+                userid: session.user.providerId,
             },
         })
 
@@ -144,31 +148,5 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
         return new NextResponse("Success", { status: 200 })
     } catch {
         return new NextResponse("Internal Server Error", { status: 500 })
-    }
-}
-
-async function getFormattedDate(date: string): Promise<string | false> {
-    if (!date) return false
-    
-    try {
-        const dateObj = new Date(date)
-        if (dateObj.toString() == "Invalid Date") return false
-        const formattedDate = dateObj.toISOString().split("T")[0]
-        return formattedDate
-    } catch {
-        return false
-    }
-}
-
-async function getFormattedTime(time: string): Promise<string | false> {
-    if (!time) return false
-
-    try {
-        const timeObj = new Date(time)
-        if (timeObj.toString() == "Invalid Date") return false
-        const formattedTime = timeObj.toISOString().split("T")[1].split(".")[0]
-        return formattedTime
-    } catch {
-        return false
     }
 }

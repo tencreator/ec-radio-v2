@@ -3,8 +3,11 @@ import { Azuracast } from "@/utils/apis/azuracast";
 import { auth } from "@/utils/auth";
 import { Permissions, hasPermissionSync } from "@/utils/permissions";
 import { PrismaClient } from "@prisma/client";
+import Caching from "@/utils/cache";
 
 const prisma = new PrismaClient()
+const cache = new Caching()
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const session = await auth()
@@ -17,6 +20,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             return new NextResponse("Forbidden", {status: 403})
         }
 
+        if (cache.has(`djaccount-${session.user.providerId}`)) {
+            return new NextResponse(cache.get(`djaccount-${session.user.providerId}`), {headers: {"content-type": "application/json"}})
+        }
+
         const hasAccount = await Azuracast.hasDjAccount(session.user.providerId as string)
         if (!hasAccount) return new NextResponse("Not Found", {status: 404})
 
@@ -26,6 +33,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             }
         })
         if (!account) return new NextResponse("Not Found", {status: 404})
+
+        cache.set(`djaccount-${session.user.providerId}`, JSON.stringify(account), 300)
 
         return new NextResponse(JSON.stringify(account), {status: 200})
     } catch (e) {
@@ -62,6 +71,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         })
 
+        cache.delete(`djaccount-${session.user.providerId}`)
+
         return new NextResponse(JSON.stringify(res2), {status: 200})
     } catch (e) {
         return new NextResponse("Internal Server Error", {status: 500})
@@ -94,6 +105,8 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
                 azuraid: account.id.toString()
             }
         })
+
+        cache.delete(`djaccount-${session.user.providerId}`)
 
         return new NextResponse("OK", {status: 200})
     } catch (e) {

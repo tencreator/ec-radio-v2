@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { hasPermissionSync, Permissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth";
+import Caching from "@/utils/cache";
 
 const prisma = new PrismaClient();
+const cache = new Caching()
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
+        if (cache.has('status')) {
+            return NextResponse.json({ acceptingRequests: cache.get('status') });
+        }
+
         const data = await prisma.siteSettings.findFirst({
             where: {
                 id: 1
@@ -14,6 +21,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 reqOpen: true
             }
         })
+
+        cache.set('status', data?.reqOpen || false, 300)
 
         return NextResponse.json({ acceptingRequests: data?.reqOpen || false });
     } catch {
@@ -44,6 +53,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 reqOpen: !currentSettings?.reqOpen || false
             }
         })
+
+        cache.delete('status')
 
         return NextResponse.json({ acceptingRequests: !currentSettings?.reqOpen || false });
     } catch {

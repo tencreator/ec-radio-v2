@@ -57,6 +57,7 @@ export default function Sidebar({perms}: {perms: string[]}) {
                             <SidebarLink session={session} href='/staff/policies' title='Policies' perm={Permissions.VIEW_POLICIES} />
                         </SidebarCatagory>
                         <SidebarCatagory session={session} title='Presenters' perm={Permissions.VIEW_REQUESTS}>
+                            <SidebarLink session={session} href='/staff/presenter/timetable' title='Timetable' perm={Permissions.VIEW_TIMETABLE} />
                             <SidebarLink session={session} href='/staff/presenter/requests' title='Requests' perm={Permissions.VIEW_REQUESTS} />
                             <SidebarLink session={session} href='/staff/presenter/connection' title='Connection' perm={Permissions.SELF_CONNECTION} />
                             <SidebarLink session={session} href='/staff/presenter/resources' title='Resources' perm={Permissions.VIEW_RESOURCES} />

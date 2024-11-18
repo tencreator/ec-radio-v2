@@ -97,7 +97,8 @@ function TimetableEvent({ time, day, title, img }: { time: string, title: string
         const hour = new Date(utcTime).getHours()
         const eventHour = parseInt(time.split(":")[0])
         const currentDay = new Date().getDay() === day
-
+        
+        
         if (currentDay && hour === eventHour) {
             return true
         } else {
@@ -110,7 +111,6 @@ function TimetableEvent({ time, day, title, img }: { time: string, title: string
         const timeout = setTimeout(() => {
             setIsLive(isCurrent())
         }, 1000)
-
 
         return () => {
             clearTimeout(timeout)

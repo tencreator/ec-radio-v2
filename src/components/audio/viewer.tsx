@@ -1,4 +1,5 @@
 "use client"
+import { isMobile, isTablet } from "react-device-detect";
 import { useEffect, useState } from "react";
 import { APIResponse as Info } from "@/app/api/route";
 import { Mount } from "@/utils/apis/azuracast";
@@ -51,6 +52,8 @@ export default function Viewer(): JSX.Element {
     const [volume, setVolume] = useState(100)
 
     async function fetchData() {
+        if ((!show) && (!isMobile || !isTablet)) return
+
         const response = await fetch("/api")
         const data = await response.json()
         setInfo(data)
@@ -76,10 +79,12 @@ export default function Viewer(): JSX.Element {
     useEffect(() => {
         fetchData()
 
-        setInterval(() => {
+        const int = setInterval(() => {
             fetchData()
         }, 2500)
-    }, [])
+
+        return () => clearInterval(int)
+    }, [show])
 
     useEffect(()=>{
         const vol = localStorage.getItem('volume')

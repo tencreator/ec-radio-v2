@@ -13,8 +13,8 @@ export default function RequestBtn({ action, requestId, filter, updateRequests }
     const [disabled, setDisabled] = useState<boolean>(false)
 
     async function handleRequest(action: string, id: string): Promise<void> {
-        const res = await fetch(`/api/requests/manage`, {
-            method: 'POST',
+        const res = await fetch(`/api/requests`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },

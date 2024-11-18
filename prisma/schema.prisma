@@ -25,11 +25,21 @@ model policies {
 
 model timetable {
   id          Int      @id @default(autoincrement())
-  date        DateTime
-  time        DateTime
+  date        String   @db.Text
+  time        String   @db.Text
   userid      String
 
   @@map("Timetable")
+}
+
+model timetablelogs {
+  id          Int      @id @default(autoincrement())
+  date        String   @db.Text
+  time        String   @db.Text
+  userid      String
+  action      String
+
+  @@map("TimetableLogs")
 }
 
 model djaccounts {

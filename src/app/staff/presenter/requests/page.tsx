@@ -1,4 +1,5 @@
-import { Permissions } from "@/utils/permissions"
+import { redirect } from "next/navigation"
+import { hasPermission, Permissions } from "@/utils/permissions"
 import Layout from "@/app/staff/layout"
 import { Suspense } from "react"
 import { cookies, headers } from "next/headers"
@@ -6,6 +7,11 @@ import ToggleRequestsButton from "@/components/staff/presenters/requests/ToggleB
 import Table from "@/components/staff/presenters/requests/RequestsTable"
 
 export default async function Page() {
+    const session = await auth()
+
+    if (!session || !session.user || !session.user.providerId) redirect('/auth')
+    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
+
     const headerList = await headers()
     const protocol = headerList.get('x-forwarded-proto') || 'http'
     const host = headerList.get('host')

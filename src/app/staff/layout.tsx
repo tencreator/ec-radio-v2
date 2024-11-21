@@ -1,6 +1,4 @@
 import { type PagePermissions } from "@/utils/permissions"
-import { auth } from "@/utils/auth"
-
 import Sidebar from "@/components/staff/sidebar.server"
 
 interface StaffLayoutProps {

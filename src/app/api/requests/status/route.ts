@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { hasPermissionSync, Permissions } from "@/utils/permissions"
+import { hasPermission, Permissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth";
 import Caching from "@/utils/cache";
 
@@ -32,9 +32,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        const user = await auth();
-        if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-        if (!hasPermissionSync(user, Permissions.TOGGLE_REQUESTS)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+        const session = await auth();
+        if (!session || !session.user || !session.user.providerId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        if (!await hasPermission(session.user.providerId, Permissions.TOGGLE_REQUESTS)) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
         const currentSettings = await prisma.siteSettings.findFirst({
             where: {

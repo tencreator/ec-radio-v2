@@ -2,9 +2,8 @@
 
 import { APIResponse } from "@/app/api/stats/route"
 import { useEffect, useState } from "react"
-import { Permissions, hasPermissionSync } from "@/utils/permissions"
 
-export default function Stats({ perms }: { perms: string[] }) {
+export default function Stats() {
     const [data, setData] = useState<APIResponse | null>(null)
     const [loading, setLoading] = useState(true)
 
@@ -55,7 +54,7 @@ export default function Stats({ perms }: { perms: string[] }) {
                 </div>
             </div>
 
-            <SongCard song={loading ? {} : data?.current_song} title="Current Song" skip={true} perms={perms} isLive={data?.is_live || false} />
+            <SongCard song={loading ? {} : data?.current_song} title="Current Song" skip={true} isLive={data?.is_live || false} />
             { !data?.is_live && (
                 <SongCard song={loading ? {} : data?.next_song || {}} title="Next Song" isLive={data?.is_live || false} />
             )}
@@ -72,7 +71,7 @@ interface Song {
     duration?: number
 }
 
-function SongCard({ song, title, skip = false, perms = [], isLive }: { song: Song | undefined, title: string, skip?: boolean, perms?: string[], isLive: boolean }) {
+function SongCard({ song, title, skip = false, isLive }: { song: Song | undefined, title: string, skip?: boolean, isLive: boolean }) {
     const [skipDisabled, setSkipDisabled] = useState(false)
 
     async function skipSong() {
@@ -105,13 +104,6 @@ function SongCard({ song, title, skip = false, perms = [], isLive }: { song: Son
                             <i className="fa-brands fa-spotify"></i>
                             <p>Spotify</p>
                         </a>
-                    )}
-
-                    {skip && hasPermissionSync({ user: { perms } }, Permissions.CONTROLS_BACKEND_SKIP) && !isLive && (
-                        <button className="btn bg-red-500 border border-solid border-red-500 flex items-center" disabled={skipDisabled} onClick={skipSong}>
-                            <i className="fa-solid fa-forward"></i>
-                            <p>Skip</p>
-                        </button>
                     )}
                 </div>
             </div>

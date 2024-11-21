@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 
 import Styles from '../../styles/sidebar.module.css'
-import { hasPermissionSync, PagePermissions, Permissions } from '@/utils/permissions'
+import { hasPermission, PagePermissions, Permissions } from '@/utils/permissions'
 
 export default function Sidebar({perms}: {perms: string[]}) {
     const [show, setShow] = useState(false)
@@ -99,7 +99,7 @@ function SidebarCatagory({ title, perm, children, session }: { title: string, pe
     }, [open])
 
     useEffect(()=>{
-        setAllowed(hasPermissionSync(session, perm))
+        hasPermission(session, perm).then(perms => setAllowed(perms))
     }, [session])
 
     if (!allowed) return null;
@@ -121,8 +121,7 @@ function SidebarLink({ href, title, perm, session }: { href: string, title: stri
     const [allowed, setAllowed] = useState(false)
 
     useEffect(()=>{
-        const perms = hasPermissionSync(session, perm)
-        setAllowed(perms)
+        hasPermission(session, perm).then(perms => setAllowed(perms))
     }, [session])
 
     if (!allowed) return null;

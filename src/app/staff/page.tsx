@@ -10,7 +10,7 @@ export default async function Page() {
     return (
         <div className="mx-auto mt-4 w-10/12 lg:w-11/12">
             <Suspense fallback={<div>Loading...</div>}>
-                <Stats perms={session?.user.perms || []} />
+                <Stats />
             </Suspense>
         </div>
     )

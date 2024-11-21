@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
-import { hasPermissionSync, Permissions } from "@/utils/permissions"
+import { hasPermission, Permissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
 import Discord from "@/utils/apis/discord"
 import Caching from "@/utils/cache"
@@ -11,17 +11,17 @@ const cache = new Caching()
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
-        const user = await auth()
+        const session = await auth()
 
-        if (!user) {
+        if (!session || !session.user || !session.user.providerId) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
-        if (!hasPermissionSync(user, Permissions.VIEW_REQUESTS)) {
+        if (!await hasPermission(session.user.providerId, Permissions.VIEW_REQUESTS)) {
             return new NextResponse("Forbidden", { status: 403 })
         }
 
-        let getAll = ((req.nextUrl.searchParams.get("all") === "true" ? true : false) && hasPermissionSync(user, Permissions.MANAGE_REQUESTS)) ? true : false
+        let getAll = ((req.nextUrl.searchParams.get("all") === "true" ? true : false) && await hasPermission(session.user.providerId, Permissions.MANAGE_REQUESTS)) ? true : false
         const filter = req.nextUrl.searchParams.get("filter")
         const limit = Number(req.nextUrl.searchParams.get("limit")) || 10
         const start = Number(req.nextUrl.searchParams.get("start")) || 0
@@ -166,11 +166,11 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     try {
         const session = await auth()
 
-        if (!session) {
+        if (!session || !session.user || !session.user.providerId) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
-        if (!hasPermissionSync(session, Permissions.ACCEPT_REQUESTS)) {
+        if (!await hasPermission(session.user.providerId, Permissions.ACCEPT_REQUESTS)) {
             return new NextResponse("Forbidden", { status: 403 })
         }
 

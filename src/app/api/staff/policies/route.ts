@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { hasPermissionSync, Permissions } from "@/utils/permissions";
+import { hasPermission, Permissions } from "@/utils/permissions";
 import { auth } from "@/utils/auth";
 import { PrismaClient } from "@prisma/client";
 import Caching from "@/utils/cache";
@@ -10,7 +10,11 @@ const cache = new Caching()
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth()
 
-    if (!hasPermissionSync(session, Permissions.VIEW_POLICIES)) {
+    if (!session || !session.user || !session.user.providerId) {
+        return new NextResponse(null, { status: 401 })
+    }
+
+    if (!await hasPermission(session.user.providerId, Permissions.VIEW_POLICIES)) {
         return new NextResponse(null, { status: 403 })
     }
 
@@ -33,7 +37,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<NextResponse> {
     const session = await auth()
 
-    if (!hasPermissionSync(session, Permissions.EDIT_POLICIES)) {
+    if (!session || !session.user || !session.user.providerId) {
+        return new NextResponse(null, { status: 401 })
+    }
+
+    if (!await hasPermission(session.user.providerId, Permissions.EDIT_POLICIES)) {
         return new NextResponse(null, { status: 403 })
     }
 

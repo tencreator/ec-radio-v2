@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Azuracast } from "@/utils/apis/azuracast";
-import { hasPermissionSync, Permissions } from "@/utils/permissions";
+import { hasPermission, Permissions } from "@/utils/permissions";
 import { auth } from "@/utils/auth";
 
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth()
 
-    if (!hasPermissionSync(session, Permissions.CONTROLS_BACKEND_SKIP)) {
+    if (!session || !session.user || !session.user.providerId) {
+        return new NextResponse(null, { status: 401 })
+    }
+
+    if (!await hasPermission(session.user.providerId, Permissions.CONTROLS_BACKEND_SKIP)) {
         return new NextResponse(null, { status: 403 })
     }
 

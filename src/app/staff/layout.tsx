@@ -1,4 +1,4 @@
-import { hasPermission, type PagePermissions } from "@/utils/permissions"
+import { type PagePermissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
 
 import Sidebar from "@/components/staff/sidebar.server"

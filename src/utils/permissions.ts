@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import Caching from "./cache"
+import log from "./log"
 
 enum Permissions {
     ADMINISTRATOR = "ADMINISTRATOR",
@@ -54,6 +55,7 @@ type PagePermissions = Permissions
 const prisma = new PrismaClient()
 const roleCache = new Caching()
 const permCache = new Caching()
+const Log = new log('Permissions')
 
 async function getUserRoles(userid: string): Promise<string[]> {
     try {
@@ -114,8 +116,9 @@ async function getRolePerms(roles: string[]): Promise<string[]> {
     return pernsArray.flat().flat()
 }
 
-async function hasPermission(userId: string, permission: Permissions): Promise<boolean> {
+async function hasPermission(userId: string, permission: string): Promise<boolean> {
     if (userId === process.env.ADMIN_ID) return true
+    if (permission === undefined) return false
 
     try {
         const roles = await getUserRoles(userId)
@@ -126,12 +129,17 @@ async function hasPermission(userId: string, permission: Permissions): Promise<b
             if (perm === Permissions.ADMINISTRATOR) return true
         })
 
-        if (res) return true
-        return false
+        Log.info(`User ${userId} has permission ${permission} - ${res.includes(true)}`)
+        Log.debug(`Roles: ${roles}`, true)
+        Log.debug(`Perms: ${perms}`, true)
+        Log.debug(`Res: ${res}`, true)
+
+        if (res.includes(true)) return true
     } catch (e) {
         console.log('Error: ', e)
-        return false
     }
+
+    return false
 }
 
 export { hasPermission, Permissions }

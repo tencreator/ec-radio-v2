@@ -27,14 +27,7 @@ export default function Stats() {
     }, [])
 
     return (
-        <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div className="card bg-base-200 shadow-xl grow">
-                <div className="card-body">
-                    <h2 className="card-title">Staff page</h2>
-                    <p>Welcome to the staff page, here you can view the statistics of the radio and info about the currently playing song and what AutoDJ has planned next!</p>
-                </div>
-            </div>
-
+        <div className="mt-4 grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <div className="card bg-base-200 shadow-xl grow">
                 <div className="card-body">
                     <h2 className="card-title">Listeners</h2>

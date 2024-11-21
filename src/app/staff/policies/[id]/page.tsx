@@ -38,7 +38,3 @@ export default async function Page(context: any) {
         </div>
     )
 }
-
-Page.getLayout = (page: any) => (
-    <Layout perm={Permissions.VIEW_POLICIES}>{page}</Layout>
-)

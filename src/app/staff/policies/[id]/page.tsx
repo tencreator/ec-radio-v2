@@ -1,7 +1,7 @@
 import ViewPolicy from "@/components/staff/policies/viewPolicy"
 import Layout from "../../layout"
-import { Permissions } from "@/utils/permissions"
-import { notFound } from "next/navigation"
+import { hasPermission, Permissions } from "@/utils/permissions"
+import { redirect, notFound } from "next/navigation"
 import { headers, cookies } from "next/headers"
 
 export default async function Page(context: any) {

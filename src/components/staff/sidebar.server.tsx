@@ -62,7 +62,7 @@ export default async function Sidebar(): Promise<JSX.Element> {
         },
         {
             title: 'Mentors',
-            perm: Permissions.VIEW_REQUESTS,
+            perm: Permissions.VIEW_MENTORS,
             children: [{
                 title: 'Request Logs',
                 href: '/staff/mentor/requests',

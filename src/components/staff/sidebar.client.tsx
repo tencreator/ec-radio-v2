@@ -50,8 +50,8 @@ export default function Sidebar({catagories}: {catagories: {
             <div ref={sidebarRef} className={'bg-base-300 ' + Styles.sidebar}>
                 {loading ? <p>Loading...</p> : (
                     <ul className="menu">
-                        {catagories.map(catagory => (
-                            <SidebarCatagory title={catagory.title} children={catagory.children} />
+                        {catagories.map((catagory, i) => (
+                            <SidebarCatagory key={i} title={catagory.title} children={catagory.children} />
                         ))}
                     </ul>
                 )}
@@ -91,7 +91,7 @@ function SidebarCatagory({ title, children }: { title: string, children: {title:
                 <i className={'ml-auto fas fa-chevron-' + (open ? 'up' : 'down')}></i>
             </div>
             <ul ref={sidebarRef}>
-                {open && children.map(child => <SidebarLink href={child.href} title={child.title} />)}
+                {open && children.map((child, i) => <SidebarLink key={i} href={child.href} title={child.title} />)}
             </ul>
         </li>
     )

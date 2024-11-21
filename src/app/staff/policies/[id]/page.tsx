@@ -5,6 +5,11 @@ import { notFound } from "next/navigation"
 import { headers, cookies } from "next/headers"
 
 export default async function Page(context: any) {
+    const session = await auth()
+
+    if (!session || !session.user || !session.user.providerId) redirect('/auth')
+    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
+
     const params = await context.params
     if (!params.id) {
         return notFound()

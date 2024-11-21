@@ -24,7 +24,6 @@ interface CatagoriesMin {
 
 export default async function Sidebar(): Promise<JSX.Element> {
     const session = await auth()
-    const allowed: CatagoriesMin[] = []
     const catagories: Catagories[] = [
         {
             title: 'Staff',
@@ -71,7 +70,7 @@ export default async function Sidebar(): Promise<JSX.Element> {
         }
     ]
 
-    catagories.forEach(async (catagory) => {
+    const allowed: CatagoriesMin[] = catagories.map(async (catagory) => {
         if (await hasPermission(session?.user.providerId as string, catagory.perm)) {
             const allowedChildren: {title: string, href: string}[] = []
 

@@ -91,7 +91,7 @@ export default async function Sidebar(): Promise<JSX.Element> {
         }        
     })
 
-    console.log(catagories)
+    console.log('Allowed Catagories: ', JSON.stringify(allowed))
     
     return (
         <SidebarClient catagories={allowed}  />

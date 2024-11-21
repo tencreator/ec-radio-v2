@@ -129,11 +129,6 @@ async function hasPermission(userId: string, permission: string): Promise<boolea
             if (perm === Permissions.ADMINISTRATOR) return true
         })
 
-        Log.info(`User ${userId} has permission ${permission} - ${res.includes(true)}`)
-        Log.debug(`Roles: ${roles}`, true)
-        Log.debug(`Perms: ${perms}`, true)
-        Log.debug(`Res: ${res}`, true)
-
         if (res.includes(true)) return true
     } catch (e) {
         console.log('Error: ', e)

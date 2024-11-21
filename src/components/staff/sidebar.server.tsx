@@ -83,10 +83,10 @@ export default async function Sidebar(): Promise<JSX.Element> {
                 }
             })
 
-            allowed.push({
+            return {
                 title: catagory.title,
                 children: allowedChildren
-            })
+            }
         }        
     })
 

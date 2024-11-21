@@ -6,15 +6,9 @@ import Sidebar from "@/components/staff/sidebar.server"
 
 interface StaffLayoutProps {
     children: React.ReactNode;
-    perm: PagePermissions;
 }
 
-const StaffLayout = async ({ children, perm }: StaffLayoutProps) => {
-    const session = await auth()
-
-    if (!session || !session.user || !session.user.providerId) redirect('/auth')
-    if (!await hasPermission(session.user.providerId, perm)) return <div>Unauthorized</div>
-
+const StaffLayout = async ({ children }: StaffLayoutProps) => {
     return (
         <main className="flex flex-row min-h-full grow">
             <Sidebar />

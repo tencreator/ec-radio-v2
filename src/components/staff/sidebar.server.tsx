@@ -92,7 +92,7 @@ export default async function Sidebar(): Promise<JSX.Element> {
 
             return undefined
         })
-    )
+    ).filter((catagory): catagory is CatagoriesMin => catagory !== undefined)
 
     console.log('Allowed Catagories: ', JSON.stringify(allowed))
     

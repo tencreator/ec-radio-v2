@@ -2,6 +2,7 @@ import { Permissions } from "@/utils/permissions"
 import Stats from "@/components/staff/stats/stats"
 import { Suspense } from "react"
 import { auth } from "@/utils/auth"
+import { redirect } from "next/navigation";
 
 export default async function Page() {
     const session = await auth()

@@ -3,7 +3,7 @@ import Layout from "../layout"
 import { hasPermission, Permissions } from "@/utils/permissions"
 import { redirect } from "next/navigation"
 
-export default function Page() {
+export default async function Page() {
     const session = await auth()
 
     if (!session || !session.user || !session.user.providerId) redirect('/auth')

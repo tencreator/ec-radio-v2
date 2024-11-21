@@ -1,8 +1,14 @@
 import ViewPolicies from "@/components/staff/policies/viewPolicies"
 import Layout from "../layout"
-import { Permissions } from "@/utils/permissions"
+import { hasPermission, Permissions } from "@/utils/permissions"
+import { redirect } from "next/navigation"
 
 export default function Page() {
+    const session = await auth()
+
+    if (!session || !session.user || !session.user.providerId) redirect('/auth')
+    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
+
     return (
         <div className="mx-auto mt-4 w-10/12 lg:w-11/12">
         <div>

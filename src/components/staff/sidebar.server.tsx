@@ -70,7 +70,7 @@ export default async function Sidebar(): Promise<JSX.Element> {
         }
     ]
 
-    const allowed: CatagoriesMin[] = catagories.map(async (catagory) => {
+    const allowed: CatagoriesMin[] = await catagories.map(async (catagory) => {
         if (await hasPermission(session?.user.providerId as string, catagory.perm)) {
             const allowedChildren: {title: string, href: string}[] = []
 

@@ -24,5 +24,3 @@ export default async function Page() {
         </div>
     )
 }
-
-Page.getLayout = (page: any) => <Layout perm={Permissions.SELF_CONNECTION}>{page}</Layout>

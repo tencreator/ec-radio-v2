@@ -70,10 +70,12 @@ export default async function Sidebar(): Promise<JSX.Element> {
         }
     ]
 
-    const allowed: CatagoriesMin[] = await Promise.all(
-        catagories.map(async (catagory) => {
+    const allowed: CatagoriesMin[] = await new Promise<CatagoriesMin[]>(async (resolve) => {
+        const result: CatagoriesMin[] = []
+
+        for (const catagory of catagories) {
             if (await hasPermission(session?.user.providerId as string, catagory.perm)) {
-                const allowedChildren: { title: string; href: string }[] = [];
+                const allowedChildren: { title: string; href: string }[] = []
 
                 for (const child of catagory.children) {
                     if (await hasPermission(session?.user.providerId as string, child.perm)) {
@@ -84,19 +86,15 @@ export default async function Sidebar(): Promise<JSX.Element> {
                     }
                 }
 
-                return {
+                result.push({
                     title: catagory.title,
                     children: allowedChildren,
-                }
+                })
             }
+        }
 
-            return undefined
-        })
-    ).filter((catagory): catagory is CatagoriesMin => catagory !== undefined)
+        resolve(result)
+    })
 
-    console.log('Allowed Catagories: ', JSON.stringify(allowed))
-    
-    return (
-        <SidebarClient catagories={allowed}  />
-    )
+    return <SidebarClient catagories={allowed} />
 }

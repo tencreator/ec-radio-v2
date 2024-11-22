@@ -79,6 +79,11 @@ class Spotify {
                 }
             })
 
+            if (response.status === 401 || response.status === 403) {
+                await this.getAccessToken()
+                return this.searchExtensive(title, artist)
+            }
+
             const data = await response.json()
 
             if (data.tracks.items.length === 0) {
@@ -97,8 +102,9 @@ class Spotify {
             this.cache.set(`${title} - ${artist}`, res, 300)
 
             return res
-        } catch (e) {
+        } catch (e: any) {
             console.log('Failed to search\n', e)
+            if (e.includes('Token')) this.getAccessToken()
             return false
         }
     }
@@ -123,6 +129,11 @@ class Spotify {
                 }
             })
 
+            if (response.status === 401 || response.status === 403) {
+                await this.getAccessToken()
+                return this.searchExtensive(title, artist)
+            }
+
             const data = await response.json()
 
             if (data.tracks.items.length === 0) {
@@ -144,8 +155,9 @@ class Spotify {
             this.cache.set(`${title} - ${artist} - extensive`, res, 300)
 
             return res
-        } catch (e) {
+        } catch (e: any) {
             console.log('Failed to search', e)
+            if (e.includes('Token')) this.getAccessToken()
             return false
         }
     }

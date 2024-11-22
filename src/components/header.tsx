@@ -4,8 +4,7 @@ import { hasPermission, Permissions } from '@/utils/permissions'
 
 export default async function Header(): Promise<JSX.Element> {
     const session = await auth()
-
-    const hasStaffPerms = session ? await hasPermission(session, Permissions.VIEW_STAFF) : false
+    const hasStaffPerms = (!!session && !!session.user && !!session.user.providerId) ? await hasPermission(session?.user.providerId, Permissions.VIEW_STAFF) : false
 
     return (
         <header>

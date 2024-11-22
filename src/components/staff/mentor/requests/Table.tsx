@@ -1,5 +1,5 @@
 import { headers, cookies } from "next/headers"
-import { Permissions, hasPermissionSync } from "@/utils/permissions"
+import { Permissions, hasPermission } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
 import Image from "next/image"
 
@@ -97,11 +97,11 @@ export default async function Table({filter}: {filter: string}) {
                             <th className={thClasses}>IP</th>
                             <th className={thClasses}>Processed By</th>
                             <th className={thClasses}>Processed At</th>
-                            {hasPermissionSync(session, Permissions.BAN_IP) && <th className={thClasses}>Ban IP</th>}
+                            {await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP) && <th className={thClasses}>Ban IP</th>}
                         </tr>
                     </thead>
                     <tbody className='[&_tr:last-child]:border-0 border-base-300'>
-                        {requests && requests.length !== 0 ? requests.map((request: request, i: number) => (
+                        {requests && requests.length !== 0 ? requests.map(async (request: request, i: number) => (
                             <tr className='border-b transition-colors hover:bg-base-200 data-[state=selected]:bg-muted border-base-300 h-12' key={i}>
                                 <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.name}</td>
                                 <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{formatDate(request.date)}</td>
@@ -124,7 +124,7 @@ export default async function Table({filter}: {filter: string}) {
                                     </div>
                                 </td>
                                 <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.processedAt ? formatDate(request.processedAt) : 'N/A'}</td>
-                                {hasPermissionSync(session, Permissions.BAN_IP) && (
+                                {await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP) && (
                                     <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>
                                         {bannedIPs && bannedIPs.find(ip => ip.ip === request.ip) ? <UnBanButton ip={request.ip} url={url} /> : <BanButton ip={request.ip} url={url} />}
                                     </td>
@@ -132,7 +132,7 @@ export default async function Table({filter}: {filter: string}) {
                             </tr>
                         )): (
                             <tr className='hover'>
-                                <td colSpan={hasPermissionSync(session, Permissions.BAN_IP) ? 9 : 8} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-12'>No requests found.</td>
+                                <td colSpan={await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP) ? 9 : 8} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-12'>No requests found.</td>
                             </tr>
                         )}
                     </tbody>

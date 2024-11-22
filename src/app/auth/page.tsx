@@ -10,4 +10,4 @@ export default async function Page() {
     }
     
     return <Login redirect="/staff" />
-};
+}

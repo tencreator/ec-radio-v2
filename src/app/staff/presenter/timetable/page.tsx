@@ -1,13 +1,14 @@
-import { Permissions } from "@/utils/permissions"
+import { redirect } from "next/navigation"
+import { hasPermission, Permissions } from "@/utils/permissions"
 import { Suspense } from "react"
-import Layout from "@/app/staff/layout"
 import Timetable from "@/components/staff/presenters/timetable/Timetable"
-import { SessionProvider } from "next-auth/react"
 import { auth } from "@/utils/auth"
-
 
 export default async function Page() {
     const session = await auth()
+
+    if (!session || !session.user || !session.user.providerId) redirect('/auth')
+    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
 
     const dates = ()=>{
         const today = new Date()
@@ -37,7 +38,3 @@ export default async function Page() {
         </div>
     )
 }
-
-
-
-Page.getLayout = (page: any) => <Layout perm={Permissions.VIEW_TIMETABLE}>{page}</Layout>

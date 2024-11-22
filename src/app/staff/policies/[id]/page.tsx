@@ -1,10 +1,15 @@
 import ViewPolicy from "@/components/staff/policies/viewPolicy"
-import Layout from "../../layout"
-import { Permissions } from "@/utils/permissions"
-import { notFound } from "next/navigation"
+import { auth } from "@/utils/auth"
+import { hasPermission, Permissions } from "@/utils/permissions"
+import { redirect, notFound } from "next/navigation"
 import { headers, cookies } from "next/headers"
 
 export default async function Page(context: any) {
+    const session = await auth()
+
+    if (!session || !session.user || !session.user.providerId) redirect('/auth')
+    if (!await hasPermission(session.user.providerId, Permissions.VIEW_POLICIES)) return <div>Unauthorized</div>
+
     const params = await context.params
     if (!params.id) {
         return notFound()
@@ -33,7 +38,3 @@ export default async function Page(context: any) {
         </div>
     )
 }
-
-Page.getLayout = (page: any) => (
-    <Layout perm={Permissions.VIEW_POLICIES}>{page}</Layout>
-)

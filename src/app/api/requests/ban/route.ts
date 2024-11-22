@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
-import { hasPermissionSync, Permissions } from "@/utils/permissions"
+import { hasPermission, Permissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
 import Caching from "@/utils/cache"
 
@@ -9,13 +9,13 @@ const cache = new Caching()
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
-        const user = await auth()
+        const session = await auth()
 
-        if (!user) {
+        if (!session || !session.user || !session.user.providerId) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
-        if (!hasPermissionSync(user, Permissions.BAN_IP) || !hasPermissionSync(user, Permissions.UNBAN_IP)) {
+        if (!await hasPermission(session.user.providerId, Permissions.BAN_IP) || !await hasPermission(session.user.providerId, Permissions.UNBAN_IP)) {
             return new NextResponse("Forbidden", { status: 403 })
         }
 
@@ -70,13 +70,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        const user = await auth()
+        const session = await auth()
 
-        if (!user) {
+        if (!session || !session.user || !session.user.providerId) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
-        if (!hasPermissionSync(user, Permissions.BAN_IP)) {
+        if (!await hasPermission(session.user.providerId, Permissions.BAN_IP)) {
             return new NextResponse("Forbidden", { status: 403 })
         }
 
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             data: {
                 ip: ip,
                 banned: true,
-                bannedBy: user.user.providerId as string,
+                bannedBy: session.user.providerId as string,
                 bannedAt: new Date()
             }
         })
@@ -117,13 +117,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
 export async function DELETE(req: NextRequest): Promise<NextResponse> {
     try {
-        const user = await auth()
+        const session = await auth()
 
-        if (!user) {
+        if (!session || !session.user || !session.user.providerId) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
-        if (!hasPermissionSync(user, Permissions.UNBAN_IP)) {
+        if (!await hasPermission(session.user.providerId, Permissions.UNBAN_IP)) {
             return new NextResponse("Forbidden", { status: 403 })
         }
 

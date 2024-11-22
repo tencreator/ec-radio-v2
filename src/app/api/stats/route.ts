@@ -3,7 +3,7 @@ import { Azuracast } from "@/utils/apis/azuracast";
 import { Spotify } from "@/utils/apis/spotify";
 import { Song } from "@/utils/types";
 import { auth } from "@/utils/auth";
-import { Permissions, hasPermissionSync } from "@/utils/permissions";
+import { Permissions, hasPermission } from "@/utils/permissions";
 
 const spotify = new Spotify(process.env.SPOTIFY_CLIENT_ID as string, process.env.SPOTIFY_CLIENT_SECRET as string)
 
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!hasPermissionSync(session, Permissions.VIEW_STATS)) {
+        if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) {
             return new NextResponse("Forbidden", { status: 403 });
         }
 

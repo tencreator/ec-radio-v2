@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Azuracast } from "@/utils/apis/azuracast";
 import { auth } from "@/utils/auth";
-import { Permissions, hasPermissionSync } from "@/utils/permissions";
+import { Permissions, hasPermission } from "@/utils/permissions";
 import { PrismaClient } from "@prisma/client";
 import Caching from "@/utils/cache";
 
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             return new NextResponse("Unauthorized", {status: 401})
         }
 
-        if (!hasPermissionSync(session, Permissions.SELF_CONNECTION)) {
+        if (!await hasPermission(session.user.providerId, Permissions.SELF_CONNECTION)) {
             return new NextResponse("Forbidden", {status: 403})
         }
 
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             return new NextResponse("Unauthorized", {status: 401})
         }
 
-        if (!hasPermissionSync(session, Permissions.SELF_CONNECTION)) {
+        if (!await hasPermission(session.user.providerId, Permissions.SELF_CONNECTION)) {
             return new NextResponse("Forbidden", {status: 403})
         }
 
@@ -87,7 +87,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
             return new NextResponse("Unauthorized", {status: 401})
         }
 
-        if (!hasPermissionSync(session, Permissions.SELF_CONNECTION)) {
+        if (!await hasPermission(session.user.providerId, Permissions.SELF_CONNECTION)) {
             return new NextResponse("Forbidden", {status: 403})
         }
 

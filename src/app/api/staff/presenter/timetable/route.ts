@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/utils/auth";
-import { Permissions, hasPermissionSync } from "@/utils/permissions";
+import { Permissions, hasPermission } from "@/utils/permissions";
 import { getFormattedDate, getFormattedTime } from "@/utils/functions";
 import { PrismaClient } from "@prisma/client";
 import Discord from "@/utils/apis/discord";
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const session = await auth()
         if (!session || !session.user || !session.user.providerId) return new NextResponse("Unauthorized", { status: 401 })
-        if (!hasPermissionSync(session, Permissions.SELF_CONNECTION)) return new NextResponse("Forbidden", { status: 403 })
+        if (!await hasPermission(session.user.providerId, Permissions.SELF_TIMETABLE)) return new NextResponse("Forbidden", { status: 403 })
 
         const date = await getFormattedDate(req.nextUrl.searchParams.get('date') as string)
         if (!date) return new NextResponse("Invalid date", { status: 400 })
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const session = await auth()
         if (!session || !session.user || !session.user.providerId) return new NextResponse("Unauthorized", { status: 401 })
-        if (!hasPermissionSync(session, Permissions.SELF_CONNECTION)) return new NextResponse("Forbidden", { status: 403 })
+        if (!await hasPermission(session.user.providerId, Permissions.SELF_TIMETABLE)) return new NextResponse("Forbidden", { status: 403 })
 
         const date = await getFormattedDate(req.nextUrl.searchParams.get('date') as string)
         if (!date) return new NextResponse("Invalid date", { status: 400 })
@@ -107,7 +107,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     try {
         const session = await auth()
         if (!session || !session.user || !session.user.providerId) return new NextResponse("Unauthorized", { status: 401 })
-        if (!hasPermissionSync(session, Permissions.SELF_CONNECTION)) return new NextResponse("Forbidden", { status: 403 })
+        if (!await hasPermission(session.user.providerId, Permissions.SELF_TIMETABLE)) return new NextResponse("Forbidden", { status: 403 })
 
         const date = await getFormattedDate(req.nextUrl.searchParams.get('date') as string)
         if (!date) return new NextResponse("Invalid date", { status: 400 })

@@ -378,6 +378,10 @@ function generatePassword(len: number): string {
         password += chosenChars.charAt(Math.floor(Math.random() * chosenChars.length))
     }
 
+    if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d{2}/.test(password)) {
+        return generatePassword(len)
+    }
+
     return password
 }
 

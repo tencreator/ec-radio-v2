@@ -20,7 +20,8 @@ const nextConfig: NextConfig = {
         hostname: "cdn.discord.com",
       }
     ]
-  }
-};
+  },
+  crossOrigin: 'anonymous',
+}
 
 export default nextConfig;

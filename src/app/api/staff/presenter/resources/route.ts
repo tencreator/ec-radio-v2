@@ -27,7 +27,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        const resources = await prisma.resources.findMany({})
+        const dbRes = await prisma.resources.findMany({})
+        const resources = dbRes.map((resource) => {
+            return {
+                name: resource.name,
+                tags: resource.tags.split(','),
+                url: resource.url,
+            }
+        })
 
         cache.set("resources", JSON.stringify(resources), 300)
 

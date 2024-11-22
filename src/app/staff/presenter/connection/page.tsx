@@ -1,7 +1,7 @@
 import { hasPermission, Permissions } from "@/utils/permissions"
 import { redirect } from "next/navigation"
-import Layout from "@/app/staff/layout"
 import { Suspense } from "react"
+import { auth } from "@/utils/auth"
 
 import ViewDetails from "@/components/staff/presenters/connection/ViewDetails"
 
@@ -9,7 +9,7 @@ export default async function Page() {
     const session = await auth()
 
     if (!session || !session.user || !session.user.providerId) redirect('/auth')
-    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
+    if (!await hasPermission(session.user.providerId, Permissions.SELF_CONNECTION)) return <div>Unauthorized</div>
 
     return (
         <div className="mx-auto mt-4 w-10/12 lg:w-11/12">

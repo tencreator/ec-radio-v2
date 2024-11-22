@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation"
 import { hasPermission, Permissions } from "@/utils/permissions"
-import Layout from "@/app/staff/layout"
+import { auth } from "@/utils/auth"
 import { Suspense } from "react"
-import { cookies, headers } from "next/headers"
 import ToggleRequestsButton from "@/components/staff/presenters/requests/ToggleButton"
 import Table from "@/components/staff/presenters/requests/RequestsTable"
 
@@ -10,26 +9,7 @@ export default async function Page() {
     const session = await auth()
 
     if (!session || !session.user || !session.user.providerId) redirect('/auth')
-    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
-
-    const headerList = await headers()
-    const protocol = headerList.get('x-forwarded-proto') || 'http'
-    const host = headerList.get('host')
-    const url = `${protocol}://${host}`
-
-    async function getRequests(filter?: string) {
-        const endpoint = url + '/api/requests' + (filter ? `?filter=${filter}` : '')
-        const cookieHeader = (await cookies()).toString()
-        const res = await fetch(endpoint, {
-            headers: {
-                'Cookie': cookieHeader,
-                'Content-Type': 'application/json'
-            }
-        })
-        const data = await res.json()
-
-        return data.requests
-    }
+    if (!await hasPermission(session.user.providerId, Permissions.VIEW_REQUESTS)) return <div>Unauthorized</div>
 
     return (
         <div className="mt-4 px-8">

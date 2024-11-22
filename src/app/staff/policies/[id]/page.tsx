@@ -1,5 +1,5 @@
 import ViewPolicy from "@/components/staff/policies/viewPolicy"
-import Layout from "../../layout"
+import { auth } from "@/utils/auth"
 import { hasPermission, Permissions } from "@/utils/permissions"
 import { redirect, notFound } from "next/navigation"
 import { headers, cookies } from "next/headers"
@@ -8,7 +8,7 @@ export default async function Page(context: any) {
     const session = await auth()
 
     if (!session || !session.user || !session.user.providerId) redirect('/auth')
-    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
+    if (!await hasPermission(session.user.providerId, Permissions.VIEW_POLICIES)) return <div>Unauthorized</div>
 
     const params = await context.params
     if (!params.id) {

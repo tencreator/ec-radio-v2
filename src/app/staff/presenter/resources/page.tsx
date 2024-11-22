@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import { hasPermission, Permissions } from "@/utils/permissions"
-import Layout from "@/app/staff/layout"
+import { auth } from "@/utils/auth"
 import { Suspense } from "react"
 import View from "@/components/staff/presenters/resources/View"
 
@@ -23,5 +23,3 @@ export default async function Page() {
         </div>
     )
 }
-
-Page.getLayout = (page: any) => <Layout perm={Permissions.VIEW_RESOURCES}>{page}</Layout>

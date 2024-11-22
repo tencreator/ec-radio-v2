@@ -1,10 +1,16 @@
-import { Permissions } from "@/utils/permissions"
+import { Permissions, hasPermission } from "@/utils/permissions"
 import Layout from "@/app/staff/layout"
 import { Suspense } from "react"
 import Table from "@/components/staff/mentor/requests/Table"
+import { auth } from "@/utils/auth"
+import { redirect } from "next/navigation";
 
+export default async function Page() {
+    const session = await auth()
 
-export default function Page() {
+    if (!session || !session.user || !session.user.providerId) redirect('/auth')
+    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
+
     return (
         <div className="mt-4 px-8">
             <Suspense fallback={<div>Loading...</div>}>

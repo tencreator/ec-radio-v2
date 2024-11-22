@@ -78,7 +78,7 @@ async function getUserRoles(userid: string): Promise<string[]> {
             throw new Error(data.message)
         }
 
-        roleCache.set(userid, data.roles, 600)
+        roleCache.set(userid, data.roles, 10 * 60)
         return data.roles
     } catch {
         return []

@@ -15,7 +15,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!await hasPermission(session.user.providerId, Permissions.SELF_CONNECTION)) {
+        if (!await hasPermission(session.user.providerId, Permissions.VIEW_RESOURCES)) {
             return new NextResponse("Forbidden", { status: 403 });
         }
 

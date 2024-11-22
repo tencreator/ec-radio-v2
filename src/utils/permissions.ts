@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client"
 import Caching from "./cache"
-import log from "./log"
 
 enum Permissions {
     ADMINISTRATOR = "ADMINISTRATOR",
@@ -50,19 +49,19 @@ enum Permissions {
     CREATE_PERMISSIONS = "CREATE.PERMISSIONS",
     DELETE_PERMISSIONS = "DELETE.PERMISSIONS",
 }
+
 type PagePermissions = Permissions
 
 const prisma = new PrismaClient()
 const roleCache = new Caching()
 const permCache = new Caching()
-const Log = new log('Permissions')
 
 async function getUserRoles(userid: string): Promise<string[]> {
-    try {
-        if (roleCache.has(userid)) {
-            return roleCache.get(userid)
-        }
+    if (roleCache.has(userid)) {
+        return roleCache.get(userid)
+    }
 
+    try {
         const url = `https://discord.com/api/v9/guilds/${process.env.GUILD_ID}/members/${userid}`
 
         const res = await fetch(url, {
@@ -72,11 +71,11 @@ async function getUserRoles(userid: string): Promise<string[]> {
             }
         })
 
-        const data = await res.json()
-
         if (!res.ok) {
-            throw new Error(data.message)
+            throw new Error('Failed to fetch user roles')
         }
+
+        const data = await res.json()
 
         roleCache.set(userid, data.roles, 10 * 60)
         return data.roles
@@ -104,6 +103,8 @@ async function getRolePerms(roles: string[]): Promise<string[]> {
                     permissions: true
                 }
             })
+
+            if (perms.length === 0) continue
 
             const permsArr = perms.map(perm => perm.permissions.split(','))
             pernsArray.push(permsArr)

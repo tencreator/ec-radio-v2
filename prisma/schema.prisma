@@ -38,6 +38,7 @@ model timetablelogs {
   time        String   @db.Text
   userid      String
   action      String
+  processedAt DateTime @default(now())
 
   @@map("TimetableLogs")
 }
@@ -73,7 +74,7 @@ model bannedReqIps {
   ip          String
   banned      Boolean
   bannedBy    String
-  bannedAt    DateTime?
+  bannedAt    DateTime
 
   @@map("BannedReqIps")
 }

@@ -92,6 +92,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 time: time,
                 userid: session.user.providerId,
                 action: "create",
+                processedAt: new Date(),
             },
         })
 
@@ -141,6 +142,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
                 time: time,
                 userid: session.user.providerId,
                 action: "delete",
+                processedAt: new Date(),
             },
         })
 

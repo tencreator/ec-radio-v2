@@ -12,7 +12,8 @@ const spotify = new Spotify(process.env.SPOTIFY_CLIENT_ID as string, process.env
 const actions: { [key: string]: (req: NextRequest) => Promise<NextResponse> } = {
     songChange,
     djConenct,
-    djDisconnect
+    djDisconnect,
+    listenerChange
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -203,6 +204,45 @@ async function djDisconnect(req: NextRequest): Promise<NextResponse> {
             action: 'disconnected'
         }
     })
+
+    return new NextResponse('OK')
+}
+
+async function listenerChange(req: NextRequest): Promise<NextResponse> {
+    const body = await req.json()
+
+    const date = new Date().toISOString().split('T')[0]
+    const listenerStats = await prisma.listenerStats.findFirst({
+        where: {
+            date: date
+        }
+    })
+
+    if (listenerStats) {
+        const minListeners = listenerStats.minListeners > body.listeners.unique ? body.listeners.unique : listenerStats.minListeners
+        const maxListeners = listenerStats.maxListeners < body.listeners.unique ? body.listeners.unique : listenerStats.maxListeners
+        const avgListeners = (listenerStats.avgListeners + body.listeners.unique) / 2
+
+        await prisma.listenerStats.update({
+            where: {
+                id: listenerStats.id
+            },
+            data: {
+                minListeners: minListeners,
+                maxListeners: maxListeners,
+                avgListeners: avgListeners,
+            }
+        })
+    } else {
+        await prisma.listenerStats.create({
+            data: {
+                date: date,
+                minListeners: body.listeners.unique,
+                maxListeners: body.listeners.unique,
+                avgListeners: body.listeners.unique,
+            }
+        })
+    }
 
     return new NextResponse('OK')
 }

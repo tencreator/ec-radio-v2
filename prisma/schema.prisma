@@ -96,8 +96,7 @@ model resources {
 model webhookChannels {
   id          Int     @id @default(autoincrement())
   songchanged String  @db.Text
-  newListener String  @db.Text
-  lostListener String  @db.Text
+  listenerStats String  @db.Text
   djConnected String  @db.Text
   djDisconnected String  @db.Text
   stationDown String  @db.Text
@@ -129,13 +128,10 @@ model connectionLogs {
 
 model listenerStats {
   id          Int      @id @default(autoincrement())
-  date        DateTime
+  date        String   @db.Text
   maxListeners Int
   minListeners Int
   avgListeners Int
-
-  highestStreamer String @db.Text
-  lowestStreamer String @db.Text
 
   @@map("ListenerStats")
 }

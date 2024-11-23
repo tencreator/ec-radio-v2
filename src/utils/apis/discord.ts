@@ -86,6 +86,49 @@ class Discord {
             return false
         }
     }
+
+    public async sendToWebhook(url: string, data: any): Promise<boolean> {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to send webhook")
+            }
+
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    public async sendToChannel(channelId: string, data: any): Promise<boolean> {
+        try {
+            const url = `https://discord.com/api/v9/channels/${channelId}/messages`
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bot ${this.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to send message")
+            }
+
+            return true
+        } catch {
+            return false
+        }
+    }
 }
 
 export default Discord

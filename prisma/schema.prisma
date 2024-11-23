@@ -92,3 +92,59 @@ model resources {
   tags        String  @db.Text
   url         String  @db.Text
 }
+
+model webhookChannels {
+  id          Int     @id @default(autoincrement())
+  songchanged String  @db.Text
+  newListener String  @db.Text
+  lostListener String  @db.Text
+  djConnected String  @db.Text
+  djDisconnected String  @db.Text
+  stationDown String  @db.Text
+  stationUp   String  @db.Text
+}
+
+model songLogs {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  title       String
+  artist      String
+  art         String
+  album       String
+  explicit    Boolean
+  listeners   Int
+  streamer    String
+
+  @@map("SongLogs")
+}
+
+model connectionLogs {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  userid      String
+  action      String
+
+  @@map("ConnectionLogs")
+}
+
+model listenerStats {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  maxListeners Int
+  minListeners Int
+  avgListeners Int
+
+  highestStreamer String @db.Text
+  lowestStreamer String @db.Text
+
+  @@map("ListenerStats")
+}
+
+model listenerLogs {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  listeners   Int
+  currentStreamer String @db.Text
+
+  @@map("ListenerLogs")
+}

@@ -11,6 +11,8 @@ const spotify = new Spotify(process.env.SPOTIFY_CLIENT_ID as string, process.env
 
 const actions: { [key: string]: (req: NextRequest) => Promise<NextResponse> } = {
     songChange,
+    djConenct,
+    djDisconnect
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -105,6 +107,100 @@ async function songChange(req: NextRequest): Promise<NextResponse> {
             explicit: 'explicit' in songData ? songData.explicit : false,
             album: 'album' in songData ? songData.album : 'N/A',
             date: new Date()
+        }
+    })
+
+    return new NextResponse('OK')
+}
+
+async function djConenct(req: NextRequest): Promise<NextResponse> {
+    const body = await req.json()
+    const channelId = await prisma.webhookChannels.findFirst({
+        select: {
+            djConnected: true
+        }
+    })
+
+    if (channelId) {
+        const user = await discord.getUserData(body.live.streamer_name)
+
+        discord.sendToChannel(channelId?.djConnected, {
+            embeds: [
+                {
+                    title: 'DJ Connected',
+                    // description: `${body.dj.name} has connected to the stream.`,
+                    fields: [
+                        {
+                            name: 'User ID',
+                            value: body.live.streamer_name,
+                            inline: true
+                        },
+                        {
+                            name: 'User Name',
+                            value: user ? user.displayName : 'Unknown',
+                            inline: true
+                        },
+                        {
+                            name: 'Ping',
+                            value: `<@${body.live.streamer_name}>`,
+                            inline: true
+                        },
+                        {
+                            name: 'Listeners',
+                            value: body.listeners.unique,
+                            inline: true
+                        }
+                    ],
+                    color: 0x00ff00
+                }
+            ]
+        })
+    }
+
+    await prisma.connectionLogs.create({
+        data: {
+            userid: body.live.streamer_name,
+            date: new Date(),
+            action: 'connected'
+        }
+    })
+
+    return new NextResponse('OK')
+}
+
+async function djDisconnect(req: NextRequest): Promise<NextResponse> {
+    const body = await req.json()
+    const channelId = await prisma.webhookChannels.findFirst({
+        select: {
+            djDisconnected: true
+        }
+    })
+
+    if (channelId) {
+        const user = await discord.getUserData(body.live.streamer_name)
+
+        discord.sendToChannel(channelId?.djDisconnected, {
+            embeds: [
+                {
+                    title: 'DJ Disconnected',
+                    fields: [
+                        {
+                            name: 'Listeners',
+                            value: body.listeners.unique,
+                            inline: true
+                        }
+                    ],
+                    color: 0xff0000
+                }
+            ]
+        })
+    }
+
+    await prisma.connectionLogs.create({
+        data: {
+            userid: body.live.streamer_name,
+            date: new Date(),
+            action: 'disconnected'
         }
     })
 

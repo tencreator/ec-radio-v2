@@ -6,3 +6,16 @@ export interface Song {
     explicit: boolean
     duration: number    
 }
+
+export interface TimetableData {
+    bookings: {
+        id: number
+        date: string
+        time: string
+        user: {
+            id: number
+            name: string
+            avatar: string
+        }
+    }[]
+}

@@ -21,10 +21,16 @@ export default async function Page() {
                 <div className="mt-4 flex flex-col gap-4 w-10/12 lg:w-11/12 overflow-x-scroll md:overflow-auto">
                     <h2>TODO: Make this a timeline filterable by action and username</h2>
 
-                    <Table headings={["Time", "Action", "User"]} data={[
-                        { time: "2021-10-10 12:00", action: "Booked", user: "testuser" },
-                        { time: "2021-10-10 12:00", action: "Unbooked", user: "testuser" },
-                        { time: "2021-10-10 12:00", action: "Booked", user: "testuser" }
+                    <Table headings={[
+                        "Date",
+                        "Time",
+                        "Action",
+                        "User",
+                        "Processed At"
+                    ]} data={[
+                        { date: "2021-10-10", time: "12:00", action: "Booked", user: "John Doe", processed_at: "2021-10-10 12:00" },
+                        { date: "2021-10-10", time: "12:00", action: "Unbooked", user: "John Doe", processed_at: "2021-10-10 12:00" },
+                        { date: "2021-10-10", time: "12:00", action: "Booked", user: "John Doe", processed_at: "2021-10-10 12:00" },
                     ]} />
                 </div>
             </Suspense>

@@ -19,12 +19,14 @@ export default function Table({ headings, data }: Props) {
                         {data.map((row, index) => (
                             <tr key={index} className='border-b border-gray-500 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
                                 {headings.map((heading, index) => {
-                                    if (!row[heading.toLowerCase()]) return (
+                                    const key = heading.toLowerCase().replace(' ', '_')
+
+                                    if (!row[key]) return (
                                         <td key={index} className='h-12 px-4 align-middle'>&nbsp;</td>
                                     )
 
                                     return (
-                                        <td key={index} className='h-12 px-4 align-middle'>{row[heading.toLowerCase()]}</td>
+                                        <td key={index} className='h-12 px-4 align-middle'>{row[key]}</td>
                                     )
                                 })}
                             </tr>

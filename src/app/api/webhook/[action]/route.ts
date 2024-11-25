@@ -17,7 +17,7 @@ const actions: { [key: string]: (req: NextRequest) => Promise<NextResponse> } = 
 }
 
 export async function POST(request: NextRequest, context: { params: { action: string }}): Promise<NextResponse> {
-    const { action } = await context.params
+    const { action } = context.params
 
     try {
         if (!isAuthed(request)) return new NextResponse('Unauthorized', { status: 401 })

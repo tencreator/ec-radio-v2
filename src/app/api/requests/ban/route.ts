@@ -44,7 +44,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             return new NextResponse(JSON.stringify({ banned: banned }), { status: 200, headers: { 'Content-Type': 'application/json' } })
         } else {
             if (cache.has("all")) {
-                console.log("Cache hit")
                 return new NextResponse(JSON.stringify({ banned: cache.get("all") }), { status: 200, headers: { 'Content-Type': 'application/json' } })
             }
 

@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 import Discord from "@/utils/apis/discord"
 import Spotify from "@/utils/apis/spotify"
-import { auth } from "@/utils/auth"
-import exp from "constants"
 
 const prisma = new PrismaClient()
 const discord = new Discord(process.env.DISCORD_BOT_TOKEN as string)

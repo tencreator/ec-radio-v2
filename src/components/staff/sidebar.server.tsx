@@ -66,6 +66,10 @@ export default async function Sidebar(): Promise<JSX.Element> {
                 title: 'Request Logs',
                 href: '/staff/mentor/requests',
                 perm: Permissions.MANAGE_REQUESTS
+            }, {
+                title: 'Timetable Logs',
+                href: '/staff/mentor/timetable',
+                perm: Permissions.OTHERS_TIMETABLE
             }]
         }
     ]

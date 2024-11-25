@@ -13,6 +13,7 @@ export default function Sidebar({catagories}: {catagories: {
 }[]}): JSX.Element {
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [selected, setSelected] = useState('Home')
     const sidebarRef = useRef<HTMLDivElement>(null)
     const sidebarToggleRef = useRef<HTMLButtonElement>(null)
 
@@ -51,7 +52,7 @@ export default function Sidebar({catagories}: {catagories: {
                 {loading ? <p>Loading...</p> : (
                     <ul className="menu">
                         {catagories.map((catagory, i) => (
-                            <SidebarCatagory key={i} title={catagory.title} children={catagory.children} />
+                            <SidebarCatagory key={i} title={catagory.title} children={catagory.children} selected={selected} setSelected={setSelected} />
                         ))}
                     </ul>
                 )}
@@ -60,7 +61,7 @@ export default function Sidebar({catagories}: {catagories: {
     )
 }
 
-function SidebarCatagory({ title, children }: { title: string, children: {title: string, href: string}[] }) {
+function SidebarCatagory({ title, children, setSelected, selected }: { title: string, children: {title: string, href: string}[], setSelected: (title: string) => void, selected: string }) {
     const [open, setOpen] = useState(true)
     const sidebarRef = useRef<HTMLUListElement>(null)
 
@@ -91,12 +92,12 @@ function SidebarCatagory({ title, children }: { title: string, children: {title:
                 <i className={'ml-auto fas fa-chevron-' + (open ? 'up' : 'down')}></i>
             </div>
             <ul ref={sidebarRef}>
-                {open && children.map((child, i) => <SidebarLink key={i} href={child.href} title={child.title} />)}
+                {open && children.map((child, i) => <SidebarLink key={i} href={child.href} title={child.title} selected={selected} setSelected={setSelected} />)}
             </ul>
         </li>
     )
 }
 
-function SidebarLink({ href, title }: { href: string, title: string }) {
-    return <li><Link href={href}>{title}</Link></li>
+function SidebarLink({ href, title, setSelected, selected }: { href: string, title: string, setSelected: (title: string) => void, selected: string }) {
+    return <li><Link className={selected === title ? 'active' : ''} onClick={()=>setSelected(title)} href={href}>{title}</Link></li>
 }

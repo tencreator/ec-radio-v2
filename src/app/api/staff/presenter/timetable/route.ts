@@ -12,10 +12,6 @@ const cache = new Caching()
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
-        const session = await auth()
-        if (!session || !session.user || !session.user.providerId) return new NextResponse("Unauthorized", { status: 401 })
-        if (!await hasPermission(session.user.providerId, Permissions.SELF_TIMETABLE)) return new NextResponse("Forbidden", { status: 403 })
-
         const date = await getFormattedDate(req.nextUrl.searchParams.get('date') as string)
         if (!date) return new NextResponse("Invalid date", { status: 400 })
         

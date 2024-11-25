@@ -1,17 +1,17 @@
 "use client"
+import { useRouter } from "next/navigation"
 
-interface props {
-    setDetails: (details: any) => void
-}
+export default function DeleteButton() {
+    const router = useRouter()
 
-export default function DeleteButton({ setDetails }: props) {
     async function deleteConnectionDetails(){
         const res = await fetch(`/api/staff/presenter/connection`, {
             method: 'DELETE',
         })
 
         if (!res.ok) return
-        setDetails(null)
+
+        router.refresh()
     }
 
     return (

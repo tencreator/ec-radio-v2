@@ -23,26 +23,6 @@ async function getFormattedDate(date: string): Promise<string | false> {
     }
 }
 
-// async function getFormattedTime(time: string): Promise<string | false> {
-//     console.log(time)
-//     if (!time) return false
-
-//     try {
-//         const timeObj = new Date(time)
-//         console.log(timeObj)
-//         if (timeObj.toString() == "Invalid Date") return false
-//         console.log(timeObj.toISOString())
-//         const formattedTime = timeObj.toISOString().split("T")[1].split(".")[0]
-//         console.log(formattedTime)
-//         return formattedTime
-//     } catch (e) {
-//         console.log(e)
-//         return false
-//     }
-// }
-
-// returns HH:MM:SS
-// input HH
 async function getFormattedTime(time: string): Promise<string | false> {
     if (!time) return false
 

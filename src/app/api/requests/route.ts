@@ -26,7 +26,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const limit = Number(req.nextUrl.searchParams.get("limit")) || 10
         const start = Number(req.nextUrl.searchParams.get("start")) || 0
 
-        if (cache.has(`requests-${getAll}-${filter}-${limit}-${start}`)) {
+        if (
+            cache.has(`requests-${getAll}-${filter}-${limit}-${start}`)
+                &&
+            cache.get(`requests-${getAll}-${filter}-${limit}-${start}`) == "[]"
+        ) {
             return new NextResponse(cache.get(`requests-${getAll}-${filter}-${limit}-${start}`))
         }
 

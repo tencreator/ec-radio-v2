@@ -1,15 +1,14 @@
 'use client'
-
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 interface ActionButtonProps {
     action: string
     requestId: string
-    filter: string
-    updateRequests: (arg0: string) => Promise<void>
 }
 
-export default function RequestBtn({ action, requestId, filter, updateRequests }: ActionButtonProps) {
+export default function RequestBtn({ action, requestId }: ActionButtonProps) {
+    const router = useRouter()
     const [disabled, setDisabled] = useState<boolean>(false)
 
     async function handleRequest(action: string, id: string): Promise<void> {
@@ -32,8 +31,8 @@ export default function RequestBtn({ action, requestId, filter, updateRequests }
     async function handleClick(e: any) {
         setDisabled(true)
         await handleRequest(action, requestId)
-        await updateRequests(filter)
         setDisabled(false)
+        router.refresh()
     }
 
     return (

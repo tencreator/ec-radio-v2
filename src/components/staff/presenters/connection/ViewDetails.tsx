@@ -1,27 +1,26 @@
-"use client"
-import { useState, useEffect } from 'react'
+import { headers, cookies } from 'next/headers'
 import CreateButton from './CreateButton'
 import DeleteButton from './DeleteButton'
+import { CopyButton } from './CopyButton'
 
-export default function ViewDetails() {
-    const [details, setDetails] = useState<null | {azuraid: string, discordid: string, name: string, password: string}>(null)
-    const [loading, setLoading] = useState(true)
+export default async function ViewDetails() {
+    const headerList = await headers()
+    const protocol = headerList.get('x-forwarded-proto') || 'http'
+    const host = headerList.get('host')
+    const url = `${protocol}://${host}`
 
     async function getDetails() {
-        const res = await fetch('/api/staff/presenter/connection')
+        const res = await fetch(url + '/api/staff/presenter/connection', {
+            headers: {
+                'Cookie': (await cookies()).toString()
+            }
+        })
         if (!res.ok) return
         const data = await res.json()
-        setDetails(data)
-        setLoading(false)
+        return data
     }
 
-    useEffect(() => {
-        getDetails()
-    }, [])
-
-    if (loading) {
-        return <div>Loading...</div>
-    }
+    const details = await getDetails()
 
     return (
         <div>
@@ -37,12 +36,12 @@ export default function ViewDetails() {
                         <CreateDetailText title="Mount" text="/" />                   
                     </div>
                     
-                    <DeleteButton setDetails={setDetails} />
+                    <DeleteButton />
                 </div>
             ) : (
                 <>
                     <p>No connection details found.</p>
-                    <CreateButton getDetails={getDetails} setDetails={setDetails} />
+                    <CreateButton />
                 </>
             )}
         </div>
@@ -56,7 +55,7 @@ function CreateDetailText({title, text, hidden = false}: {title: string, text: s
     
     return (
         <>
-            <span className="font-semibold capitalize">{title}:</span> <span>{hidden ? '********' : text}</span> <button className='w-fit ml-4 hidden sm:block' onClick={copyText}><i className='fa-solid fa-clipboard'></i></button>
+            <span className="font-semibold capitalize">{title}:</span> <span>{hidden ? '********' : text}</span> <CopyButton text={text} />
         </>
     )
 }

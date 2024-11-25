@@ -7,7 +7,7 @@ import Discord from "@/utils/apis/discord"
 const prisma = new PrismaClient()
 const discord = new Discord(process.env.DISCORD_BOT_TOKEN as string)
 
-export async function GET(request: NextRequest, context: { params: { action: string }}): Promise<NextResponse> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
     try {
         const session = await auth()
         if (!session || !session.user || !session.user.providerId) return new NextResponse("Unauthorized", { status: 401 })

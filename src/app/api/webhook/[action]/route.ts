@@ -14,14 +14,13 @@ const actions: { [key: string]: (req: NextRequest) => Promise<NextResponse> } = 
     listenerChange
 }
 
-export async function POST(request: NextRequest, context: { params: { action: string }}): Promise<NextResponse> {
-    const { action } = context.params
-
+export async function POST(request: NextRequest, { params }: { params: { action: string } }): Promise<NextResponse> {
     try {
+        const path = request.nextUrl.pathname.split('/').pop()
         if (!isAuthed(request)) return new NextResponse('Unauthorized', { status: 401 })
     
-        if (!action || !actions[action]) return new NextResponse('Not Found', { status: 404 })
-        return actions[action](request)
+        if (!path || !actions[path]) return new NextResponse('Not Found', { status: 404 })
+        return actions[path](request)
     } catch {
         return new NextResponse('Internal Server Error', { status: 500 })
     }

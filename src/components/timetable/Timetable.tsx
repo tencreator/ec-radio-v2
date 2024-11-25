@@ -44,7 +44,6 @@ export default async function Timetable({date}: {date: string}) {
                     {Array.from({length: 24}, async (_, i) => {
                         const time = `${i.toString().padStart(2, '0')}:00`
                         const booking = data.bookings.find(booking => booking.time === `${time}:00`)
-                        console.log('Booking for ', time, booking)
                         return (
                             <Cell key={time} time={time} booked={!!booking} currentDay={await checkDate()} user={booking?.user} />
                         )

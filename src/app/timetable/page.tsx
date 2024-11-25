@@ -1,4 +1,4 @@
-import Timetable from "@/components/timetable/Timetable.server";
+import Timetable from "@/components/timetable/Timetable";
 
 function days() {
     const today = new Date()

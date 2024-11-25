@@ -1,14 +1,14 @@
 import { Permissions, hasPermission} from "@/utils/permissions"
-import Layout from "@/app/staff/layout"
 import { Suspense } from "react"
 import { auth } from "@/utils/auth"
 import { redirect } from "next/navigation";
+import Table from "@/components/utils/Table";
 
 export default async function Page() {
     const session = await auth()
 
     if (!session || !session.user || !session.user.providerId) redirect('/auth')
-    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
+    if (!await hasPermission(session.user.providerId, Permissions.OTHERS_TIMETABLE)) return <div>Unauthorized</div>
 
     return (
         <div className="mx-auto mt-4 w-10/12 lg:w-11/12">
@@ -20,10 +20,15 @@ export default async function Page() {
 
                 <div className="mt-4 flex flex-col gap-4 w-10/12 lg:w-11/12 overflow-x-scroll md:overflow-auto">
                     <h2>TODO: Make this a timeline filterable by action and username</h2>
+
+                    <Table headings={["Time", "Action", "User"]} data={[
+                        { time: "2021-10-10 12:00", action: "Booked", user: "testuser" },
+                        { time: "2021-10-10 12:00", action: "Unbooked", user: "testuser" },
+                        { time: "2021-10-10 12:00", action: "Booked", user: "testuser" }
+                    ]} />
                 </div>
             </Suspense>
         </div>
     )
 }
 
-Page.getLayout = (page: any) => <Layout perm={Permissions.MANAGE_REQUESTS}>{page}</Layout>

@@ -1,16 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
-export default function ToggleRequestsButton() {
+export default function ToggleRequestsButton({acceptingRequests}: {acceptingRequests: boolean}) {
+    const router = useRouter()
     const [disabled, setDisabled] = useState(false)
-    const [acceptingRequests, setAcceptingRequests] = useState(false)
-
-    async function getRequestStatus() {
-        const res = await fetch('/api/requests/status')
-        const data = await res.json()
-        setAcceptingRequests(data.acceptingRequests)
-    }
 
     async function toggleRequests() {
         setDisabled(true)
@@ -18,17 +13,10 @@ export default function ToggleRequestsButton() {
             method: 'POST',
         })
 
-        if (!res.ok) return
-
-        const data = await res.json()
-
-        setAcceptingRequests(data.acceptingRequests)
+        if (!res.ok) return setDisabled(false)
+        router.refresh()
         setDisabled(false)
     }
-
-    useEffect(() => {
-        getRequestStatus()
-    }, [])
 
 
     return (

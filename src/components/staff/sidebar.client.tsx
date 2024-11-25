@@ -99,7 +99,5 @@ function SidebarCatagory({ title, children, setSelected, selected }: { title: st
 }
 
 function SidebarLink({ href, title, setSelected, selected }: { href: string, title: string, setSelected: (title: string) => void, selected: string }) {
-    console.log(selected, title, selected === title)
-
     return <li><Link className={selected === title ? 'active' : ''} onClick={()=>setSelected(title)} href={href}>{title}</Link></li>
 }

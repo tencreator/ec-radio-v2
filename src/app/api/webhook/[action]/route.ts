@@ -16,13 +16,14 @@ const actions: { [key: string]: (req: NextRequest) => Promise<NextResponse> } = 
     listenerChange
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function POST(request: NextRequest, context: { params: { action: string }}): Promise<NextResponse> {
+    const { action } = await context.params
+
     try {
-        const path = request.nextUrl.pathname.split('/').pop()
         if (!isAuthed(request)) return new NextResponse('Unauthorized', { status: 401 })
     
-        if (!path || !actions[path]) return new NextResponse('Not Found', { status: 404 })
-        return actions[path](request)
+        if (!action || !actions[action]) return new NextResponse('Not Found', { status: 404 })
+        return actions[action](request)
     } catch {
         return new NextResponse('Internal Server Error', { status: 500 })
     }
@@ -54,67 +55,67 @@ async function songChange(req: NextRequest): Promise<NextResponse> {
         })
     
         if (channelId) {
-            discord.sendToChannel(channelId?.songchanged, {
-                embeds: [
-                    {
-                        title: 'Now Playing',
-                        author: {
-                            name: `🎵 ${songData.title} - ${songData.artist}`,
-                            icon_url: songData.art
-                        },
-                        fields: [
-                            {
-                                name: 'Title',
-                                value: songData.title,
-                                inline: true
-                            },
-                            {
-                                name: 'Artist',
-                                value: songData.artist,
-                                inline: true
-                            },
-                            {
-                                name: 'Album',
-                                value: 'album' in songData ? songData.album : 'Not available',
-                                inline: true
-                            },
-                            {
-                                name: 'Explicit',
-                                value: 'explicit' in songData ? songData.explicit ? 'Yes' : 'No' : 'Not available',
-                                inline: true
-                            },
-                            {
-                                name: 'Streamer',
-                                value: body.live.is_live ? body.live.streamer_name : process.env.AUTODJ_NAME as string,
-                                inline: true
-                            },
-                            {
-                                name: 'Listeners',
-                                value: body.listeners.unique,
-                                inline: true
-                            }  
-                        ],
-                        footer: {
-                            text: 'spotify' in songData && songData.spotify ?  'Listen on Spotify' : 'Not available on Spotify'
-                        },
-                        url: 'spotify' in songData && songData.spotify ? songData.spotify : undefined
-                    }
-                ]
-            })
+            // discord.sendToChannel(channelId?.songchanged, {
+            //     embeds: [
+            //         {
+            //             title: 'Now Playing',
+            //             author: {
+            //                 name: `🎵 ${songData.title} - ${songData.artist}`,
+            //                 icon_url: songData.art
+            //             },
+            //             fields: [
+            //                 {
+            //                     name: 'Title',
+            //                     value: songData.title,
+            //                     inline: true
+            //                 },
+            //                 {
+            //                     name: 'Artist',
+            //                     value: songData.artist,
+            //                     inline: true
+            //                 },
+            //                 {
+            //                     name: 'Album',
+            //                     value: 'album' in songData ? songData.album : 'Not available',
+            //                     inline: true
+            //                 },
+            //                 {
+            //                     name: 'Explicit',
+            //                     value: 'explicit' in songData ? songData.explicit ? 'Yes' : 'No' : 'Not available',
+            //                     inline: true
+            //                 },
+            //                 {
+            //                     name: 'Streamer',
+            //                     value: body.live.is_live ? body.live.streamer_name : process.env.AUTODJ_NAME as string,
+            //                     inline: true
+            //                 },
+            //                 {
+            //                     name: 'Listeners',
+            //                     value: body.listeners.unique,
+            //                     inline: true
+            //                 }  
+            //             ],
+            //             footer: {
+            //                 text: 'spotify' in songData && songData.spotify ?  'Listen on Spotify' : 'Not available on Spotify'
+            //             },
+            //             url: 'spotify' in songData && songData.spotify ? songData.spotify : undefined
+            //         }
+            //     ]
+            // })
         }
     
-        await prisma.songLogs.create({
-            data: {
-                title: songData.title,
-                artist: songData.artist,
-                art: songData.art,
-                streamer: body.live.is_live ? body.live.streamer_name : process.env.AUTODJ_NAME as string,
-                listeners: body.listeners.unique,
-                explicit: 'explicit' in songData ? songData.explicit : false,
-                album: 'album' in songData ? songData.album : 'N/A',
-                date: new Date()
-            }
-        })
+        // await prisma.songLogs.create({
+        //     data: {
+        //         title: songData.title,
+        //         artist: songData.artist,
+        //         art: songData.art,
+        //         streamer: body.live.is_live ? body.live.streamer_name : process.env.AUTODJ_NAME as string,
+        //         listeners: body.listeners.unique,
+        //         explicit: 'explicit' in songData ? songData.explicit : false,
+        //         album: 'album' in songData ? songData.album : 'N/A',
+        //         date: new Date()
+        //     }
+        // })
     
         return new NextResponse('OK')
     } catch {

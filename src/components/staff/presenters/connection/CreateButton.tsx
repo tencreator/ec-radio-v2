@@ -1,19 +1,17 @@
 "use client"
+import { useRouter } from "next/navigation"
 
-interface props {
-    getDetails: () => void,
-    setDetails: (details: any) => void
-}
+export default function CreateButton(){
+    const router = useRouter()
 
-export default function CreateButton({ getDetails, setDetails }: props){
     async function generateConnectionDetails(){
         const res = await fetch(`/api/staff/presenter/connection`, {
             method: 'POST',
         })
 
         if (!res.ok) return
-        const data = await res.json()
-        setDetails(data)
+
+        router.refresh()
     } 
 
     return (

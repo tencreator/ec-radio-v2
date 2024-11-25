@@ -14,7 +14,7 @@ const actions: { [key: string]: (req: NextRequest) => Promise<NextResponse> } = 
     listenerChange
 }
 
-export async function POST(request: NextRequest, { params }: { params: { action: string } }): Promise<NextResponse> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
     try {
         const path = request.nextUrl.pathname.split('/').pop()
         if (!isAuthed(request)) return new NextResponse('Unauthorized', { status: 401 })

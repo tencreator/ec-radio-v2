@@ -3,6 +3,21 @@ import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 
 import Styles from '../../styles/sidebar.module.css'
+import { RefreshButton } from '../utils/RefreshButton'
+
+function getAllSidebarOpen(): { [key: string]: boolean } {
+    const storage = localStorage.getItem('staff-sidebar')
+    return storage ? JSON.parse(storage) as { [key: string]: boolean } : {}
+}
+
+function setSidebarOpen(open: boolean, title: string) {
+    const storage = localStorage.getItem('staff-sidebar')
+    let openCatagories = storage ? JSON.parse(storage) as { [key: string]: boolean } : {}
+
+    openCatagories[title] = open
+
+    localStorage.setItem('staff-sidebar', JSON.stringify(openCatagories))
+}
 
 export default function Sidebar({catagories}: {catagories: {
     title: string
@@ -13,6 +28,7 @@ export default function Sidebar({catagories}: {catagories: {
 }[]}): JSX.Element {
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [openCookie, setOpenCookie] = useState<{ [key: string]: boolean }>({})
     const sidebarRef = useRef<HTMLDivElement>(null)
     const sidebarToggleRef = useRef<HTMLButtonElement>(null)
 
@@ -41,41 +57,42 @@ export default function Sidebar({catagories}: {catagories: {
         setLoading(false)
     }, [catagories])
 
+    useEffect(() => {
+        const storage = localStorage.getItem('staff-sidebar')
+        const openCategories = storage ? JSON.parse(storage) as { [key: string]: boolean } : {}
+        setOpenCookie(openCategories)
+    }, [])
+
     return (
         <div className='min-h-full'>
             <button ref={sidebarToggleRef} className='btn bg-slate-800 border border-solid border-gray-500 fixed top-20 right-5 text-2xl z-50 lg:hidden' onClick={()=>setShow(!show)}>
                 <i className='fas fa-bars'></i>
             </button>
 
-            <div ref={sidebarRef} className={'bg-base-300 ' + Styles.sidebar}>
+            <div ref={sidebarRef} className={'bg-base-300 min-w-60 ' + Styles.sidebar}>
                 {loading ? <p>Loading...</p> : (
-                    <ul className="menu">
+                    <ul className="menu sticky">
                         {catagories.map((catagory, i) => (
-                            <SidebarCatagory key={i} title={catagory.title} children={catagory.children} />
+                            <SidebarCatagory key={i} title={catagory.title} children={catagory.children} openCookie={openCookie[catagory.title] || true} />
                         ))}
+
                     </ul>
                 )}
+
+                <RefreshButton className='w-full mt-4 sticky' />
             </div>
         </div>
     )
 }
 
-function SidebarCatagory({ title, children }: { title: string, children: {title: string, href: string}[] }) {
-    const [open, setOpen] = useState(true)
+function SidebarCatagory({ title, children, openCookie }: { title: string, children: {title: string, href: string}[], openCookie: boolean }): JSX.Element {
+    const [open, setOpen] = useState(openCookie)
     const sidebarRef = useRef<HTMLUListElement>(null)
-
-    useEffect(()=>{
-        const open = localStorage.getItem(`sidebar-catagory-${title}`)
-
-        if (open) {
-            setOpen(open === 'true')
-        }
-    }, [])
 
     useEffect(()=>{
         if (!sidebarRef.current) return;
 
-        localStorage.setItem(`sidebar-catagory-${title}`, open.toString())
+        setSidebarOpen(open, title)
 
         if (open) {
             sidebarRef.current.style.height = 'auto';

@@ -7,7 +7,7 @@ import Caching from "@/utils/cache";
 const prisma = new PrismaClient()
 const cache = new Caching() 
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: { params: Promise<{id: string}>}): Promise<NextResponse> {
     const session = await auth()
 
     if (!session || !session.user || !session.user.providerId) {
@@ -18,9 +18,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         return new NextResponse(null, { status: 403 })
     }
 
-    const url = new URL(req.url);
-    const id = url.pathname.split('/').pop();
-
+    const { id } = await params
     
     if (id) {
         if (cache.has(id)) {

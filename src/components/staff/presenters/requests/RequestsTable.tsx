@@ -13,8 +13,6 @@ interface request {
     message: string
 }
 
-const thClasses = 'h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0'
-
 export default async function RequestsTable({ filter }: Props): Promise<JSX.Element> {
     async function getRequests(): Promise<{ requests: request[] }> {
         const res = await makeRequest(`/api/requests?filter=${filter}`, {})

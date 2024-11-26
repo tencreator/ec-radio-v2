@@ -1,5 +1,4 @@
 "use client"
-import { isMobile, isTablet } from "react-device-detect";
 import { useEffect, useState } from "react";
 import { APIResponse as Info } from "@/app/api/route";
 import { Mount } from "@/utils/apis/azuracast";
@@ -12,7 +11,7 @@ function truncate(str: string, n: number): string {
     return str.length > n ? str.substring(0, n - 1) + "..." : str
 }
 
-function updateMediaSession(info: Info | null, playing: boolean, setPlaying: (playing: boolean)=> void): void {
+function updateMediaSession(info: Info | null, setPlaying: (playing: boolean)=> void): void {
     if (!info) return
 
     navigator.mediaSession.metadata = new MediaMetadata({
@@ -52,8 +51,6 @@ export default function Viewer(): JSX.Element {
     const [volume, setVolume] = useState(100)
 
     async function fetchData() {
-        if ((!show) && (!isMobile || !isTablet)) return
-
         const response = await fetch("/api")
         const data = await response.json()
         setInfo(data)
@@ -100,7 +97,7 @@ export default function Viewer(): JSX.Element {
     }, [])
 
     useEffect(()=>{
-        updateMediaSession(info, playing, setPlaying)
+        updateMediaSession(info, setPlaying)
     }, [info])
 
     useEffect(()=>{
@@ -115,9 +112,9 @@ export default function Viewer(): JSX.Element {
 
     return (
         <>
-            <section className={"z-50 w-full flex fixed bottom-0 mb-2 transition-all " + (show ? 'justify-center' : 'justify-end pr-4')}>
+            <section className={"z-50 flex fixed bottom-0 mb-2 transition-all " + (show ? 'justify-center self-center w-11/12 md:w-9/12 lg:w-8/12 xl:w-6/12' : 'justify-end pr-4 self-end')}>
                 {show ? (
-                    <div className="flex flex-col md:flex-row items-center w-11/12 md:w-9/12 lg:w-8/12 xl:w-6/12 overflow-hidden py-1 rounded-md border-solid border-2 bg-zinc-700 border-zinc-500">
+                    <div className="flex flex-col md:flex-row items-center w-full overflow-hidden py-1 rounded-md border-solid border-2 bg-zinc-700 border-zinc-500">
                         <div className="mx-auto flex flex-row">
                             <button onClick={()=>{
                                 setPlaying(!playing)

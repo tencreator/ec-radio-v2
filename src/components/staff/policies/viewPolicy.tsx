@@ -1,10 +1,7 @@
-"use client"
-import { useState, useEffect } from "react"
 import ReactMarkdown from 'react-markdown'
 import { notFound } from "next/navigation"
-import { GetStaticProps } from "next"
 
-export default function ViewPolicy({policy}: {policy: {id: number, name: string, text: string}}) {
+export default async function ViewPolicy({policy}: {policy: {id: number, name: string, text: string}}) {
     if (!policy) {
         return notFound()
     }
@@ -16,6 +13,19 @@ export default function ViewPolicy({policy}: {policy: {id: number, name: string,
                     <ReactMarkdown>{policy.text}</ReactMarkdown>
                 </div>
             )}
+        </div>
+    )
+}
+
+export async function Skeleton() {
+    return (
+        <div className="mt-4 lg:w-11/12">
+            <div className="markdown flex flex-row gap-2">
+                <div className="w-full h-[2ch] skeleton"></div>
+                <div className="w-full h-[2ch] skeleton"></div>
+                <div className="w-full h-[2ch] skeleton"></div>
+                <div className="w-full h-[2ch] skeleton"></div>
+            </div>
         </div>
     )
 }

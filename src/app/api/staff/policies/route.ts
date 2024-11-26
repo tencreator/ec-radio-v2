@@ -41,7 +41,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         return new NextResponse(null, { status: 401 })
     }
 
-    if (!await hasPermission(session.user.providerId, Permissions.EDIT_POLICIES)) {
+    if (!await hasPermission(session.user.providerId, Permissions.MANAGE_POLICIES)) {
         return new NextResponse(null, { status: 403 })
     }
 

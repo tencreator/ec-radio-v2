@@ -71,6 +71,19 @@ export default async function Sidebar(): Promise<JSX.Element> {
                 href: '/staff/mentor/timetable',
                 perm: Permissions.OTHERS_TIMETABLE
             }]
+        },
+        {
+            title: 'Managers',
+            perm: Permissions.VIEW_MANAGERS,
+            children: [{
+                title: 'Manage Resources',
+                href: '/staff/manager/resources',
+                perm: Permissions.MANAGE_RESOURCES
+            }, {
+                title: 'Manage Connection',
+                href: '/staff/manager/connection',
+                perm: Permissions.MANAGE_CONNECTIONS
+            }]
         }
     ]
 

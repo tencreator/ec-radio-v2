@@ -4,7 +4,6 @@ import { hasPermission, Permissions } from "@/utils/permissions"
 import { redirect, notFound } from "next/navigation"
 import { headers, cookies } from "next/headers"
 import Image from "next/image"
-import { RefreshButton } from "@/components/utils/RefreshButton"
 
 export default async function Page(context: any) {
     const session = await auth()
@@ -34,14 +33,14 @@ export default async function Page(context: any) {
     const policy = await res.json()
 
     return (
-        <div className="mx-auto mt-4 container">
+        <div className="mx-auto mt-4 overflow-auto container">
             <div className="flex flex-row">
                 <div className="flex flex-col">
                     <h1 className="text-3xl font-semibold">Policy - {policy.name}</h1>
                     <p className="text-sm text-gray-500">Failure to adhead to this policy can and will resutlt in your permission to present on our radio station being revoked. Take this as your one and only warning</p>
                 </div>
-                <div className="grow flex flex-row justify-start items-end ml-4"><RefreshButton /></div>
-                <div className="flex flex-row items-center">
+                <div className="grow flex flex-row justify-start items-end ml-4"></div>
+                <div className="hidden md:flex flex-row items-center">
                     <Image src={session?.user?.image || ''} className="rounded-full w-[32px] h-[32px] mr-2" width={32} height={32} alt="Profile Picture" />
                     <p>{session?.user?.displayName}</p>
                 </div>

@@ -75,7 +75,7 @@ export default function Sidebar({catagories}: {catagories: {
                 {loading ? <p>Loading...</p> : (
                     <ul className="menu sticky">
                         {catagories.map((catagory, i) => (
-                            <SidebarCatagory key={i} title={catagory.title} children={catagory.children} openCookie={openCookie[catagory.title]} />
+                            <SidebarCatagory key={i} title={catagory.title} children={catagory.children} openCookie={openCookie[catagory.title] || true} />
                         ))}
 
                     </ul>

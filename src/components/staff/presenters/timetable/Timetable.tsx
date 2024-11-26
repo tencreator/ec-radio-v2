@@ -75,3 +75,13 @@ export default async function Timetable({date}: Props) {
         </div>
     )
 }
+
+export async function Skeleton() {
+    return (
+        <div className="collapse bg-base-200 shadow-md border-2 border-solid border-base-300">
+            <div className="collapse-title flex flex-row items-center">
+                <div className="skeleton w-full h-[2ch]"></div>
+            </div>
+        </div>
+    )
+}

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 import { hasPermission, Permissions } from "@/utils/permissions"
 import { Suspense } from "react"
-import Timetable from "@/components/staff/presenters/timetable/Timetable"
+import Timetable, { Skeleton } from "@/components/staff/presenters/timetable/Timetable"
 import { auth } from "@/utils/auth"
 import Image from "next/image"
 
@@ -38,7 +38,9 @@ export default async function Page() {
 
             <div className="mt-4 flex flex-col gap-4">
                 {dates().map((date: string, index: number) => (
-                    <Timetable key={index} date={date} />
+                    <Suspense fallback={<Skeleton />} key={index}>
+                        <Timetable date={date} />
+                    </Suspense>
                 ))}
             </div>
         </div>

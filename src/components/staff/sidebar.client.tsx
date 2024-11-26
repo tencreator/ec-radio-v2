@@ -5,13 +5,6 @@ import Link from 'next/link'
 import Styles from '../../styles/sidebar.module.css'
 import { RefreshButton } from '../utils/RefreshButton'
 
-function getSidebarOpen(title: string): boolean {
-    const storage = localStorage.getItem('staff-sidebar')
-    let openCatagories = storage ? JSON.parse(storage) as { [key: string]: boolean } : {}
-
-    return openCatagories[title] || false
-}
-
 function getAllSidebarOpen(): { [key: string]: boolean } {
     const storage = localStorage.getItem('staff-sidebar')
     return storage ? JSON.parse(storage) as { [key: string]: boolean } : {}
@@ -35,6 +28,7 @@ export default function Sidebar({catagories}: {catagories: {
 }[]}): JSX.Element {
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [openCookie, setOpenCookie] = useState<{ [key: string]: boolean }>({})
     const sidebarRef = useRef<HTMLDivElement>(null)
     const sidebarToggleRef = useRef<HTMLButtonElement>(null)
 
@@ -63,7 +57,11 @@ export default function Sidebar({catagories}: {catagories: {
         setLoading(false)
     }, [catagories])
 
-    const openCookie = getAllSidebarOpen()
+    useEffect(() => {
+        const storage = localStorage.getItem('staff-sidebar')
+        const openCategories = storage ? JSON.parse(storage) as { [key: string]: boolean } : {}
+        setOpenCookie(openCategories)
+    }, [])
 
     return (
         <div className='min-h-full'>

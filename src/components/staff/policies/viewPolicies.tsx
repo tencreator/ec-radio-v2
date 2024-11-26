@@ -15,3 +15,17 @@ export default async function ViewPolicies({res} : {res: Response}) {
         </div>
     )
 }
+
+export async function Skeleton() {
+    return (
+        <div className="mt-4 lg:w-11/12">
+            <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <li>
+                    <div className="btn bg-base-300 border border-solid border-base-300 justify-start w-full font-semibold text-xl">
+                        <div className="w-full h-[2ch] skeleton"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    )
+}

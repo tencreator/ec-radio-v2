@@ -1,9 +1,10 @@
-import ViewPolicies from "@/components/staff/policies/viewPolicies"
+import ViewPolicies, { Skeleton } from "@/components/staff/policies/viewPolicies"
 import { auth } from "@/utils/auth"
 import { hasPermission, Permissions } from "@/utils/permissions"
 import { redirect } from "next/navigation"
 import { cookies, headers } from "next/headers"
 import Image from "next/image"
+import { Suspense } from "react"
 
 export default async function Page() {
     const session = await auth()
@@ -36,9 +37,8 @@ export default async function Page() {
                 </div>
             </div>
 
-        
-            {
-                res.ok ? (
+            <Suspense fallback={<Skeleton />}>
+                {res.ok ? (
                     <div>
                         <ViewPolicies res={res} />
                     </div>
@@ -46,8 +46,8 @@ export default async function Page() {
                     <div>
                         <p>No policies found.</p>
                     </div>
-                )
-            }
+                )}
+            </Suspense>
         </div>
     )
 }

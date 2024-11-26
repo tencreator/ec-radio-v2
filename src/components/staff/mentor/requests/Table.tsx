@@ -132,12 +132,12 @@ export default async function Requests({ filter }: { filter: string }) {
 
     if (await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP)) {
         return (
-            <Table headings={["Name", "Date", "Message", "Status", "IP", "Processed By", "Processed At", "Ban IP"]} data={requests} />
+            <Table headings={["Name", "Date", "Message", "Status", "IP", "User", "Processed At", "Ban IP"]} data={requests} />
         )
     }
 
     return (
-        <Table headings={["Name", "Date", "Message", "Status", "IP", "Processed By", "Processed At"]} data={requests} />
+        <Table headings={["Name", "Date", "Message", "Status", "IP", "User", "Processed At"]} data={requests} />
     )
 }
 

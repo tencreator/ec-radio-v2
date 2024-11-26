@@ -1,5 +1,4 @@
-"use server"
-
+import 'server-only'
 import chalk from 'chalk'
 
 class log extends Error {

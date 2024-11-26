@@ -115,9 +115,9 @@ export default function Viewer(): JSX.Element {
 
     return (
         <>
-            <section className={"z-50 w-full flex fixed bottom-0 mb-2 transition-all " + (show ? 'justify-center' : 'justify-end pr-4')}>
+            <section className={"z-50 w-11/12 md:w-9/12 lg:w-8/12 xl:w-6/12 mx-auto flex fixed bottom-0 mb-2 transition-all self-center " + (show ? 'justify-center' : 'justify-end pr-4')}>
                 {show ? (
-                    <div className="flex flex-col md:flex-row items-center w-11/12 md:w-9/12 lg:w-8/12 xl:w-6/12 overflow-hidden py-1 rounded-md border-solid border-2 bg-zinc-700 border-zinc-500">
+                    <div className="flex flex-col md:flex-row items-center w-full overflow-hidden py-1 rounded-md border-solid border-2 bg-zinc-700 border-zinc-500">
                         <div className="mx-auto flex flex-row">
                             <button onClick={()=>{
                                 setPlaying(!playing)

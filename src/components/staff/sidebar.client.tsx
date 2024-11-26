@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 
 import Styles from '../../styles/sidebar.module.css'
+import { RefreshButton } from '../utils/RefreshButton'
 
 export default function Sidebar({catagories}: {catagories: {
     title: string
@@ -53,8 +54,12 @@ export default function Sidebar({catagories}: {catagories: {
                         {catagories.map((catagory, i) => (
                             <SidebarCatagory key={i} title={catagory.title} children={catagory.children} />
                         ))}
+
                     </ul>
                 )}
+
+                <div className="grow"></div>
+                <RefreshButton className='w-full' />
             </div>
         </div>
     )

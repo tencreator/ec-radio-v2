@@ -9,7 +9,7 @@ const StaffLayout = async ({ children }: StaffLayoutProps) => {
     return (
         <main className="flex flex-row min-h-full grow">
             <Sidebar />
-            <section className="grow">
+            <section className="grow overflow-y-auto">
                 {children}
             </section>
         </main>

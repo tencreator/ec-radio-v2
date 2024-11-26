@@ -112,6 +112,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             })
     
             cache.delete(`djaccount-${session.user.providerId}`)
+            cache.delete("djaccounts")
     
             return new NextResponse(JSON.stringify(res2), {status: 200})
         } else {

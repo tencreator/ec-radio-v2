@@ -1,15 +1,38 @@
 import { hasPermission, Permissions } from "@/utils/permissions"
 import { Suspense } from "react"
 import { auth } from "@/utils/auth"
-import { redirect } from "next/navigation";
+import { redirect } from "next/navigation"
 import Image from 'next/image'
-import { TableSkeleton } from "@/components/utils/Table";
+import Table, { TableSkeleton } from "@/components/utils/Table"
+import { makeRequest } from "@/utils/request"
+import RevokeButton from "@/components/staff/manager/manager/RevokeButton"
 
 export default async function Page() {
     const session = await auth()
 
     if (!session || !session.user || !session.user.providerId) redirect('/auth')
-    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
+    if (!await hasPermission(session.user.providerId, Permissions.MANAGE_CONNECTIONS)) return <div>Unauthorized</div>
+
+    async function getAccounts() {
+        const accounts = await makeRequest('/api/staff/presenter/connection?all=true', {})
+        const data = await accounts.json()
+
+        const accountsData = await Promise.all(data.map((account: any) => {
+            return {
+                id: account.id,
+                azuracast_id: account.azuraid,
+                username: account.name,
+                user: {
+                    id: account.user.id,
+                    name: account.user.displayName,
+                    avatar: account.user.avatar
+                },
+                revoke: <RevokeButton id={account.id} />
+            }
+        }))
+
+        return accountsData
+    }
 
     return (
         <div className="mx-auto mt-4 overflow-auto container">
@@ -26,7 +49,7 @@ export default async function Page() {
             </div>
 
             <Suspense fallback={<PageSkeleton />}>
-                <PageSkeleton />
+                <Table headings={["ID", "Azuracast ID", "Username", "User", "Revoke"]} data={await getAccounts()} />
             </Suspense>
         </div>
     )
@@ -35,7 +58,7 @@ export default async function Page() {
 async function PageSkeleton() {
     return (
         <div className="flex flex-col mt-6">
-            <TableSkeleton headings={["ID", "Username", "User", "Revoke"]} />
+            <TableSkeleton headings={["ID", "Azuracast ID", "Username", "User", "Revoke"]} />
         </div>
     )
 }

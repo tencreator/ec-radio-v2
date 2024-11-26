@@ -28,7 +28,7 @@ export default function RequestBtn({ action, requestId }: ActionButtonProps) {
         }
     }
 
-    async function handleClick(e: any) {
+    async function handleClick() {
         setDisabled(true)
         await handleRequest(action, requestId)
         setDisabled(false)

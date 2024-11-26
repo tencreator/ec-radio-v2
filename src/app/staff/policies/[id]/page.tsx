@@ -32,7 +32,7 @@ export default async function Page(context: any) {
     const policy = await res.json()
 
     return (
-        <div className="mx-auto mt-4 w-10/12 lg:w-11/12">
+        <div className="mx-auto mt-4 container">
             <h1 className="text-2xl font-bold">Policy - {policy.name}</h1>
             <ViewPolicy policy={policy} />
         </div>

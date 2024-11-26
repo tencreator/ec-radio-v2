@@ -48,11 +48,7 @@ export default async function ViewDetails() {
     )
 }
 
-function CreateDetailText({title, text, hidden = false}: {title: string, text: string, hidden? : boolean}) {
-    function copyText() {
-        navigator.clipboard.writeText(text)
-    }
-    
+function CreateDetailText({title, text, hidden = false}: {title: string, text: string, hidden? : boolean}) { 
     return (
         <>
             <span className="font-semibold capitalize">{title}:</span> <span>{hidden ? '********' : text}</span> <CopyButton text={text} />

@@ -3,6 +3,8 @@ import { hasPermission, Permissions } from "@/utils/permissions"
 import { Suspense } from "react"
 import Timetable from "@/components/staff/presenters/timetable/Timetable"
 import { auth } from "@/utils/auth"
+import Image from "next/image"
+import { RefreshButton } from "@/components/utils/RefreshButton"
 
 export default async function Page() {
     const session = await auth()
@@ -22,19 +24,24 @@ export default async function Page() {
     }
 
     return (
-        <div className="mx-auto mt-4 w-10/12 lg:w-11/12">
-            <Suspense fallback={<div>Loading...</div>}>
-                <div>
+        <div className="mx-auto mt-4 container">
+            <div className="flex flex-row">
+                <div className="flex flex-col">
                     <h1 className="text-3xl font-semibold">Timetable</h1>
                     <p className="text-sm text-gray-500">Get to booking your preferred timeslots below!</p>
                 </div>
-
-                <div className="mt-4 flex flex-col gap-4">
-                    {dates().map((date: string, index: number) => (
-                        <Timetable key={index} me={session?.user.providerId as string} date={date} />
-                    ))}
+                <div className="grow flex flex-row justify-start items-end ml-4"><RefreshButton /></div>
+                <div className="flex flex-row items-center">
+                    <Image src={session?.user?.image || ''} className="rounded-full w-[32px] h-[32px] mr-2" width={32} height={32} alt="Profile Picture" />
+                    <p>{session?.user?.displayName}</p>
                 </div>
-            </Suspense>
+            </div>
+
+            <div className="mt-4 flex flex-col gap-4">
+                {dates().map((date: string, index: number) => (
+                    <Timetable key={index} date={date} />
+                ))}
+            </div>
         </div>
     )
 }

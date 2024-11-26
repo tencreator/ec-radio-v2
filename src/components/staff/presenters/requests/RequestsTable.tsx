@@ -1,7 +1,9 @@
+import { makeRequest } from "@/utils/request"
+import Table from "@/components/utils/Table"
 import RequestBtn from "./RequestBtn"
 
 interface Props {
-    requests: request[]
+    filter: string
 }
 
 interface request {
@@ -13,40 +15,34 @@ interface request {
 
 const thClasses = 'h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0'
 
-export default function RequestsTable({ requests }: Props): JSX.Element {
+export default async function RequestsTable({ filter }: Props): Promise<JSX.Element> {
+    async function getRequests(): Promise<{ requests: request[] }> {
+        const res = await makeRequest(`/api/requests?filter=${filter}`, {})
+        const data = await res.json()
+
+        if (!data.requests) return { requests: [] }
+
+        const requests = data.requests.map((request: request) => ({
+            ...request,
+            date: formatDate(request.date),
+            actions: <Buttons requestId={request.id} />
+        }))
+
+        return { requests }
+    }
+
+    const { requests } = await getRequests()
+
     return (
-        <div className="border-2 border-base-300 rounded-md mt-4 bg-base-200 w-screen md:w-full">
-            <div className="relative max-w-full overflow-auto">
-                <table className={"w-full table-auto caption-bottom text-sm border-collapse border-base-300"}>
-                    <thead className='[&_tr]:border-b border-collapse border-base-300'>
-                        <tr className='border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
-                            <th className={thClasses}>Name</th>
-                            <th className={thClasses}>Date</th>
-                            <th className={thClasses}>Message</th>
-                            <th className={thClasses}>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className='[&_tr:last-child]:border-0 border-base-300'>
-                        {requests && requests.length !== 0 ? requests.map((request: request, i: number) => (
-                            <tr className='border-b transition-colors hover:bg-base-200 data-[state=selected]:bg-muted border-base-300 h-12' key={i}>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.name}</td>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{formatDate(request.date)}</td>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.message}</td>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>
-                                    <div>
-                                        <RequestBtn action='accept' requestId={request.id}/>
-                                        <RequestBtn action='deny' requestId={request.id} />
-                                    </div>
-                                </td>
-                            </tr>
-                        )): (
-                            <tr className='hover'>
-                                <td colSpan={4} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-12'>No requests found.</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+        <Table headings={['Date', 'Name', 'Message', 'Actions']} data={requests} />
+    )
+}
+
+function Buttons({ requestId }: { requestId: string }) {
+    return (
+        <div>
+            <RequestBtn action='accept' requestId={requestId}/>
+            <RequestBtn action='deny' requestId={requestId} />
         </div>
     )
 }

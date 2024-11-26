@@ -2,21 +2,23 @@ import { headers, cookies } from "next/headers"
 import { Permissions, hasPermission } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
 import Image from "next/image"
+import Table from "@/components/utils/Table"
+import { Session } from "inspector/promises"
 
 interface request {
     id: string
     name: string
     date: string
     message: string
-    pending: boolean
-    accepted: boolean
+    status: string
     ip: string
-    processedBy: string
-    processedAt: string
+    processed_at: string
     user: {
-        displayName: string
+        id: string
+        name: string
         avatar: string
     }
+    ban_ip?: JSX.Element
 }
 
 interface bannedIP {
@@ -29,34 +31,12 @@ interface bannedIP {
 
 const thClasses = 'h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0'
 
-export default async function Table({filter}: {filter: string}) {
+export default async function Requests({ filter }: { filter: string }) {
     const session = await auth()
     const headerList = await headers()
     const protocol = headerList.get('x-forwarded-proto') || 'http'
     const host = headerList.get('host')
     const url = `${protocol}://${host}`
-
-    async function getRequests(filter?: string) {
-        try {
-            const endpoint = url + '/api/requests?all=true' + (filter ? `&filter=${filter}` : '')
-            const res = await fetch(endpoint, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Cookie': (await cookies()).toString()
-                }
-            })
-
-            if (!res.ok) return
-
-            const data = await res.json()
-
-            loading = false
-
-            return data.requests
-        } catch (e){
-            console.error(e)
-        }
-    }
 
     async function getBannedIPs() {
         try {
@@ -75,74 +55,91 @@ export default async function Table({filter}: {filter: string}) {
             loading = false
 
             return data.banned
-        } catch (e){
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    async function getRequests(filter?: string) {
+        try {
+            const endpoint = url + '/api/requests?all=true' + (filter ? `&filter=${filter}` : '')
+            const res = await fetch(endpoint, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cookie': (await cookies()).toString()
+                }
+            })
+
+            if (!res.ok) return
+
+            const data = await res.json()
+
+            if (!data.requests) return
+
+            const requests = await Promise.all(data.requests.map(async (request: any) => {
+                const canBan = await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP)
+
+                if (canBan) {
+                    const bannedIPs: bannedIP[] = await getBannedIPs()
+                    const banned = bannedIPs.find(ip => ip.ip === request.ip)
+
+                    return {
+                        id: request.id,
+                        name: request.name,
+                        date: formatDate(request.date),
+                        message: request.message,
+                        status: request.pending ? 'Pending' : (request.accepted ? 'Accepted' : 'Denied'),
+                        ip: request.ip,
+                        processed_at: request.processedAt ? formatDate(request.processedAt) : 'N/A',
+                        user: {
+                            id: request.processedBy,
+                            name: request.user.displayName,
+                            avatar: request.user.avatar
+                        },
+                        ban_ip: !banned ? <BanButton ip={request.ip} url={url} /> : <UnBanButton ip={request.ip} url={url} />
+                    }
+                }
+
+                return {
+                    id: request.id,
+                    name: request.name,
+                    date: request.date,
+                    message: request.message,
+                    status: request.pending ? 'Pending' : (request.accepted ? 'Accepted' : 'Denied'),
+                    ip: request.ip,
+                    processed_at: request.processedAt,
+                    user: {
+                        id: request.processedBy,
+                        name: request.user.displayName,
+                        avatar: request.user.avatar
+                    },
+                    ban_ip: null
+                }
+            }))
+
+            loading = false
+
+            return requests
+        } catch (e) {
             console.error(e)
         }
     }
 
     let loading = true
-    const requests: request[] = await getRequests(filter)
-    const bannedIPs: bannedIP[] = await getBannedIPs()
+    const requests: request[] = await getRequests(filter) || []
+
+    if (await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP)) {
+        return (
+            <Table headings={["Name", "Date", "Message", "Status", "IP", "User", "Processed At", "Ban IP"]} data={requests} />
+        )
+    }
 
     return (
-        <div className="border-2 border-base-300 rounded-md mt-4 bg-base-200 w-screen md:w-full">
-            <div className="relative w-full overflow-auto">
-                <table className={"w-full table-auto caption-bottom text-sm border-collapse border-base-300" + (loading ? 'hidden' : '')}>
-                    <thead className='[&_tr]:border-b border-collapse border-base-300'>
-                        <tr className='border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
-                            <th className={thClasses}>Name</th>
-                            <th className={thClasses}>Date</th>
-                            <th className={thClasses}>Message</th>
-                            <th className={thClasses}>Status</th>
-                            <th className={thClasses}>IP</th>
-                            <th className={thClasses}>Processed By</th>
-                            <th className={thClasses}>Processed At</th>
-                            {await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP) && <th className={thClasses}>Ban IP</th>}
-                        </tr>
-                    </thead>
-                    <tbody className='[&_tr:last-child]:border-0 border-base-300'>
-                        {requests && requests.length !== 0 ? requests.map(async (request: request, i: number) => (
-                            <tr className='border-b transition-colors hover:bg-base-200 data-[state=selected]:bg-muted border-base-300 h-12' key={i}>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.name}</td>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{formatDate(request.date)}</td>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.message}</td>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.pending ? 'Pending' : (request.accepted ? 'Accepted' : 'Denied')}</td>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.ip}</td>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>
-                                    <div className="flex flex-row items-center">
-                                        {
-                                            (request.user && request.user.avatar && request.user.displayName) ? (
-                                                <>
-                                                    <Image src={request.user.avatar} alt={request.user.displayName} width={24} height={24} className="rounded-full mr-4" />
-                                                    <p>
-                                                        {request.processedBy ? (request.user.displayName ? request.user.displayName : request.processedBy) : 'N/A'}
-                                                    </p>
-                                                </>
-                                            ) :
-                                            request.processedBy ? request.processedBy : 'N/A'
-                                        }
-                                    </div>
-                                </td>
-                                <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>{request.processedAt ? formatDate(request.processedAt) : 'N/A'}</td>
-                                {await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP) && (
-                                    <td className='p-4 align-middle [&:has([role=checkbox])]:pr-0'>
-                                        {bannedIPs && bannedIPs.find(ip => ip.ip === request.ip) ? <UnBanButton ip={request.ip} url={url} /> : <BanButton ip={request.ip} url={url} />}
-                                    </td>
-                                )}
-                            </tr>
-                        )): (
-                            <tr className='hover'>
-                                <td colSpan={await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP) ? 9 : 8} className='p-4 align-middle text-center [&:has([role=checkbox])]:pr-0 h-12'>No requests found.</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <Table headings={["Name", "Date", "Message", "Status", "IP", "User", "Processed At"]} data={requests} />
     )
 }
 
-async function BanButton({ip, url}: {ip: string, url: string}) {
+async function BanButton({ ip, url }: { ip: string, url: string }) {
     async function banIP() {
         "use server"
         try {
@@ -160,7 +157,7 @@ async function BanButton({ip, url}: {ip: string, url: string}) {
             const data = await res.json()
 
             return data.banned
-        } catch (e){
+        } catch (e) {
             console.error(e)
         }
     }
@@ -170,7 +167,7 @@ async function BanButton({ip, url}: {ip: string, url: string}) {
     )
 }
 
-async function UnBanButton({ip, url}: {ip: string, url: string}) {
+async function UnBanButton({ ip, url }: { ip: string, url: string }) {
     async function unBanIP() {
         "use server"
         try {
@@ -188,7 +185,7 @@ async function UnBanButton({ip, url}: {ip: string, url: string}) {
             const data = await res.json()
 
             return data.banned
-        } catch (e){
+        } catch (e) {
             console.error(e)
         }
     }

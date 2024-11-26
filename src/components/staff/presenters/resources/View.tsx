@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import Filter from "./Filter"
 import Card from "./Card"
+import { RefreshButton } from "@/components/utils/RefreshButton"
 
 interface resource {
     name: string
@@ -14,7 +15,7 @@ export default function View() {
     const [list, setList] = useState<resource[]>([])
     const [filter, setFilter] = useState("")
     const [loading, setLoading] = useState(true)
-    
+
     async function getResources() {
         const response = await fetch("/api/staff/presenter/resources")
     
@@ -42,7 +43,7 @@ export default function View() {
 
     useEffect(()=>{
         getResources()
-        setTimeout(getResources, 2500)
+        setInterval(getResources, 2500)
     }, [])
 
     if (loading) return (
@@ -51,10 +52,12 @@ export default function View() {
 
     return (
         <div>
-            <Filter setFilter={setFilter} />
+            <div className="flex flex-row items-center">
+                <Filter setFilter={setFilter} />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
                 {list.length === 0 && <p>No resources found</p>}
-                {list.map((resource) => <Card key={resource.name} resource={resource} />)}
+                {list.map((resource, i) => <Card key={i} resource={resource} />)}
             </div>
         </div>
     )

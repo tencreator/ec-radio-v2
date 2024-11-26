@@ -67,3 +67,26 @@ export function RenderUserCell({ user }: { user: {id: string, name: string, avat
         </td>
     )
 }
+
+export function TableSkeleton({ headings }: { headings: string[] }) {
+    return (
+        <div className="border-2 border-base-300 rounded-md mt-4 bg-base-200 w-screen md:w-full">
+            <div className="relative w-full overflow-auto">
+                <table className={"w-full table-auto caption-bottom text-sm border-collapse border-base-300"}>
+                    <thead className='[&_tr]:border-b border-collapse border-base-300'>
+                        <tr className='border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
+                            {headings.map((heading, index) => (
+                                <th key={index} className={thClasses}>{heading}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody className='[&_tr:last-child]:border-0 border-base-300'>
+                        <tr className='border-b border-gray-500 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
+                            <td colSpan={headings.length} className='h-12 px-8 align-middle text-center'><div className="w-full h-[3ch] skeleton"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    )
+}

@@ -28,6 +28,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return {
                 ...profile,
                 providerid: profile.id,
+                image: `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png`,
+                avatarDecoration: profile.avatar_decoration_data?.asset ? `https://cdn.discordapp.com/avatar-decoration-presets/${profile.avatar_decoration_data?.asset}` || false : false
             }
         }
     })],

@@ -14,7 +14,7 @@ function days() {
 
 export default async function Page() {
     return (
-        <main className="mt-4 mx-auto lg:w-10/12 text-lg">
+        <main className="mt-4 mx-auto lcontainer text-lg">
             <div className="flex flex-row gap-4 items-end">
                 <div className="flex flex-col">
                     <h1 className="text-3xl font-semibold">Timetable</h1>

@@ -1,5 +1,6 @@
 import { getFormattedTime } from "@/utils/functions"
-import { useEffect, useState } from "react"
+import { BookButton, UnbookButton } from "./TimetableButtons"
+import { auth } from "@/utils/auth"
 
 interface Props {
     date: string
@@ -12,11 +13,11 @@ interface Props {
         avatar: string
     }
     me: string
-    fetchData: () => Promise<void>
 }
 
-export default function Cell({date, time, booked, currentDay, user, me, fetchData}: Props) {
-    const [isLive, setIsLive] = useState(false)
+export default async function Cell({date, time, booked, currentDay, user}: Props) {
+    const session = await auth()
+    const me = session?.user?.providerId?.toString() || ""
 
     function isCurrent() {
         const hour = new Date().getHours()
@@ -28,53 +29,13 @@ export default function Cell({date, time, booked, currentDay, user, me, fetchDat
             return false
         }
     }
-
-    async function bookSlot(){
-        let formattedTime = time.split(":")[0] + ":00"
-        const res = await fetch(`/api/staff/presenter/timetable?date=${encodeURIComponent(date)}&time=${encodeURIComponent(formattedTime)}`, {
-            method: 'POST',
-        })
-
-        if (!res.ok) {
-            console.error('Failed to book slot')
-            return
-        }
-
-        await fetchData()
-    }
-
-    async function unbookSlot(){
-        let formattedTime = time.split(":")[0] + ":00"
-        const res = await fetch(`/api/staff/presenter/timetable?date=${encodeURIComponent(date)}&time=${encodeURIComponent(formattedTime)}`, {
-            method: 'DELETE',
-        })
-
-        if (!res.ok) {
-            console.error('Failed to unbook slot')
-            return
-        }
-
-        await fetchData()
-    }
-
-    useEffect(() => {
-        setIsLive(isCurrent())
-
-        const timeout = setTimeout(() => {
-            setIsLive(isCurrent())
-        }, 1000)
-
-        return () => {
-            clearTimeout(timeout)
-        }
-    }, [isLive, currentDay])
     
     return (
-        <div className={"card bg-base-300 shadow-md border-solid border-2 " + (isLive ? 'border-red-600 shadow-red-600' : 'border-base-100')}>
+        <div className={"card bg-base-300 shadow-md border-solid border-2 " + (isCurrent() ? 'border-red-600 shadow-red-600' : 'border-base-100')}>
             <div className="card-body">
                 <div className="card-title flex flex-row">
                     <h2>{getFormattedTime(time)}</h2>
-                    {isLive && (
+                    {isCurrent() && (
                         <div className="ml-auto card-actions justify-end">
                             <h2 className="badge badge-outline badge-error">Now</h2>
                         </div>
@@ -84,26 +45,20 @@ export default function Cell({date, time, booked, currentDay, user, me, fetchDat
                 <div>
                     {booked ? (
                         user ? (
-                            <div className="flex flex-row items-center">
-                                <img src={user.avatar} height={32} width={32} className="rounded-full mr-2" />
-                                <p>{user.name}</p>
+                            <div className="flex flex-col items-center justify-start">
+                                <div className="flex flex-row items-center justify-center mr-auto">
+                                    <img src={user.avatar} height={32} width={32} className="rounded-full mr-2" />
+                                    <p>{user.name}</p>
+                                </div>
                                 {me === user.id.toString() && (
-                                    <button className="btn btn-sm btn-error ml-auto" onClick={async (e)=>{
-                                        e.currentTarget.disabled = true
-                                        unbookSlot()
-                                        e.currentTarget.disabled = false
-                                    }}>X</button>
+                                    <UnbookButton time={time} date={date} />
                                 )}
                             </div>
                         ) : (
                             <p>We had an oopsie!</p>
                         )
                     ) : (
-                        <button className="btn btn-sm btn-primary" onClick={async (e)=>{
-                            e.currentTarget.disabled = true
-                            bookSlot()
-                            e.currentTarget.disabled = false
-                        }}>Book now</button>
+                        <BookButton time={time} date={date} />
                     )}
                 </div>
             </div>

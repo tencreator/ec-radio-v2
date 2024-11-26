@@ -11,7 +11,7 @@ export default async function Page() {
     if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
 
     return (
-        <div className="mx-auto mt-4 w-10/12 lg:w-11/12">
+        <div className="mx-auto mt-4 container">
             <Suspense fallback={<div>Loading...</div>}>
                 <div>
                     <h1 className="text-3xl font-semibold">Home</h1>

@@ -13,7 +13,6 @@ export default function ToggleRequestsButton({acceptingRequests}: {acceptingRequ
             method: 'POST',
         })
 
-        if (!res.ok) return setDisabled(false)
         router.refresh()
         setDisabled(false)
     }

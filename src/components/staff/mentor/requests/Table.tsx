@@ -96,7 +96,7 @@ export default async function Requests({ filter }: { filter: string }) {
                             name: request.user.displayName,
                             avatar: request.user.avatar
                         },
-                        ban_ip: banned ? <BanButton ip={request.ip} url={url} /> : <UnBanButton ip={request.ip} url={url} />
+                        ban_ip: !banned ? <BanButton ip={request.ip} url={url} /> : <UnBanButton ip={request.ip} url={url} />
                     }
                 }
 
@@ -127,8 +127,6 @@ export default async function Requests({ filter }: { filter: string }) {
 
     let loading = true
     const requests: request[] = await getRequests(filter) || []
-
-    console.log(requests)
 
     if (await hasPermission(session?.user?.providerId as string, Permissions.BAN_IP)) {
         return (

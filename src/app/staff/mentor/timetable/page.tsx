@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { headers, cookies } from "next/headers";
 import Table from "@/components/utils/Table";
 import Image from "next/image"
-import { RefreshButton } from "@/components/utils/RefreshButton"
 
 
 async function getUrl(): Promise<string> {
@@ -43,14 +42,14 @@ export default async function Page() {
     const data = await fetchData()
 
     return (
-        <div className="mx-auto mt-4 container">
+        <div className="mx-auto mt-4 overflow-auto container">
                 <div className="flex flex-row">
                     <div className="flex flex-col">
                         <h1 className="text-3xl font-semibold">Timetable Logs</h1>
                         <p className="text-sm text-gray-500">View how our presenters have been interacting with the timetable!!</p>
                     </div>
-                    <div className="grow flex flex-row justify-start items-end ml-4"><RefreshButton /></div>
-                    <div className="flex flex-row items-center">
+                    <div className="grow flex flex-row justify-start items-end ml-4"></div>
+                    <div className="hidden md:flex flex-row items-center">
                         <Image src={session?.user?.image || ''} className="rounded-full w-[32px] h-[32px] mr-2" width={32} height={32} alt="Profile Picture" />
                         <p>{session?.user?.displayName}</p>
                     </div>

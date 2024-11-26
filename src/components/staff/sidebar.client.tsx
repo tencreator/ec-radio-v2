@@ -58,8 +58,7 @@ export default function Sidebar({catagories}: {catagories: {
                     </ul>
                 )}
 
-                <div className="grow"></div>
-                <RefreshButton className='w-full' />
+                <RefreshButton className='w-full mt-4' />
             </div>
         </div>
     )

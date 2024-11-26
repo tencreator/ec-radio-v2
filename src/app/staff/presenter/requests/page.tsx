@@ -4,7 +4,6 @@ import { auth } from "@/utils/auth"
 import { makeRequest } from "@/utils/request"
 
 import { Suspense } from "react"
-import { RefreshButton } from "@/components/utils/RefreshButton"
 import { TableSkeleton } from "@/components/utils/Table"
 import ToggleRequestsButton from "@/components/staff/presenters/requests/ToggleButton"
 import Table from "@/components/staff/presenters/requests/RequestsTable"
@@ -19,14 +18,14 @@ export default async function Page() {
     const isAcceptingRequests = await makeRequest('/api/requests/status', {}).then(res => res.json())
 
     return (
-        <div className="mt-4 mx-auto container">
+        <div className="mt-4 mx-auto overflow-auto container">
             <div className="flex flex-row">
                 <div className="flex flex-col">
                     <h1 className="text-3xl font-semibold">Request</h1>
                     <p className="text-sm text-gray-500">Check the requests sent in from our adoring listeners!</p>
                 </div>
-                <div className="grow flex flex-row justify-start items-end ml-4"><RefreshButton /></div>
-                <div className="flex flex-row items-center">
+                <div className="grow flex flex-row justify-start items-end ml-4"></div>
+                <div className="hidden md:flex flex-row items-center">
                     <Image src={session?.user?.image || ''} className="rounded-full w-[32px] h-[32px] mr-2" width={32} height={32} alt="Profile Picture" />
                     <p>{session?.user?.displayName}</p>
                 </div>

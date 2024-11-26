@@ -5,7 +5,6 @@ import Table from "@/components/staff/mentor/requests/Table"
 import { auth } from "@/utils/auth"
 import { redirect } from "next/navigation";
 import Image from "next/image"
-import { RefreshButton } from "@/components/utils/RefreshButton"
 import { TableSkeleton } from "@/components/utils/Table"
 
 export default async function Page() {
@@ -15,14 +14,14 @@ export default async function Page() {
     if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
 
     return (
-        <div className="mx-auto mt-4 container">
+        <div className="mx-auto mt-4 overflow-auto container">
             <div className="flex flex-row">
                 <div className="flex flex-col">
                     <h1 className="text-3xl font-semibold">Request Logs</h1>
                     <p className="text-sm text-gray-500">Check what requests has been processed and ban certain IPs if you dare!</p>
                 </div>
-                <div className="grow flex flex-row justify-start items-end ml-4"><RefreshButton /></div>
-                <div className="flex flex-row items-center">
+                <div className="grow flex flex-row justify-start items-end ml-4"></div>
+                <div className="hidden md:flex flex-row items-center">
                     <Image src={session?.user?.image || ''} className="rounded-full w-[32px] h-[32px] mr-2" width={32} height={32} alt="Profile Picture" />
                     <p>{session?.user?.displayName}</p>
                 </div>

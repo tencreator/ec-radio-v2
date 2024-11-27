@@ -44,6 +44,9 @@ enum Permissions {
     EDIT_PERMISSIONS = "EDIT.PERMISSIONS",
     CREATE_PERMISSIONS = "CREATE.PERMISSIONS",
     DELETE_PERMISSIONS = "DELETE.PERMISSIONS",
+
+    VIEW_SETTINGS = "VIEW.SETTINGS",
+    EDIT_SETTINGS = "EDIT.SETTINGS",
 }
 
 type PagePermissions = Permissions
@@ -113,7 +116,8 @@ async function getRolePerms(roles: string[]): Promise<string[]> {
     return pernsArray.flat().flat()
 }
 
-async function hasPermission(userId: string, permission: string): Promise<boolean> {
+async function hasPermission(userId: string | undefined, permission: string): Promise<boolean> {
+    if (!userId) return false
     if (userId === process.env.ADMIN_ID) return true
     if (permission === undefined) return false
 

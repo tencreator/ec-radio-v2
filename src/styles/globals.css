@@ -100,96 +100,96 @@ button.border-danger:hover, a.border-danger:hover {
 
 /* markdown formatting */
 .markdown h1 {
-    font-size: 2.25rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 2.25rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown h2 {
-    font-size: 1.875rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.875rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown h3 {
-    font-size: 1.5rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.5rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown h4 {
-    font-size: 1.25rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.25rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown h5 {
-    font-size: 1.125rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.125rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown h6 {
-    font-size: 1rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown p {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown ul {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    list-style: disc;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+    list-style: disc !important;
 }
 
 .markdown ol {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    list-style: decimal;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+    list-style: decimal !important;
 }
 
 .markdown blockquote {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown pre {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown table {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown img {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown a {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown hr {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown blockquote {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .markdown code {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
 }
 
 /* Requests Table */

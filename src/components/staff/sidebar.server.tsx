@@ -96,6 +96,10 @@ export default async function Sidebar(): Promise<JSX.Element> {
                 title: 'Manage Settings',
                 href: '/staff/director/settings',
                 perm: Permissions.VIEW_SETTINGS
+            }, {
+                title: 'Manage Permissions',
+                href: '/staff/director/permissions',
+                perm: Permissions.VIEW_PERMISSIONS
             }]
         }
     ]

@@ -2,7 +2,6 @@ import ViewPolicy from "@/components/staff/directors/policies/editPolicy"
 import { auth } from "@/utils/auth"
 import { hasPermission, Permissions } from "@/utils/permissions"
 import { redirect, notFound } from "next/navigation"
-import { headers, cookies } from "next/headers"
 import Image from "next/image"
 import { makeRequest } from "@/utils/request"
 

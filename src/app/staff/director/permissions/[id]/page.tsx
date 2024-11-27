@@ -12,7 +12,7 @@ export default async function Page(context: {params: Promise<{id: string}>}) {
     const session = await auth()
 
     if (!session || !session.user || !session.user.providerId) redirect('/auth')
-    if (!await hasPermission(session.user.providerId, Permissions.VIEW_PERMISSIONS)) return <div>Unauthorized</div>
+    if (!await hasPermission(session.user.providerId, Permissions.EDIT_PERMISSIONS)) return <div>Unauthorized</div>
 
     const params = await context.params
     if (!params.id) {

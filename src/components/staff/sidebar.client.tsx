@@ -69,7 +69,7 @@ export default function Sidebar({catagories}: {catagories: {
                 <i className='fas fa-bars'></i>
             </button>
 
-            <div ref={sidebarRef} className={'bg-base-300 min-w-60 ' + Styles.sidebar}>
+            <div ref={sidebarRef} className={'bg-base-300 max-h-screen overflow-y-auto min-w-60 ' + Styles.sidebar}>
                 {loading ? <p>Loading...</p> : (
                     <ul className="menu sticky">
                         {catagories.map((catagory, i) => (

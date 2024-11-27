@@ -11,6 +11,12 @@ interface DiscordUserData {
     avatar: string
 }
 
+interface RoleData {
+    id: string
+    name: string
+    color: string
+}
+
 class Discord {
     private token: string
     private log = new Log("Discord")
@@ -46,6 +52,47 @@ class Discord {
             return {
                 roles: [],
                 nickname: false
+            }
+        }
+    }
+
+    public async getRoleData(roleId: string): Promise<RoleData> {
+        if (this.cache.has(roleId)) {
+            return this.cache.get(roleId)
+        }
+
+        try {
+            const url = `https://discord.com/api/v9/guilds/${process.env.GUILD_ID}/roles/${roleId}`
+
+            const response = await fetch(url, {
+                headers: {
+                    Authorization: `Bot ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.message)
+            }
+
+            this.cache.set(roleId, {
+                id: data.id,
+                name: data.name,
+                color: data.color
+            }, 300)
+
+            return {
+                id: data.id,
+                name: data.name,
+                color: data.color
+            }
+        } catch {
+            return {
+                id: "0",
+                name: "Unknown",
+                color: "0"
             }
         }
     }

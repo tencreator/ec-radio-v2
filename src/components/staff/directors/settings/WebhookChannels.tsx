@@ -24,7 +24,7 @@ export default function WebhookChannels({
     const [djDisconnected, setDjDisconnected] = useState(data.djDisconnected)
     const [stationDown, setStationDown] = useState(data.stationDown)
     const [stationUp, setStationUp] = useState(data.stationUp)
-    const [status, setStatus] = useState({status: false, display: true, message: 'Test'})
+    const [status, setStatus] = useState({status: false, display: false, message: 'Test'})
 
     async function saveChanges() {
         const res = await fetch(`/api/staff/director/settings/webhookChannels`, {

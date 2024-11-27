@@ -11,7 +11,7 @@ export default async function Page() {
     const session = await auth()
 
     if (!session || !session.user || !session.user.providerId) redirect('/auth')
-    if (!await hasPermission(session.user.providerId, Permissions.VIEW_STATS)) return <div>Unauthorized</div>
+    if (!await hasPermission(session.user.providerId, Permissions.MANAGE_REQUESTS)) return <div>Unauthorized</div>
 
     return (
         <div className="mx-auto mt-4 overflow-auto container">

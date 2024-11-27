@@ -7,11 +7,6 @@ async function bookSlot(time: string, date: string, router: {refresh: () => void
         method: 'POST',
     })
 
-    if (!res.ok) {
-        console.error('Failed to book slot')
-        return
-    }
-
     router.refresh()
 }
 
@@ -20,11 +15,6 @@ async function unbookSlot(time: string, date: string, router: {refresh: () => vo
     const res = await fetch(`/api/staff/presenter/timetable?date=${encodeURIComponent(date)}&time=${encodeURIComponent(formattedTime)}`, {
         method: 'DELETE',
     })
-
-    if (!res.ok) {
-        console.error('Failed to unbook slot')
-        return
-    }
 
     router.refresh()
 }

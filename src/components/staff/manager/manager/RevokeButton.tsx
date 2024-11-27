@@ -16,6 +16,6 @@ export default function RevokeButton({ id }: { id: string }) {
     }
 
     return (
-        <button className="bg-red-500 text-white rounded-md p-2" onClick={revoke}>Revoke</button>
+        <button className="btn btn-error btn-sm" onClick={revoke}>Revoke</button>
     )
 }

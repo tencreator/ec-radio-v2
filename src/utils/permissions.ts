@@ -88,10 +88,10 @@ async function getRolePerms(roles: string[]): Promise<string[]> {
     const pernsArray = []
 
     for (const role of roles) {
-        if (permCache.has(role)) {
-            pernsArray.push(permCache.get(role))
-            continue
-        }
+        // if (permCache.has(role)) {
+        //     pernsArray.push(permCache.get(role))
+        //     continue
+        // }
 
         try {
             const perms = await prisma.permissions.findMany({
@@ -112,11 +112,10 @@ async function getRolePerms(roles: string[]): Promise<string[]> {
             pernsArray.push([])
         }
     }
-
     return pernsArray.flat().flat()
 }
 
-async function hasPermission(userId: string | undefined, permission: string): Promise<boolean> {
+async function hasPermission(userId: string | undefined | null, permission: string): Promise<boolean> {
     if (!userId) return false
     if (userId === process.env.ADMIN_ID) return true
     if (permission === undefined) return false

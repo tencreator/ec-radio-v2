@@ -84,6 +84,19 @@ export default async function Sidebar(): Promise<JSX.Element> {
                 href: '/staff/manager/connection',
                 perm: Permissions.MANAGE_CONNECTIONS
             }]
+        },
+        {
+            title: 'Directors',
+            perm: Permissions.VIEW_DIRECTORS,
+            children: [{
+                title: 'Manage Policies',
+                href: '/staff/director/policies',
+                perm: Permissions.MANAGE_POLICIES
+            }, {
+                title: 'Manage Settings',
+                href: '/staff/director/settings',
+                perm: Permissions.VIEW_SETTINGS
+            }]
         }
     ]
 

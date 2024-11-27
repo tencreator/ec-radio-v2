@@ -87,9 +87,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             return new NextResponse("Unauthorized", {status: 401})
         }
 
-        const id = req.nextUrl.searchParams.get("id")
-
-        if (!id) {
+        
             if (!await hasPermission(session.user.providerId, Permissions.SELF_CONNECTION)) {
                 return new NextResponse("Forbidden", {status: 403})
             }
@@ -115,6 +113,46 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             cache.delete("djaccounts")
     
             return new NextResponse(JSON.stringify(res2), {status: 200})
+
+
+    } catch (e) {
+        return new NextResponse("Internal Server Error", {status: 500})
+    }
+}
+
+export async function DELETE(req: NextRequest): Promise<NextResponse> {
+    try {
+        const session = await auth()
+
+        if (!session || !session.user || !session.user.providerId) {
+            return new NextResponse("Unauthorized", {status: 401})
+        }
+
+        const id = req.nextUrl.searchParams.get("id")
+
+        if (!id) {
+            if (!await hasPermission(session.user.providerId, Permissions.SELF_CONNECTION)) {
+                return new NextResponse("Forbidden", {status: 403})
+            }
+
+            const hasAccount = await Azuracast.hasDjAccount(session.user.providerId as string)
+            if (!hasAccount) return new NextResponse("Not Found", {status: 404})
+
+            const account = await Azuracast.getDjAccount(session.user.providerId as string)
+            if (!account || !account.id) return new NextResponse("Internal Server Error", {status: 500})
+
+            const res = await Azuracast.deleteDjAccount(account.id)
+            if (!res) return new NextResponse("Internal Server Error", {status: 500})
+
+            await prisma.djaccounts.deleteMany({
+                where: {
+                    azuraid: account.id.toString()
+                }
+            })
+
+            cache.delete(`djaccount-${session.user.providerId}`)
+
+            return new NextResponse("OK", {status: 200})
         } else {
             if (!await hasPermission(session.user.providerId, Permissions.MANAGE_CONNECTIONS)) {
                 return new NextResponse("Forbidden", {status: 403})
@@ -140,43 +178,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             cache.delete(`djaccount-${account.discordid}`)
 
             return new NextResponse("OK", {status: 200})
-        }
-
-    } catch (e) {
-        return new NextResponse("Internal Server Error", {status: 500})
-    }
-}
-
-export async function DELETE(req: NextRequest): Promise<NextResponse> {
-    try {
-        const session = await auth()
-
-        if (!session || !session.user || !session.user.providerId) {
-            return new NextResponse("Unauthorized", {status: 401})
-        }
-
-        if (!await hasPermission(session.user.providerId, Permissions.SELF_CONNECTION)) {
-            return new NextResponse("Forbidden", {status: 403})
-        }
-
-        const hasAccount = await Azuracast.hasDjAccount(session.user.providerId as string)
-        if (!hasAccount) return new NextResponse("Not Found", {status: 404})
-
-        const account = await Azuracast.getDjAccount(session.user.providerId as string)
-        if (!account || !account.id) return new NextResponse("Internal Server Error", {status: 500})
-
-        const res = await Azuracast.deleteDjAccount(account.id)
-        if (!res) return new NextResponse("Internal Server Error", {status: 500})
-
-        await prisma.djaccounts.deleteMany({
-            where: {
-                azuraid: account.id.toString()
-            }
-        })
-
-        cache.delete(`djaccount-${session.user.providerId}`)
-
-        return new NextResponse("OK", {status: 200})
+        }  
     } catch (e) {
         return new NextResponse("Internal Server Error", {status: 500})
     }

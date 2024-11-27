@@ -12,7 +12,7 @@ export default async function ViewPolicies({res} : {res: Response}) {
                         <div className="px-4 py-2 rounded-xl bg-base-300 border border-solid border-base-300 justify-start w-full font-semibold text-xl flex flex-row">
                             {policy.name}
                             <div className="ml-auto flex flex-row gap-4">
-                                <Link className="btn btn-error btn-sm" href={`/staff/director/policies/${policy.id}`}>Edit</Link>
+                                <Link className="btn btn-primary btn-sm" href={`/staff/director/policies/${policy.id}`}>Edit</Link>
                                 <DeleteButton id={policy.id} />
                             </div>
                         </div>

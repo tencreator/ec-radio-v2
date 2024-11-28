@@ -5,6 +5,7 @@ import { Permissions, hasPermission } from "@/utils/permissions";
 import { PrismaClient } from "@prisma/client";
 import Caching from "@/utils/cache";
 import Discord from "@/utils/apis/discord";
+import { LogChannels } from "@/utils/apis/db";
 
 const prisma = new PrismaClient()
 const cache = new Caching()
@@ -108,6 +109,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     password: res.streamer_password
                 }
             })
+
+            await discord.sendLog(LogChannels.CONNECTION_LOGS, {
+                author: {
+                    name: session.user.displayName,
+                    icon_url: session.user.image
+                },
+                title: "DJ Account Created",
+                description: `DJ Account created for ${session.user.displayName}`,
+                fields: [{
+                    name: "Username",
+                    value: res.streamer_username
+                }, {
+                    name: "User",
+                    value: `<@${session.user.providerId}>`
+                }, {
+                    name: "Azura ID",
+                    value: res.id.toString()
+                }]
+            })
     
             cache.delete(`djaccount-${session.user.providerId}`)
             cache.delete("djaccounts")
@@ -172,6 +192,25 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
                 where: {
                     id: parseInt(id)
                 }
+            })
+
+            await discord.sendLog(LogChannels.CONNECTION_LOGS, {
+                author: {
+                    name: session.user.displayName,
+                    icon_url: session.user.image
+                },
+                title: "DJ Account Deleted",
+                description: `DJ Account deleted for ${account.name}`,
+                fields: [{
+                    name: "Username",
+                    value: account.name
+                }, {
+                    name: "User",
+                    value: `<@${account.discordid}>`
+                }, {
+                    name: "Azura ID",
+                    value: account.azuraid
+                }]
             })
 
             cache.delete("djaccounts")

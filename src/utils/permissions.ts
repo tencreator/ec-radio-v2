@@ -76,7 +76,7 @@ async function getUserRoles(userid: string): Promise<string[]> {
 
         const data = await res.json()
 
-        roleCache.set(userid, data.roles, 10 * 60)
+        roleCache.set(userid, data.roles, 60)
         return data.roles
     } catch {
         return []
@@ -88,10 +88,10 @@ async function getRolePerms(roles: string[]): Promise<string[]> {
     const pernsArray = []
 
     for (const role of roles) {
-        // if (permCache.has(role)) {
-        //     pernsArray.push(permCache.get(role))
-        //     continue
-        // }
+        if (permCache.has(role)) {
+            pernsArray.push(permCache.get(role))
+            continue
+        }
 
         try {
             const perms = await prisma.permissions.findMany({

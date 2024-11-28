@@ -3,9 +3,12 @@ import { auth } from "@/utils/auth"
 import { Permissions, hasPermission } from "@/utils/permissions"
 import { PrismaClient } from "@prisma/client"
 import Caching from "@/utils/cache"
+import Discord from "@/utils/apis/discord"
+import { LogChannels } from "@/utils/apis/db"
 
 const prisma = new PrismaClient()
 const cache = new Caching()
+const discord = new Discord()
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -108,6 +111,28 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         })
 
+        await discord.sendLog(LogChannels.RESOURCES_CHANGED, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            title: "Resource Created",
+            fields: [
+                {
+                    name: "Name",
+                    value: name
+                },
+                {
+                    name: "URL",
+                    value: url
+                },
+                {
+                    name: "Tags",
+                    value: tags
+                }
+            ]
+        })
+
         cache.delete("resources")
 
         return new NextResponse("Created", { status: 201 })
@@ -139,6 +164,20 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
             where: {
                 id: parseInt(id)
             }
+        })
+
+        await discord.sendLog(LogChannels.RESOURCES_CHANGED, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            title: "Resource Deleted",
+            fields: [
+                {
+                    name: "ID",
+                    value: id
+                }
+            ]
         })
 
         cache.delete("resources")
@@ -182,6 +221,32 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
                 url,
                 tags
             }
+        })
+
+        await discord.sendLog(LogChannels.RESOURCES_CHANGED, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            title: "Resource Updated",
+            fields: [
+                {
+                    name: "ID",
+                    value: id
+                },
+                {
+                    name: "Name",
+                    value: name
+                },
+                {
+                    name: "URL",
+                    value: url
+                },
+                {
+                    name: "Tags",
+                    value: tags
+                }
+            ]
         })
 
         cache.delete("resources")

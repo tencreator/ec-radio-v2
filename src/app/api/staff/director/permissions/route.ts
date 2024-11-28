@@ -4,6 +4,8 @@ import { hasPermission, Permissions } from "@/utils/permissions";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/utils/auth";
 import Discord from "@/utils/apis/discord";
+import { LogChannels } from "@/utils/apis/db";
+import { title } from "process";
 
 const prisma = new PrismaClient()
 const cache = new Caching()
@@ -68,6 +70,25 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
         const body = await req.json()
         const { id } = body
         await prisma.permissions.delete({where: {id}})
+
+        await discord.sendLog(LogChannels.PERMISSIONS_CHANGED, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            description: `Deleted permission with ID ${id}`,
+            title: "Permission Deleted",
+            fields: [{
+                name: "Role ID",
+                value: id
+            }, {
+                name: "Role",
+                value: `<@&${id}>`
+            }, {
+                name: "Action",
+                value: "Deleted"
+            }]
+        })
     
         cache.delete("perms")
         cache.delete(`perms-${id}`)
@@ -92,6 +113,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     
         const { permissions } = body
         await prisma.permissions.create({data: {roleid, permissions}})
+
+        await discord.sendLog(LogChannels.PERMISSIONS_CHANGED, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            title: "Permission Created",
+            description: `Created permission for role <@&${roleid}>`,
+            fields: [{
+                name: "Role ID",
+                value: roleid
+            }, {
+                name: "Role",
+                value: `<@&${roleid}>`
+            }, {
+                name: "Action",
+                value: "Created"
+            }]
+        })
     
         cache.delete("perms")
     
@@ -111,6 +151,25 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         const { id, roleid, permissions } = body
         await prisma.permissions.update({where: {id}, data: {roleid, permissions}})
     
+        await discord.sendLog(LogChannels.PERMISSIONS_CHANGED, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            title: "Permission Updated",
+            description: `Updated permission for role <@&${roleid}>`,
+            fields: [{
+                name: "Role ID",
+                value: roleid
+            }, {
+                name: "Role",
+                value: `<@&${roleid}>`
+            }, {
+                name: "Action",
+                value: "Updated"
+            }]
+        })
+
         cache.delete("perms")
         cache.delete(`perms-${id}`)
     

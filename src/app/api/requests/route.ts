@@ -4,6 +4,8 @@ import { hasPermission, Permissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
 import Discord from "@/utils/apis/discord"
 import Caching from "@/utils/cache"
+import { title } from "process"
+import { LogChannels } from "@/utils/apis/db"
 
 const prisma = new PrismaClient()
 const discord = new Discord(process.env.DISCORD_BOT_TOKEN as string)
@@ -157,6 +159,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         })
 
+        await discord.sendLog(LogChannels.REQUEST, {
+            title: "New Request",
+            description: "A new request has been submitted",
+            fields: [
+                {
+                    name: "Type",
+                    value: reqType,
+                },
+                {
+                    name: "Name",
+                    value: name,
+                },
+                {
+                    name: "Message",
+                    value: message,
+                }
+            ],
+        })
+
         cache.clear()
 
         return new NextResponse("Success", { status: 200 })
@@ -221,6 +242,36 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
                 processedBy: session.user.providerId,
                 processedAt: new Date()
             }
+        })
+
+        await discord.sendLog(LogChannels.REQUEST_PROCESSED, {
+            author: {
+                name: session.user.nickname || session.user.displayName,
+                icon_url: session.user.image || undefined
+            },
+            title: "Request Processed",
+            fields: [
+                {
+                    name: "Type",
+                    value: request.type
+                },
+                {
+                    name: "Name",
+                    value: request.name
+                },
+                {
+                    name: "Message",
+                    value: request.message
+                },
+                {
+                    name: "Processed By",
+                    value: `<@${session.user.providerId}>`
+                },
+                {
+                    name: "Action",
+                    value: action === 'accept' ? "Accepted" : "Denied"
+                }
+            ]
         })
 
         cache.clear()

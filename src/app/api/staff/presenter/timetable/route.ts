@@ -5,6 +5,8 @@ import { getFormattedDate, getFormattedTime } from "@/utils/functions";
 import { PrismaClient } from "@prisma/client";
 import Discord from "@/utils/apis/discord";
 import Caching from "@/utils/cache";
+import { LogChannels } from "@/utils/apis/db";
+import { title } from "process";
 
 const prisma = new PrismaClient()
 const discord = new Discord(process.env.DISCORD_BOT_TOKEN as string)
@@ -92,6 +94,24 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         })
 
+        await discord.sendLog(LogChannels.TIMETABLE_LOG, {
+            author: {
+                name: session.user.displayName,
+                avatar: session.user.image,
+            },
+            title: "Booking Created",
+            fields: [
+                {
+                    name: "Date",
+                    value: date,
+                },
+                {
+                    name: "Time",
+                    value: time,
+                },
+            ]
+        })
+
         cache.delete(`timetable-${date}`)
 
         return new NextResponse(JSON.stringify({booking: booking}), { headers: { "content-type": "application/json" } })
@@ -142,6 +162,23 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
             },
         })
 
+        await discord.sendLog(LogChannels.TIMETABLE_LOG, {
+            author: {
+                name: session.user.displayName,
+                avatar: session.user.image,
+            },
+            title: "Booking Deleted",
+            fields: [
+                {
+                    name: "Date",
+                    value: date,
+                },
+                {
+                    name: "Time",
+                    value: time,
+                },
+            ]
+        })
 
         return new NextResponse("Success", { status: 200 })
     } catch {

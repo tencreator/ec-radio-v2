@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { hasPermission, Permissions } from "@/utils/permissions";
 import { auth } from "@/utils/auth";
 import { PrismaClient } from "@prisma/client";
+import Discord from "@/utils/apis/discord";
+import { LogChannels } from "@/utils/apis/db";
 
 const prisma = new PrismaClient()
+const discord = new Discord()
 const putActions: {[key: string]: (req: NextRequest)=> Promise<NextResponse> } = {
     webhookChannels
 }
@@ -41,14 +44,33 @@ async function webhookChannels(req: NextRequest): Promise<NextResponse> {
             return new NextResponse("Bad Request", { status: 400 })
         }
 
+        const generateFields = (arr: {[key: string]: string}): {name: string, value: string}[] => {
+            const fields: {name: string, value: string}[] = []
+
+            for (const key in arr) {
+                if (key === 'id') continue
+
+                fields.push({
+                    name: key,
+                    value: `<#${arr[key]}>`
+                })
+            }
+
+            return fields
+        }
+
+        await discord.sendLog(LogChannels.SETTINGS_CHANGED, {
+            author: {
+                name: session?.user?.displayName || "Unknown",
+                icon_url: session?.user?.image || undefined
+            },
+            title: "Log Channels Updated",
+            fields: generateFields(body)
+        })
+
         await prisma.webhookChannels.updateMany({
             data: {
-                songchanged: body.songchanged,
-                listenerStats: body.listenerStats,
-                djConnected: body.djConnected,
-                djDisconnected: body.djDisconnected,
-                stationDown: body.stationDown,
-                stationUp: body.stationUp
+                ...body
             }
         })
 

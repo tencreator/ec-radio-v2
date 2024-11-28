@@ -3,9 +3,12 @@ import { hasPermission, Permissions } from "@/utils/permissions";
 import { auth } from "@/utils/auth";
 import { PrismaClient } from "@prisma/client";
 import Caching from "@/utils/cache";
+import Discord from "@/utils/apis/discord";
+import { LogChannels } from "@/utils/apis/db";
 
 const prisma = new PrismaClient()
-const cache = new Caching() 
+const cache = new Caching()
+const discord = new Discord()
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{id: string}>}): Promise<NextResponse> {
     const session = await auth()
@@ -81,6 +84,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{id: s
             }
         })
     
+        await discord.sendLog(LogChannels.POLICY_CHANGED, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            title: "Policy Updated",
+            description: `Policy ${policy.name} was updated by ${session.user.displayName}`
+        })
+
         cache.set(id, JSON.stringify(policy), 300)
     
         return new NextResponse(JSON.stringify(policy))
@@ -113,6 +125,15 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{id
             }
         })
     
+        await discord.sendLog(LogChannels.POLICY_CHANGED, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            title: "Policy Deleted",
+            description: `Policy ${policy.name} was deleted by ${session.user.displayName}`
+        })
+
         cache.delete(id)
     
         return new NextResponse(JSON.stringify(policy))

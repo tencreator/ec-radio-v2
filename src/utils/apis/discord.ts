@@ -1,5 +1,7 @@
 import Log from '@log'
 import Caching from '../cache'
+import { PrismaClient } from '@prisma/client'
+import { LogChannels } from './db'
 
 interface DiscordGuildUserData {
     nickname: string | false
@@ -21,9 +23,10 @@ class Discord {
     private token: string
     private log = new Log("Discord")
     private cache = new Caching()
+    private prisma = new PrismaClient()
 
-    constructor(token: string) {
-        this.token = token
+    constructor(token?: string) {
+        this.token = token || process.env.DISCORD_BOT_TOKEN as string
     }
 
     public async getUserGuildData(userId: string, guildId: string): Promise<DiscordGuildUserData> {
@@ -173,6 +176,40 @@ class Discord {
 
             return true
         } catch {
+            return false
+        }
+    }
+
+    public async sendLog(logName: LogChannels, embed: any): Promise<boolean> {
+        try {
+            const channelId: any = await this.prisma.webhookChannels.findFirst({
+                select: {
+                    [logName]: true
+                }
+            }) as any
+
+            console.log(channelId)
+
+            if (!channelId || typeof channelId[logName] !== "string") {
+                throw new Error("Channel not found")
+            }
+
+            const newData = {
+                embeds: [{
+                    ...embed,
+                    footer: {
+                        text: "Coded by TenCreator"
+                    },
+                    timestamp: new Date().toISOString()
+                }]
+            }
+
+
+            const res = await this.sendToChannel(channelId[logName] as string, newData)
+            console.log(res)
+            return res
+        } catch (e) {
+            console.log(e)
             return false
         }
     }

@@ -1,0 +1,17 @@
+export enum LogChannels {
+    SONG_CHANGED = 'songchanged',
+    LISTENER_STATS = 'listenerStats',
+    DJ_CONNECTED = 'djConnected',
+    DJ_DISCONNECTED = 'djDisconnected',
+    STATION_DOWN = 'stationDown',
+    STATION_UP = 'stationUp',
+    REQUEST = 'request',
+    REQUEST_PROCESSED = 'requestProcessed',
+    TIMETABLE_LOG = 'timetableLog',
+    BANNED_IP = 'bannedReqIp',
+    SETTINGS_CHANGED = 'settingsChanged',
+    PERMISSIONS_CHANGED = 'permissionsChanged',
+    POLICY_CHANGED = 'policyChanged',
+    CONNECTION_LOGS = 'connectionLogs',
+    RESOURCES_CHANGED = 'resourcesChanged',
+}

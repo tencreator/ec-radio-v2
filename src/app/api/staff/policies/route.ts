@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { hasPermission, Permissions } from "@/utils/permissions";
 import { auth } from "@/utils/auth";
 import { PrismaClient } from "@prisma/client";
+import Discord from "@/utils/apis/discord";
+import { LogChannels } from "@/utils/apis/db";
 
 const prisma = new PrismaClient()
+const discord = new Discord()
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth()
@@ -48,6 +51,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             name: body.name,
             text: body.text
         }
+    })
+
+    await discord.sendLog(LogChannels.POLICY_CHANGED, {
+        author: {
+            name: session.user.displayName,
+            icon_url: session.user.image
+        },
+        title: "Policy Created",
+        description: `**Name:** ${body.name}\n`,
     })
 
     return new NextResponse(null, { status: 201 })

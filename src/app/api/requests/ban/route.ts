@@ -3,8 +3,11 @@ import { PrismaClient } from "@prisma/client"
 import { hasPermission, Permissions } from "@/utils/permissions"
 import { auth } from "@/utils/auth"
 import Caching from "@/utils/cache"
+import Discord from "@/utils/apis/discord"
+import { LogChannels } from "@/utils/apis/db"
 
 const prisma = new PrismaClient()
+const discord = new Discord()
 const cache = new Caching()
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -104,6 +107,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         })
 
+        await discord.sendLog(LogChannels.BANNED_IP, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            title: "Banned Request IP",
+            fields: [
+                {
+                    name: "IP",
+                    value: ip
+                }
+            ]
+        })
 
         cache.set(ip, banned, 300)
         cache.clear()
@@ -146,6 +162,20 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
             where: {
                 ip: ip
             }
+        })
+
+        await discord.sendLog(LogChannels.BANNED_IP, {
+            author: {
+                name: session.user.displayName,
+                icon_url: session.user.image
+            },
+            title: "Unbanned Request IP",
+            fields: [
+                {
+                    name: "IP",
+                    value: ip
+                }
+            ]
         })
 
         if (cache.has(ip)) {

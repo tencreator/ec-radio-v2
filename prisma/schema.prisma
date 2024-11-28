@@ -95,12 +95,21 @@ model resources {
 
 model webhookChannels {
   id          Int     @id @default(autoincrement())
-  songchanged String  @db.Text
-  listenerStats String  @db.Text
-  djConnected String  @db.Text
-  djDisconnected String  @db.Text
-  stationDown String  @db.Text
-  stationUp   String  @db.Text
+  songchanged String  @db.Text @default("")
+  listenerStats String  @db.Text @default("")
+  djConnected String  @db.Text @default("")
+  djDisconnected String  @db.Text @default("")
+  stationDown String  @db.Text @default("")
+  stationUp   String  @db.Text @default("")
+  request     String  @db.Text @default("")
+  requestProcessed String  @db.Text @default("")
+  timetableLog String  @db.Text @default("")
+  bannedReqIp String  @db.Text @default("")
+  settingsChanged String  @db.Text @default("")
+  permissionsChanged String  @db.Text @default("")
+  policyChanged String  @db.Text @default("")
+  connectionLogs String  @db.Text @default("")
+  resourcesChanged String  @db.Text @default("")
 }
 
 model songLogs {

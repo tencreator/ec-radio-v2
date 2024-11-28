@@ -1,4 +1,3 @@
-import 'server-only'
 import { PrismaClient } from "@prisma/client"
 import Caching from "./cache"
 

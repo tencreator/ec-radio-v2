@@ -8,7 +8,8 @@ import { LogChannels } from "@/utils/apis/db";
 const prisma = new PrismaClient()
 const discord = new Discord()
 const putActions: {[key: string]: (req: NextRequest)=> Promise<NextResponse> } = {
-    webhookChannels
+    webhookChannels,
+    liveRole
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{setting: string}>}): Promise<NextResponse> {
@@ -71,6 +72,46 @@ async function webhookChannels(req: NextRequest): Promise<NextResponse> {
         await prisma.webhookChannels.updateMany({
             data: {
                 ...body
+            }
+        })
+
+        return new NextResponse("OK", { status: 200 })
+    } catch {
+        return new NextResponse("Internal Error", { status: 500 })
+    }
+}
+
+async function liveRole(req: NextRequest): Promise<NextResponse> {
+    try {
+        const session = await auth()
+
+        if (!await hasPermission(session?.user?.providerId, Permissions.EDIT_SETTINGS)) {
+            return new NextResponse("Unauthorized", { status: 401 })
+        }
+
+        const body = await req.json()
+
+        if (!body.staff || !body.dj || !body.listener || !body.banned) {
+            return new NextResponse("Bad Request", { status: 400 })
+        }
+
+        await discord.sendLog(LogChannels.SETTINGS_CHANGED, {
+            author: {
+                name: session?.user?.displayName || "Unknown",
+                icon_url: session?.user?.image || undefined
+            },
+            title: "Live Updated",
+            fields: [
+                {
+                    name: "Role",
+                    value: `<@&${body.liveRole}>`
+                }
+            ]
+        })
+
+        await prisma.siteSettings.updateMany({
+            data: {
+                liveRole: body.liveRole
             }
         })
 

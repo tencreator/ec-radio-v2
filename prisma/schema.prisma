@@ -82,6 +82,7 @@ model bannedReqIps {
 model siteSettings {
   id          Int      @id @default(autoincrement())
   reqOpen     Boolean  @default(true)
+  liveRole    String   @db.Text @default("")
 
   @@map("SiteSettings")
 }

@@ -148,6 +148,16 @@ async function djConenct(req: NextRequest): Promise<NextResponse> {
                 action: 'connected'
             }
         })
+
+        const liveRole = await prisma.siteSettings.findFirst({
+            select:{
+                liveRole: true
+            }
+        })
+
+        if (liveRole) {
+            await discord.giveRole(liveRole.liveRole, body.live.streamer_name)
+        }
     
         return new NextResponse('OK')
     } catch {
@@ -158,7 +168,7 @@ async function djConenct(req: NextRequest): Promise<NextResponse> {
 async function djDisconnect(req: NextRequest): Promise<NextResponse> {
     try {
         const body = await req.json()
-            const user = await discord.getUserData(body.live.streamer_name)
+        const user = await discord.getUserData(body.live.streamer_name)
     
         discord.sendLog(LogChannels.DJ_DISCONNECTED, {
             title: 'DJ Disconnected',
@@ -179,6 +189,17 @@ async function djDisconnect(req: NextRequest): Promise<NextResponse> {
                 action: 'disconnected'
             }
         })
+
+        const liveRole = await prisma.siteSettings.findFirst({
+            select:{
+                liveRole: true
+            }
+        })
+
+        if (liveRole) {
+            const successfull = await discord.removeRole(liveRole.liveRole, body.live.streamer_name)
+            console.log(successfull)
+        }
     
         return new NextResponse('OK')
     } catch {

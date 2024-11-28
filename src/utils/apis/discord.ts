@@ -213,6 +213,50 @@ class Discord {
             return false
         }
     }
+
+    public async giveRole(userId: string, roleId: string): Promise<boolean> {
+        try {
+            const url = `https://discord.com/api/v9/guilds/${process.env.GUILD_ID}/members/${userId}/roles/${roleId}`
+
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bot ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to give role")
+            }
+
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    public async removeRole(userId: string, roleId: string): Promise<boolean> {
+        try {
+            const url = `https://discord.com/api/v9/guilds/${process.env.GUILD_ID}/members/${userId}/roles/${roleId}`
+
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bot ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to give role")
+            }
+
+            return true
+        } catch {
+            return false
+        }
+    }
 }
 
 export default Discord

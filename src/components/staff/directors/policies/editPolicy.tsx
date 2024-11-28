@@ -17,7 +17,7 @@ export default function ViewPolicy({policy}: {policy: {id: number, name: string,
             body: JSON.stringify({name: title, text})
         })
 
-        router.push('/staff/directors/policies')
+        router.push('/staff/director/policies')
     }
 
     return (

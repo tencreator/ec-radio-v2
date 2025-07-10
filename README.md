@@ -1,6 +1,6 @@
 # Emerald Coast radio webpage, build with Next.JS and TypeScript
 ## View here
-- [listen.emeraldcoastrp.com](https://listen.emeraldcoastrp.com)
+- [listen.emeraldcoastrp.net](https://listen.emeraldcoastrp.net)
 ## Roadmap
 - [click here](https://trello.com/b/5fsciCPq/emerald-coast-radio)
 
